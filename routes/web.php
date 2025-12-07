@@ -28,5 +28,10 @@ Route::get('/kontak', function () {
     return Inertia::render('contact');
 })->name('contact');
 
+
+Route::get('/tim', function () {
+    return Inertia::render('tim');
+})->name('tim');
+
 // Settings routes (sudah ada)
 require __DIR__.'/settings.php';

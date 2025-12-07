@@ -13,6 +13,7 @@ const navItems: NavItem[] = [
     { label: 'Layanan', href: '/layanan' },
     { label: 'Portfolio', href: '/portfolio' },
     { label: 'Tim Kami', href: '/tim' },
+    { label: 'Kontak', href: '/kontak' },
     { label: 'Tentang Kami', href: '/tentang-kami' },
 ];
 
@@ -91,14 +92,6 @@ export default function Navigation() {
                                     {item.label}
                                 </Link>
                             ))}
-                            <div className="px-4 pt-2">
-                                <Button 
-                                    className="w-full bg-blue-600 text-white hover:bg-blue-700" 
-                                    size="sm"
-                                >
-                                    Get Started
-                                </Button>
-                            </div>
                         </div>
                     </div>
                 )}

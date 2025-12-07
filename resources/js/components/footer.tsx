@@ -76,7 +76,7 @@ export default function Footer() {
                 </div>
 
                 {/* Copyright */}
-                <div className="mt-6 sm:mt-8 lg:mt-12 border-t border-gray-800 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-500">
+                <div className="mt-6 sm:mt-8 lg:mt-12 border-t border-gray-800 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-100">
                     <p>Developed by © 2025 SKYNUSA TECH. All rights reserved.</p>
                 </div>
             </div>

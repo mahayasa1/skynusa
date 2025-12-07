@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { 
     Code, 
     Database, 
@@ -130,19 +130,26 @@ export default function Services() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <img src="asset/logo.png" alt="SKYNUSA TECH Logo" className="h-8 w-auto sm:h-10 max-w-[180px] sm:max-w-[220px]" />
+                            <Link href="/" className="flex items-center gap-2">
+                            <img 
+                                src="/asset/logo.png" 
+                                alt="SKYNUSA TECH Logo" 
+                                className="h-8 w-auto sm:h-10 max-w-[180px] sm:max-w-[220px]" 
+                            />
+                        </Link>
                         </div>
                         <div className="hidden items-center gap-4 lg:gap-8 md:flex">
                             <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Home</a>
                             <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Layanan</a>
-                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">portofolio</a>
+                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">portfolio</a>
                             <a href="#tim" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Tim Kami</a>
-                            <a href="#contact" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Tentang Kami</a>
+                            <Link href="/kontak" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                                Kontak
+                            </Link>
+                            <Link href="/tentang-kami" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                                Tentang Kami
+                            </Link>
                         </div>
-                        <Button className='bg-blue-600 text-white hover:bg-blue-700 hidden sm:flex' size="sm">Get Started</Button>
-                        <Button className='bg-blue-600 text-white hover:bg-blue-700 sm:hidden' size="sm">
-                            <span className="text-xs">Start</span>
-                        </Button>
                     </div>
                 </div>
             </nav>
@@ -159,7 +166,7 @@ export default function Services() {
 
                 {/* Content */}
                 <div className="relative mx-auto max-w-7xl px-4 py-12 sm:py-20 lg:py-24 sm:px-6 lg:px-8">
-                    <div className="text-start ml-32">
+                    <div className="text-start ">
 
                         {/* Title Badge */}
                         <div className="mb-4 sm:mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 sm:px-4 py-1.5 sm:py-2">
@@ -180,21 +187,25 @@ export default function Services() {
 
                         {/* Buttons */}
                         <div className="flex flex-col sm:flex-row flex-wrap justify-start gap-3 sm:gap-20 px-4">
-                            <Button
-                                size="lg"
-                                className="gap-2 bg-white text-blue-600 hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto"
-                            >
-                                <span className="text-sm sm:text-base">Mulai Konsultasi Gratis</span>
-                                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                            </Button>
+                            <Link href="/kontak">
+                                <Button
+                                    size="lg"
+                                    className="gap-2 bg-white text-blue-600 hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto"
+                                >
+                                    <span className="text-sm sm:text-base">Mulai Konsultasi Gratis</span>
+                                    <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                                </Button>
+                            </Link>
 
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="bg-amber-400 text-white hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto"
-                            >
-                                <span className="text-sm sm:text-base">Lihat Portfolio</span>
-                            </Button>
+                            <Link href="/portfolio">
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="bg-amber-400 text-white hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto"
+                                >
+                                    <span className="text-sm sm:text-base">Lihat Portfolio</span>
+                                </Button>
+                            </Link>
                         </div>
 
                         {/* Stats */}
@@ -260,15 +271,17 @@ export default function Services() {
                     </div>
 
                         <div className="mt-8 sm:mt-12 text-center">
-                            <Button size="lg" variant="outline" className="px-9 py-7 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold w-full sm:w-auto">
-                                <a href="">Lihat Semua Layanan</a>
-                            </Button>
+                            <Link href="/layanan">
+                                <Button size="lg" variant="outline" className="px-9 py-7 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold w-full sm:w-auto">
+                                    Lihat Semua Layanan
+                                </Button>
+                            </Link>
                         </div>
                 </div>
             </section>
 
             {/* Portfolio Section - Light Gray Background */}
-            <section id="portfolio" className="bg-gray-50 py-12 sm:py-16 lg:py-20 px-30">
+            <section id="portfolio" className="bg-gray-50 py-12 sm:py-16 lg:py-20 px-10">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-10 sm:mb-12 lg:mb-16 text-center">
                         <div className="mb-3 sm:mb-4 inline-block rounded-full bg-blue-100 px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-semibold text-blue-600">
@@ -334,10 +347,12 @@ export default function Services() {
                     </div>
                     
                     <div className="mt-8 sm:mt-12 text-center">
+                        <Link href="/portfolio">
                             <Button size="lg" variant="outline" className="px-9 py-3 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold w-full sm:w-auto">
-                                <a href="">Lihat Semua Proyek </a>
+                                Lihat Semua Proyek
                                 <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                             </Button>
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -483,9 +498,11 @@ export default function Services() {
                         </div>
                     </div>
                     <div className="mt-8 sm:mt-12 text-center">
+                        <Link href="/kontak">
                             <Button size="lg" variant="outline" className="px-14 py-7 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold w-full sm:w-auto">
-                                <a href="">Hubungi Kami Sekarang </a>
+                                Hubungi Kami Sekarang
                             </Button>
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -519,7 +536,7 @@ export default function Services() {
                                     <CardContent className="p-6 text-center">
                                     
                                         <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
-                                            <img src="asset/Royce.jpg" className="w-full h-full object-cover" />
+                                            <img src="asset/royce.PNG" className="w-full h-full object-cover" />
                                         </div>
                                     
                                         <h3 className="text-xl font-bold text-gray-900">Royce Francis M.M</h3>
@@ -536,11 +553,11 @@ export default function Services() {
                                     
                         {/* Horizontal Line */}
                         <div className="flex justify-center mb-12">
-                            <div className="w-full max-w-4xl h-0.5 bg-blue-300"></div>
+                            <div className="w-full max-w-5xl h-0.5 bg-blue-300"></div>
                         </div>
                                     
                         {/* SECOND LEVEL (4 CARDS) */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mb-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 max-w-6xl mx-auto mb-8">
                                     
                             {/* CTO */}
                             <div className="relative">
@@ -603,7 +620,23 @@ export default function Services() {
                                             <Wrench className="h-9 w-9 text-white" />
                                         </div>
                                     
-                                        <h3 className="text-lg font-bold text-gray-900">Frans</h3>
+                                        <h3 className="text-lg font-bold text-gray-900">Hassan</h3>
+                                        <p className="text-sm font-semibold text-red-600 mb-1">Head of Engineer</p>
+                                        <p className="text-xs text-gray-600">Electronic Engineering</p>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            <div className="relative">
+                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-0.5 bg-blue-300"></div>
+                                    
+                                <Card className="border-2 border-red-500 bg-white shadow-lg hover:shadow-xl transition">
+                                    <CardContent className="p-6 text-center">
+                                        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mx-auto mb-4 shadow">
+                                            <Wrench className="h-9 w-9 text-white" />
+                                        </div>
+                                    
+                                        <h3 className="text-lg font-bold text-gray-900">Hassan</h3>
                                         <p className="text-sm font-semibold text-red-600 mb-1">Head of Engineer</p>
                                         <p className="text-xs text-gray-600">Electronic Engineering</p>
                                     </CardContent>
@@ -650,29 +683,6 @@ export default function Services() {
             </section>
 
 
-            {/* CTA Section - Blue Gradient */}
-            <section id="contact" className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-12 sm:py-16 lg:py-24">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDEzNGg3NnYxNkgzNnpNMiAwaDc2djE2SDJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
-                
-                <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-                    <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-white px-4">
-                        Siap Mengembangkan Bisnis Anda?
-                    </h2>
-                    <p className="mx-auto mb-6 sm:mb-10 max-w-2xl text-base sm:text-lg lg:text-xl text-blue-100 px-4">
-                        Hubungi kami sekarang untuk konsultasi gratis dan dapatkan solusi terbaik untuk kebutuhan IT bisnis Anda
-                    </p>
-                    <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 px-4">
-                        <Button size="lg" className="gap-2 bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold px-6 sm:px-8 w-full sm:w-auto">
-                            <span className="text-sm sm:text-base">Hubungi Kami Sekarang</span>
-                            <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-6 sm:px-8 w-full sm:w-auto">
-                            <span className="text-sm sm:text-base">Chat via WhatsApp</span>
-                        </Button>
-                    </div>
-                </div>
-            </section>
-
             {/* Footer - Dark Background */}
             <footer className="border-t border-gray-200 bg-gray-900 py-8 sm:py-12 text-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -688,10 +698,11 @@ export default function Services() {
                         <div>
                             <h3 className="mb-3 sm:mb-4 text-sm sm:text-base font-semibold">Menu Cepat</h3>
                             <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-400">
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Tentang Kami</a></li>
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Layanan</a></li>
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Tim Kami</a></li>
-                                <li><a href="#" className="hover:text-blue-400 transition-colors">Kontak</a></li>
+                                <li><Link href="/tentang-kami" className="hover:text-blue-400 transition-colors">Tentang Kami</Link></li>
+                                <li><Link href="#portfolio" className="hover:text-blue-400 transition-colors">Portfolio</Link></li>
+                                <li><Link href="#layanan" className="hover:text-blue-400 transition-colors">Layanan</Link></li>
+                                <li><Link href="#tim" className="hover:text-blue-400 transition-colors">Tim Kami</Link></li>
+                                <li><Link href="/kontak" className="hover:text-blue-400 transition-colors">Kontak</Link></li>
                             </ul>
                         </div>
                         <div>

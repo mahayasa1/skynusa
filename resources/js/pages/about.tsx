@@ -2,7 +2,7 @@ import { Head } from '@inertiajs/react';
 import PublicLayout from '@/layouts/public-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Award, Users, TrendingUp, Shield, CheckCircle } from 'lucide-react';
+import { Award, Users, TrendingUp, Shield, CheckCircle, CircleDivide, CircleIcon, UserCog, Briefcase, Heart, Badge, Eye, Target } from 'lucide-react';
 
 export default function About() {
     return (
@@ -13,15 +13,15 @@ export default function About() {
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">
                 <div className="absolute inset-0 bg-[url('/asset/bg-main.png')] bg-cover bg-center opacity-20"></div>
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="text-center">
-                        <div className="mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2">
-                            <span className="text-xl font-extrabold text-white">TENTANG KAMI</span>
-                        </div>
-                        <h1 className="mb-6 text-4xl lg:text-5xl font-bold text-white">
-                            Mitra Terpercaya untuk Solusi Teknis Anda
+                    <div className="text-start mx-14">
+                        <h1 className="mb-6 mt-6 text-4xl lg:text-5xl font-bold text-white">
+                            Tentang Skynusa Tech
                         </h1>
-                        <p className="mx-auto max-w-3xl text-lg text-blue-100 mb-8">
-                            Dengan pengalaman lebih dari 10 tahun, kami telah membantu ratusan klien dalam memenuhi kebutuhan instalasi, maintenance, IT support, dan web development
+                        <p className=" max-w-3xl text-lg text-blue-100 mb-8">
+                            Kami adalah tim teknisi profesional dan berpengalaman yang berdedikasi memberikan solusi instalasi, maintenance, IT support, dan web development terbaik.
+                        </p>
+                        <p className=" max-w-3xl text-lg text-blue-100 mb-8">
+                            Sejak 2015, kami telah melayani berbagai klien mulai dari rumah tinggal, perkantoran, hingga industri manufaktur dengan hasil yang memuaskan.
                         </p>
                     </div>
                 </div>
@@ -37,7 +37,7 @@ export default function About() {
                             </h2>
                             <div className="space-y-4 text-gray-600">
                                 <p>
-                                    SKYNUSA TECH adalah perusahaan penyedia layanan teknis profesional yang berdiri sejak 2014. Kami fokus memberikan solusi terbaik dalam bidang instalasi elektronik, perawatan AC, maintenance perangkat, dukungan IT, dan pengembangan website.
+                                    SKYNUSA TECH adalah perusahaan penyedia layanan teknis profesional yang berdiri sejak 2025. Kami fokus memberikan solusi terbaik dalam bidang instalasi elektronik, perawatan AC, maintenance perangkat, dukungan IT, dan pengembangan website.
                                 </p>
                                 <p>
                                     Tim kami terdiri dari teknisi bersertifikat dan engineer berpengalaman yang berkomitmen memberikan layanan berkualitas tinggi dengan standar industri terbaik.
@@ -49,7 +49,7 @@ export default function About() {
                         </div>
                         <div className="relative">
                             <img 
-                                src="/asset/cctv.jpeg" 
+                                src="/asset/about.jpeg" 
                                 alt="Team Working" 
                                 className="rounded-2xl shadow-2xl"
                             />
@@ -62,38 +62,41 @@ export default function About() {
             <section className="bg-gray-50 py-16 lg:py-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                        <span className="inline-block mb-4 rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-600">
                             Nilai-Nilai Kami
+                        </span>
+                        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                            Prinsip yang kami Junjung
                         </h2>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            Prinsip yang menjadi fondasi dalam setiap pekerjaan kami
+                            Nilai-nilai fundamental yang menjadi fondasi dalam setiap pekerjaan yang kami lakukan.
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {[
                             {
+                                icon: Target,
+                                title: 'Profesionalisme',
+                                description: 'Kami berkomitmen memberikan layanan profesional dengan standar kualitas tertinggi.'
+                            },
+                            {
+                                icon: Heart,
+                                title: 'Dedikasi',
+                                description: 'Tim kami berdedikasi penuh untuk memastikan kepuasan dan keberhasilan setiap proyek.'
+                            },
+                            {
                                 icon: Award,
-                                title: 'Profesionalitas',
-                                description: 'Mengikuti standar industri dan prosedur keamanan terbaik'
-                            },
-                            {
-                                icon: Users,
                                 title: 'Integritas',
-                                description: 'Jujur dan transparan dalam setiap layanan yang kami berikan'
+                                description: 'Kami menjunjung tinggi kejujuran dan transparansi dalam setiap hubungan dengan klien.'
                             },
                             {
-                                icon: TrendingUp,
+                                icon: Eye,
                                 title: 'Inovasi',
-                                description: 'Terus berinovasi mengikuti perkembangan teknologi terkini'
-                            },
-                            {
-                                icon: Shield,
-                                title: 'Keandalan',
-                                description: 'Memberikan solusi yang dapat diandalkan dan tahan lama'
+                                description: 'Kami selalu mengikuti perkembangan teknologi dan metode terbaru di industri.'
                             }
                         ].map((value, index) => (
-                            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                            <Card key={index} className="text-center hover:shadow-lg transition-shadow bg-white">
                                 <CardContent className="pt-8 pb-6">
                                     <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600 mb-4">
                                         <value.icon className="h-8 w-8" />
@@ -141,53 +144,37 @@ export default function About() {
             </section>
 
             {/* Why Choose Us */}
-            <section className="bg-gray-50 py-16 lg:py-20">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                            Mengapa Memilih Kami?
-                        </h2>
+            <section className="bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 py-16 lg:py-20">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+            {/* Misi Kami Card */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+                <div className="flex items-center gap-3 mb-10">
+                    <div className="bg-white/20 rounded-full p-2">
+                        <Target className="h-6 w-6 text-white" />
                     </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {[
-                            'Tim teknisi bersertifikat dan berpengalaman',
-                            'Garansi resmi untuk setiap pekerjaan',
-                            'Respon cepat untuk layanan darurat',
-                            'Harga kompetitif dan transparan',
-                            'Peralatan modern dan berkualitas',
-                            'Layanan after-sales yang responsif',
-                            'Track record terbukti dengan klien satisfied',
-                            'Mengikuti standar keamanan dan kualitas'
-                        ].map((item, index) => (
-                            <div key={index} className="flex items-start gap-3">
-                                <CheckCircle className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
-                                <span className="text-gray-700">{item}</span>
-                            </div>
-                        ))}
-                    </div>
+                    <h3 className="text-4xl font-bold text-white">MISI KAMI</h3>
                 </div>
-            </section>
+                <p className="text-white/90 leading-relaxed">
+                    Memberikan solusi teknis berkualitas tinggi dengan harga kompetitif, didukung oleh teknis profesional dan pelayanan customer service yang responsif untuk menaikkan kepuasan setiap klien.
+                </p>
+            </div>
 
-            {/* CTA Section */}
-            <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-16">
-                <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-                    <h2 className="mb-6 text-3xl lg:text-4xl font-bold text-white">
-                        Mari Bekerja Sama dengan Kami
-                    </h2>
-                    <p className="mx-auto mb-8 max-w-2xl text-lg text-blue-100">
-                        Konsultasikan kebutuhan teknis Anda dengan tim ahli kami. Kami siap memberikan solusi terbaik untuk bisnis Anda.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold">
-                            Hubungi Kami Sekarang
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold">
-                            Lihat Portfolio
-                        </Button>
+            {/* Visi Kami Card */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+                <div className="flex items-center gap-3 mb-10">
+                    <div className="bg-white/20 rounded-full p-2">
+                        <Eye className="h-6 w-6 text-white" />
                     </div>
+                    <h3 className="text-4xl font-bold text-white">VISI KAMI</h3>
                 </div>
-            </section>
+                <p className="text-white/90 leading-relaxed">
+                    Menjadi penyedia layanan instalasi, maintenance, IT support, dan web development terdepan dan terpercaya di Indonesia, dikenal karena kualitas kerja dan kepuasan pelanggan yang konsisten.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
         </PublicLayout>
     );
 }
