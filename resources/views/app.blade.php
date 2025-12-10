@@ -30,7 +30,8 @@
             }
         </style>
 
-        <title inertia>{{ config('name') }}</title>
+        {{-- REMOVED: <title inertia>{{ config('name') }}</title> --}}
+        {{-- Title will be set by SEOHead component --}}
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">

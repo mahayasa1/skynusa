@@ -26,18 +26,58 @@ export default function SEOHead({
     publishedTime,
     modifiedTime,
 }: SEOHeadProps) {
-    const baseUrl = 'https://skynusa.com';
+    // Use environment variable or detect from window
+    const baseUrl = typeof window !== 'undefined' 
+        ? window.location.origin 
+        : 'https://skynusa-tech.com';
+    
     const fullTitle = title.includes('SKYNUSA TECH') ? title : `${title} | SKYNUSA TECH`;
     const fullCanonical = canonical || (typeof window !== 'undefined' ? window.location.href : baseUrl);
     const fullOgImage = ogImage.startsWith('http') ? ogImage : `${baseUrl}${ogImage}`;
 
+    // Structured Data for Organization
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "SKYNUSA TECH",
+        "url": baseUrl,
+        "logo": `${baseUrl}/asset/logo.png`,
+        "description": "Solusi profesional untuk instalasi listrik, service AC, IT support, dan web development di Bali",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Denpasar",
+            "addressRegion": "Bali",
+            "addressCountry": "ID"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "-8.670458",
+            "longitude": "115.212876"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+62-812-3456-7890",
+            "contactType": "customer service",
+            "email": "info@skynusa.com",
+            "availableLanguage": ["Indonesian", "English"]
+        },
+        "sameAs": [
+            "https://www.facebook.com/skynusatech",
+            "https://www.instagram.com/skynusatech",
+            "https://twitter.com/skynusatech"
+        ]
+    };
+
     return (
-        <Head title={fullTitle}>
+        <Head>
+            {/* Title Tag */}
+            <title>{fullTitle}</title>
+
             {/* Basic Meta Tags */}
             <meta name="description" content={description} />
             {keywords && <meta name="keywords" content={keywords} />}
             <meta name="author" content={author} />
-            <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+            <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="language" content="Indonesian" />
@@ -83,6 +123,11 @@ export default function SEOHead({
             <meta name="geo.placename" content="Denpasar, Bali" />
             <meta name="geo.position" content="-8.670458;115.212876" />
             <meta name="ICBM" content="-8.670458, 115.212876" />
+
+            {/* Structured Data */}
+            <script type="application/ld+json">
+                {JSON.stringify(organizationSchema)}
+            </script>
         </Head>
     );
 }

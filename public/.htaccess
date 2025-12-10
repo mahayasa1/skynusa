@@ -1,4 +1,3 @@
-
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
@@ -10,16 +9,9 @@
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Force WWW atau Non-WWW (pilih salah satu)
-    # Uncomment yang sesuai:
-    
-    # Force Non-WWW (Recommended)
+    # Force Non-WWW
     RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
     RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
-    
-    # Atau Force WWW
-    # RewriteCond %{HTTP_HOST} !^www\. [NC]
-    # RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
 
     # Remove trailing slash
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -30,37 +22,20 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Redirect Requests To Public/index.php
+    # Redirect Requests To index.php
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# Compression for better loading speed
+# GZIP Compression
 <IfModule mod_deflate.c>
-    # Compress HTML, CSS, JavaScript, Text, XML and fonts
-    AddOutputFilterByType DEFLATE application/javascript
-    AddOutputFilterByType DEFLATE application/rss+xml
-    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
-    AddOutputFilterByType DEFLATE application/x-font
-    AddOutputFilterByType DEFLATE application/x-font-opentype
-    AddOutputFilterByType DEFLATE application/x-font-otf
-    AddOutputFilterByType DEFLATE application/x-font-truetype
-    AddOutputFilterByType DEFLATE application/x-font-ttf
-    AddOutputFilterByType DEFLATE application/x-javascript
-    AddOutputFilterByType DEFLATE application/xhtml+xml
-    AddOutputFilterByType DEFLATE application/xml
-    AddOutputFilterByType DEFLATE font/opentype
-    AddOutputFilterByType DEFLATE font/otf
-    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+    AddOutputFilterByType DEFLATE application/xml application/xhtml+xml application/rss+xml
+    AddOutputFilterByType DEFLATE application/json application/ld+json
     AddOutputFilterByType DEFLATE image/svg+xml
-    AddOutputFilterByType DEFLATE image/x-icon
-    AddOutputFilterByType DEFLATE text/css
-    AddOutputFilterByType DEFLATE text/html
-    AddOutputFilterByType DEFLATE text/javascript
-    AddOutputFilterByType DEFLATE text/plain
-    AddOutputFilterByType DEFLATE text/xml
-    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE font/ttf font/otf font/woff font/woff2
 </IfModule>
 
 # Browser Caching
@@ -80,39 +55,34 @@
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType text/javascript "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType application/x-javascript "access plus 1 month"
     
     # Fonts
     ExpiresByType font/ttf "access plus 1 year"
     ExpiresByType font/otf "access plus 1 year"
     ExpiresByType font/woff "access plus 1 year"
     ExpiresByType font/woff2 "access plus 1 year"
-    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # JSON and XML
+    ExpiresByType application/json "access plus 0 seconds"
+    ExpiresByType application/ld+json "access plus 0 seconds"
+    ExpiresByType text/xml "access plus 0 seconds"
     
     # HTML
     ExpiresByType text/html "access plus 0 seconds"
-    
-    # Others
-    ExpiresByType application/pdf "access plus 1 month"
-    ExpiresByType application/json "access plus 0 seconds"
 </IfModule>
 
 # Security Headers
 <IfModule mod_headers.c>
-    # X-Content-Type-Options
     Header set X-Content-Type-Options "nosniff"
-    
-    # X-Frame-Options
     Header set X-Frame-Options "SAMEORIGIN"
-    
-    # X-XSS-Protection
     Header set X-XSS-Protection "1; mode=block"
-    
-    # Referrer-Policy
     Header set Referrer-Policy "strict-origin-when-cross-origin"
-    
-    # Remove X-Powered-By
     Header unset X-Powered-By
+    
+    # Add cache control for static assets
+    <FilesMatch "\.(ico|jpg|jpeg|png|gif|svg|webp|css|js|woff|woff2|ttf|otf)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
 </IfModule>
 
 # Disable Directory Browsing
@@ -124,7 +94,6 @@ Options -Indexes
     Deny from all
 </FilesMatch>
 
-# Protect .env file
 <Files .env>
     Order allow,deny
     Deny from all
@@ -132,4 +101,3 @@ Options -Indexes
 
 # UTF-8 encoding
 AddDefaultCharset UTF-8
-AddCharset UTF-8 .html .css .js .xml .json .rss .atom
