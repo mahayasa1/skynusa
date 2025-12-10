@@ -123,7 +123,7 @@ const features = [
 export default function Services() {
     return (
         <>
-            <Head title="Solusi IT Terpercaya" />
+            <Head title="SKYNUSA TECH" />
             
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white backdrop-blur-md">
