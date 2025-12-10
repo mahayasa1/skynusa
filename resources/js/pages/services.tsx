@@ -70,7 +70,7 @@ export default function Services() {
                 title="Layanan Kami - Instalasi, Maintenance, IT & Web Development"
                 description="Layanan lengkap: Instalasi & Maintenance Listrik, Service AC Split & Central, IT Support Profesional, dan Web Development. Teknisi bersertifikat, garansi resmi, harga kompetitif."
                 keywords="instalasi listrik, maintenance listrik, service ac, instalasi ac central, it support, troubleshooting komputer, web development, website company profile, e-commerce"
-                canonical="https://skynusa.com/layanan"
+                canonical="https://skynusa-tech.com/layanan"
                 ogImage="/asset/logo.png"
             />
 

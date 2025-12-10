@@ -37,7 +37,7 @@ export default function Contact() {
                 title="Kontak Kami - Hubungi SKYNUSA TECH untuk Konsultasi Gratis"
                 description="Hubungi SKYNUSA TECH untuk konsultasi gratis layanan instalasi, maintenance, IT support. Respon cepat 24/7 untuk emergency. Lokasi: Bali, Indonesia. Tel: +62 812-3456-7890"
                 keywords="kontak skynusa tech, hubungi teknisi bali, konsultasi instalasi, emergency service 24/7, alamat skynusa tech bali"
-                canonical="https://skynusa.com/kontak"
+                canonical="https://skynusa-tech.com/kontak"
                 ogImage="/asset/logo.png"
             />
 

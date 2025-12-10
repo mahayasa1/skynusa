@@ -128,7 +128,7 @@ export default function Services() {
                 title="SKYNUSA TECH - Solusi Instalasi Listrik, AC, IT Support & Web Development Profesional"
                 description="SKYNUSA TECH menyediakan layanan instalasi listrik, service AC, IT support, dan web development profesional di Bali. Teknisi bersertifikat dengan pengalaman 10+ tahun. Hubungi kami untuk konsultasi gratis!"
                 keywords="instalasi listrik bali, service ac bali, it support bali, web development bali, maintenance elektronik, jasa teknisi profesional, instalasi cctv, panel listrik, ac central"
-                canonical="https://skynusa.com"
+                canonical="https://skynusa-tech.com"
                 ogImage="/asset/logo.png"
             />
             

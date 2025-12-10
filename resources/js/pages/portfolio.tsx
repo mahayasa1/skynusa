@@ -105,7 +105,7 @@ export default function Portfolio() {
                 title="Portfolio Project - Instalasi CCTV, AC, IT & Website"
                 description="Lihat portfolio 188+ project berhasil kami: instalasi CCTV & sistem keamanan, instalasi AC central, setup infrastruktur IT, dan web development untuk berbagai klien di Bali."
                 keywords="portfolio instalasi, project cctv, instalasi ac hotel, web development portfolio, it infrastructure, instalasi panel listrik"
-                canonical="https://skynusa.com/portfolio"
+                canonical="https://skynusa-tech.com/portfolio"
                 ogImage="/asset/logo.png"
             />
             
