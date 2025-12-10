@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/layouts/public-layout';
+import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
 import { Zap, AirVent, Monitor, Code, CheckCircle, ArrowRight } from 'lucide-react';
 
@@ -65,7 +66,13 @@ const services = [
 export default function Services() {
     return (
         <PublicLayout>
-            <Head title="Layanan Kami" />
+            <SEOHead
+                title="Layanan Kami - Instalasi, Maintenance, IT & Web Development"
+                description="Layanan lengkap: Instalasi & Maintenance Listrik, Service AC Split & Central, IT Support Profesional, dan Web Development. Teknisi bersertifikat, garansi resmi, harga kompetitif."
+                keywords="instalasi listrik, maintenance listrik, service ac, instalasi ac central, it support, troubleshooting komputer, web development, website company profile, e-commerce"
+                canonical="https://skynusa.com/layanan"
+                ogImage="/asset/logo.png"
+            />
 
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">

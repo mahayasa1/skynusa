@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/layouts/public-layout';
+import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Award, Users, TrendingUp, Shield, CheckCircle, CircleDivide, CircleIcon, UserCog, Briefcase, Heart, Badge, Eye, Target } from 'lucide-react';
@@ -7,7 +8,13 @@ import { Award, Users, TrendingUp, Shield, CheckCircle, CircleDivide, CircleIcon
 export default function About() {
     return (
         <PublicLayout>
-            <Head title="Tentang Kami" />
+             <SEOHead
+                title="Tentang Kami - SKYNUSA TECH | Perusahaan Teknisi Profesional Bali"
+                description="SKYNUSA TECH adalah perusahaan penyedia layanan teknis profesional sejak 2015. Tim teknisi bersertifikat dengan 188+ proyek berhasil dan tingkat kepuasan klien 95%."
+                keywords="tentang skynusa tech, perusahaan teknisi bali, jasa instalasi profesional, teknisi bersertifikat, layanan teknis bali"
+                canonical="https://skynusa.com/tentang-kami"
+                ogImage="/asset/logo.png"
+            />
 
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">

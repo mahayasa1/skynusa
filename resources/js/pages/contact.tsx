@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/layouts/public-layout';
+import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -32,7 +33,14 @@ export default function Contact() {
 
     return (
         <PublicLayout>
-            <Head title="Kontak Kami" />
+            <SEOHead
+                title="Kontak Kami - Hubungi SKYNUSA TECH untuk Konsultasi Gratis"
+                description="Hubungi SKYNUSA TECH untuk konsultasi gratis layanan instalasi, maintenance, IT support. Respon cepat 24/7 untuk emergency. Lokasi: Bali, Indonesia. Tel: +62 812-3456-7890"
+                keywords="kontak skynusa tech, hubungi teknisi bali, konsultasi instalasi, emergency service 24/7, alamat skynusa tech bali"
+                canonical="https://skynusa.com/kontak"
+                ogImage="/asset/logo.png"
+            />
+
 
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">

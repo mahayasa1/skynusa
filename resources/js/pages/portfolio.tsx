@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/layouts/public-layout';
+import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
@@ -100,7 +101,13 @@ const portfolios = [
 export default function Portfolio() {
     return (
         <PublicLayout>
-            <Head title="Portfolio" />
+            <SEOHead
+                title="Portfolio Project - Instalasi CCTV, AC, IT & Website"
+                description="Lihat portfolio 188+ project berhasil kami: instalasi CCTV & sistem keamanan, instalasi AC central, setup infrastruktur IT, dan web development untuk berbagai klien di Bali."
+                keywords="portfolio instalasi, project cctv, instalasi ac hotel, web development portfolio, it infrastructure, instalasi panel listrik"
+                canonical="https://skynusa.com/portfolio"
+                ogImage="/asset/logo.png"
+            />
             
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">

@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import SEOHead from '@/components/seo-head';
 import PublicLayout from '@/layouts/public-layout';
 import { Button } from '@/components/ui/button';
 import { Code, TrendingUp, Laptop, Wrench, Monitor, Lightbulb, Brush, Book } from 'lucide-react';
@@ -6,7 +7,13 @@ import { Code, TrendingUp, Laptop, Wrench, Monitor, Lightbulb, Brush, Book } fro
 export default function Team() {
     return (
         <PublicLayout>
-            <Head title="Tim Kami" />
+             <SEOHead
+                title="Tim Kami - Teknisi & Engineer Profesional Bersertifikat"
+                description="Kenali tim profesional SKYNUSA TECH: teknisi bersertifikat, engineer berpengalaman 10+ tahun. Dipimpin CEO Royce Francis M.M dengan tim solid untuk kesuksesan project Anda."
+                keywords="tim skynusa tech, teknisi profesional, engineer bersertifikat, cto mahayasa wibawa, team management, teknisi bali"
+                canonical="https://skynusa.com/tim"
+                ogImage="/asset/logo.png"
+            />
 
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">

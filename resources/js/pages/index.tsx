@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import SEOHead from '@/components/seo-head';
 import { 
     Code, 
     Database, 
@@ -123,7 +124,13 @@ const features = [
 export default function Services() {
     return (
         <>
-            <Head title="SKYNUSA TECH" />
+            <SEOHead
+                title="SKYNUSA TECH - Solusi Instalasi Listrik, AC, IT Support & Web Development Profesional"
+                description="SKYNUSA TECH menyediakan layanan instalasi listrik, service AC, IT support, dan web development profesional di Bali. Teknisi bersertifikat dengan pengalaman 10+ tahun. Hubungi kami untuk konsultasi gratis!"
+                keywords="instalasi listrik bali, service ac bali, it support bali, web development bali, maintenance elektronik, jasa teknisi profesional, instalasi cctv, panel listrik, ac central"
+                canonical="https://skynusa.com"
+                ogImage="/asset/logo.png"
+            />
             
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white backdrop-blur-md">
