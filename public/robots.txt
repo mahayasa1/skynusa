@@ -1,9 +1,27 @@
-User-agent: *
-Disallow:
+# Crawl Instructions
 User-agent: *
 Allow: /
 Disallow: /dashboard
 Disallow: /settings
 Disallow: /admin
+Disallow: /api/
+Disallow: /*.json$
 
+# Google Specific
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /asset/
+Allow: /images/
+
+# Bing Specific
+User-agent: Bingbot
+Allow: /
+
+# Sitemap Location
 Sitemap: https://skynusa-tech.com/sitemap.xml
+Sitemap: https://skynusa-tech.com/sitemap-images.xml
+
+# Crawl Delay
+Crawl-delay: 1
