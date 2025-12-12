@@ -1,6 +1,6 @@
 // resources/js/components/seo-head.tsx
 import { Head } from '@inertiajs/react';
-import { seoConfig, googleVerification, bingVerification } from '@/config/seo';
+import { seoConfig, googleVerification } from '@/config/seo';
 
 interface SEOHeadProps {
     title: string;
@@ -198,7 +198,6 @@ export default function SEOHead({
             
             {/* Verification Tags */}
             <meta name="google-site-verification" content={googleVerification} />
-            <meta name="msvalidate.01" content={bingVerification} />
             
             {/* Canonical URL */}
             <link rel="canonical" href={fullCanonical} />
