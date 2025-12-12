@@ -35,3 +35,5 @@ Route::get('/tim', function () {
 
 // Settings routes (sudah ada)
 require __DIR__.'/settings.php';
+
+require __DIR__.'/sitemap.php';

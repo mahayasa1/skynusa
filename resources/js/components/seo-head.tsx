@@ -12,6 +12,7 @@ interface SEOHeadProps {
     author?: string;
     publishedTime?: string;
     modifiedTime?: string;
+    locale?: string;
 }
 
 export default function SEOHead({
@@ -25,11 +26,12 @@ export default function SEOHead({
     author = 'SKYNUSA TECH',
     publishedTime,
     modifiedTime,
+    locale = 'id_ID',
 }: SEOHeadProps) {
-    // Use environment variable or detect from window
+    // Get base URL from environment or window
     const baseUrl = typeof window !== 'undefined' 
         ? window.location.origin 
-        : 'https://skynusa-tech.com';
+        : import.meta.env.VITE_APP_URL || 'https://skynusa-tech.com';
     
     const fullTitle = title.includes('SKYNUSA TECH') ? title : `${title} | SKYNUSA TECH`;
     const fullCanonical = canonical || (typeof window !== 'undefined' ? window.location.href : baseUrl);
@@ -68,6 +70,18 @@ export default function SEOHead({
         ]
     };
 
+    // Breadcrumb Schema (for pages with hierarchy)
+    const breadcrumbSchema = typeof window !== 'undefined' ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": window.location.pathname.split('/').filter(Boolean).map((segment, index, arr) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": segment.charAt(0).toUpperCase() + segment.slice(1),
+            "item": `${baseUrl}/${arr.slice(0, index + 1).join('/')}`
+        }))
+    } : null;
+
     return (
         <Head>
             {/* Title Tag */}
@@ -95,7 +109,7 @@ export default function SEOHead({
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
             <meta property="og:site_name" content="SKYNUSA TECH" />
-            <meta property="og:locale" content="id_ID" />
+            <meta property="og:locale" content={locale} />
             
             {/* Article specific */}
             {publishedTime && <meta property="article:published_time" content={publishedTime} />}
@@ -124,10 +138,17 @@ export default function SEOHead({
             <meta name="geo.position" content="-8.670458;115.212876" />
             <meta name="ICBM" content="-8.670458, 115.212876" />
 
-            {/* Structured Data */}
+            {/* Structured Data - Organization */}
             <script type="application/ld+json">
                 {JSON.stringify(organizationSchema)}
             </script>
+
+            {/* Structured Data - Breadcrumb */}
+            {breadcrumbSchema && breadcrumbSchema.itemListElement.length > 0 && (
+                <script type="application/ld+json">
+                    {JSON.stringify(breadcrumbSchema)}
+                </script>
+            )}
         </Head>
     );
 }
