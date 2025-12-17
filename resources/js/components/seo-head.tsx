@@ -9,7 +9,6 @@ interface SEOHeadProps {
     ogImage?: string;
     ogType?: 'website' | 'article' | 'profile' | 'product' | 'service';
     canonical?: string;
-    noindex?: boolean;
     author?: string;
     publishedTime?: string;
     modifiedTime?: string;
@@ -27,7 +26,6 @@ export default function SEOHead({
     ogImage = seoConfig.defaultImage,
     ogType = 'website',
     canonical,
-    noindex = false,
     author = seoConfig.company.name,
     publishedTime,
     modifiedTime,
@@ -188,7 +186,6 @@ export default function SEOHead({
             <meta name="description" content={description} />
             {keywords && <meta name="keywords" content={keywords} />}
             <meta name="author" content={author} />
-            {/* <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} /> */}
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
             <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="language" content="Indonesian" />
