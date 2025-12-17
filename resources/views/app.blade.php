@@ -6,7 +6,7 @@
         
         {{-- Title will be set by SEOHead component via Inertia --}}
         
-        <link rel="icon" href="/favicon.ico" sizes="any">
+        <link rel="icon" href="/favicon.ico " sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         
         @viteReactRefresh
