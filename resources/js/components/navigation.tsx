@@ -35,7 +35,7 @@ export default function Navigation() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden items-center gap-4 lg:gap-8 md:flex">
+                    <div className="absolute left-1/2 hidden -translate-x-1/2 gap-4 lg:gap-8 md:flex">
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}
@@ -49,16 +49,6 @@ export default function Navigation() {
                                 {item.label}
                             </Link>
                         ))}
-                    </div>
-
-                    {/* CTA Button */}
-                    <div className="hidden md:flex">
-                        <Button 
-                            className="bg-blue-600 text-white hover:bg-blue-700" 
-                            size="sm"
-                        >
-                            Get Started
-                        </Button>
                     </div>
 
                     {/* Mobile Menu Button */}

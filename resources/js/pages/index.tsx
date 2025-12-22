@@ -1,3 +1,4 @@
+
 import { Head, Link } from '@inertiajs/react';
 import SEOHead from '@/components/seo-head';
 import { 
@@ -29,34 +30,40 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import * as LucideIcons from 'lucide-react';
 
-const services = [
-    {
-        icon: Zap,
-        title: 'Instalasi dan Maintenance Listrik',
-        description: 'Instalasi sistem kelistrikan yang aman dan sesuai standar untuk rumah, kantor, dan industri',
-        features: ['Panel Listrik', 'Grounding', 'Instalasi']
-    },
-    {
-        icon: AirVent,
-        title: 'Instalasi dan Service AC',
-        description: 'Pmeasangan dan perawatan AC untuk kenyamanan optimal dengan efisiensi energi terbaik',
-        features: ['AC Split', 'AC Central', 'Maintenance' ]
-    },
-    {
-        icon: Monitor,
-        title: 'IT Support',
-        description: 'Dukugann teknis IT profesional untuk komputer, jaringan, dan sistem teknologi informasi',
-        features: ['Troubleshooting', 'Network', 'Support']
-    },
-    {
-        icon: Code,
-        title: 'Web Development',
-        description: 'Pembuatan dan pemeliharaan website profesional untuk meningkatkan kehadiran online bisnis',
-        features: ['Website', 'E-Commerce', 'SEO']
-    }
-];
 
+// =====================
+// Type Definitions
+// =====================
+interface Service {
+    id: number;
+    title: string;
+    slug: string;
+    description: string;
+    icon: string;
+    features: string[];
+    image: string;
+    order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+interface IndexPageProps {
+    services: Service[];
+}
+
+// =====================
+// Helper Icon
+// =====================
+const getIconComponent = (iconName: string) => {
+    const Icons = LucideIcons as any;
+    return Icons[iconName] || LucideIcons.Code;
+};
+
+
+// Hardcoded data untuk Portfolio & Features (tidak berubah)
 const portfolios = [
     {
         title: 'Instalasi CCTV & Sistem Keamanan',
@@ -121,7 +128,8 @@ const features = [
     }
 ];
 
-export default function Services() {
+// Props diterima langsung dari controller
+export default function IndexPage({ services }: IndexPageProps) {
     return (
         <>
             <SEOHead
@@ -131,97 +139,66 @@ export default function Services() {
                 canonical="https://skynusa-tech.com"
                 ogImage="/asset/logo.png"
             />
+            <script src="http://localhost:8097"></script>
             
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white backdrop-blur-md">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 items-center justify-between">
+                    <div className="relative flex h-16 items-center">
                         <div className="flex items-center gap-2">
                             <Link href="/" className="flex items-center gap-2">
-                            <img 
-                                src="/asset/logo.png" 
-                                alt="SKYNUSA TECH Logo" 
-                                className="h-8 w-auto sm:h-10 max-w-[180px] sm:max-w-[220px]" 
-                            />
-                        </Link>
+                                <img
+                                    src="/asset/logo.png"
+                                    alt="SKYNUSA TECH Logo"
+                                    className="h-8 w-auto sm:h-10 max-w-[180px] sm:max-w-[220px]"
+                                />
+                            </Link>
                         </div>
-                        <div className="hidden items-center gap-4 lg:gap-8 md:flex">
+                        <div className="absolute left-1/2 hidden -translate-x-1/2 gap-4 lg:gap-8 md:flex">
                             <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Home</a>
                             <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Layanan</a>
-                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">portfolio</a>
+                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Portfolio</a>
                             <a href="#tim" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Tim Kami</a>
-                            <Link href="/kontak" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
-                                Kontak
-                            </Link>
-                            <Link href="/tentang-kami" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
-                                Tentang Kami
-                            </Link>
+                            <Link href="/kontak" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Kontak</Link>
+                            <Link href="/tentang-kami" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Tentang Kami</Link>
                         </div>
                     </div>
                 </div>
             </nav>
 
-            {/* Hero Section - Blue Gradient Background */}
+            {/* Hero Section */}
             <section id="home" className="relative overflow-hidden bg-gradient-to-br from-blue-600/50 via-blue-700/50 to-indigo-800/50 pt-18">
-                {/* Background Image */}
-                <div
-                    className="absolute inset-0 bg-[url('asset/bg-main.png')] bg-cover bg-center opacity-20"
-                ></div>
-
-                {/* Blue Overlay (Opacity 50) */}
+                <div className="absolute inset-0 bg-[url('asset/bg-main.png')] bg-cover bg-center opacity-20"></div>
                 <div className="absolute inset-0"></div>
-
-                {/* Content */}
                 <div className="relative mx-auto max-w-7xl px-4 py-12 sm:py-20 lg:py-24 sm:px-6 lg:px-8">
-                    <div className="text-start ">
-
-                        {/* Title Badge */}
+                    <div className="text-start">
                         <div className="mb-4 sm:mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 sm:px-4 py-1.5 sm:py-2">
-                            <span className="text-xs sm:text-2xl font-extrabold text-white">
-                                SOLUSI TEKNIS TERPERCAYA
-                            </span>
+                            <span className="text-xs sm:text-2xl font-extrabold text-white">SOLUSI TEKNIS TERPERCAYA</span>
                         </div>
-
-                        {/* Description 1 */}
                         <p className="mb-6 sm:mb-6 max-w-3xl text-base sm:text-lg lg:text-xl text-blue-100 px-4 py-2">
                             Layanan Instalasi, Maintenance & IT Support Profesional
                         </p>
-
-                        {/* Description 2 */}
                         <p className="mb-6 sm:mb-12 max-w-4xl text-base sm:text-lg lg:text-xl text-blue-100 px-4 py-2">
                             Kami adalah tim teknisi berpengalaman yang siap membantu kebutuhan instalasi elektronik, perawatan AC, maintenance perangkat, dukungan IT, dan pembuatan website untuk rumah, kantor, dan industri Anda.
                         </p>
-
-                        {/* Buttons */}
                         <div className="flex flex-col sm:flex-row flex-wrap justify-start gap-3 sm:gap-20 px-4">
                             <Link href="/kontak">
-                                <Button
-                                    size="lg"
-                                    className="gap-2 bg-white text-blue-600 hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto"
-                                >
+                                <Button size="lg" className="gap-2 bg-white text-blue-600 hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto">
                                     <span className="text-sm sm:text-base">Mulai Konsultasi Gratis</span>
                                     <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </Button>
                             </Link>
-
                             <Link href="/portfolio">
-                                <Button
-                                    size="lg"
-                                    variant="outline"
-                                    className="bg-amber-400 text-white hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto"
-                                >
+                                <Button size="lg" variant="outline" className="bg-amber-400 text-white hover:bg-blue-800 hover:text-white font-semibold px-6 sm:px-8 w-full sm:w-auto">
                                     <span className="text-sm sm:text-base">Lihat Portfolio</span>
                                 </Button>
                             </Link>
                         </div>
-
-                        {/* Stats */}
                         <div className="mt-12 sm:mt-16 lg:mt-20 grid grid-cols-2 sm:gap-20 border-t border-white/20 pt-8 sm:pt-12 px-4">
                             <div>
                                 <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">150+</div>
                                 <div className="mt-1 sm:mt-2 text-xs sm:text-3xl text-blue-200">Projects Completed</div>
                             </div>
-
                             <div>
                                 <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">98%</div>
                                 <div className="mt-1 sm:mt-2 text-xs sm:text-3xl text-blue-200">Client Satisfaction</div>
@@ -229,13 +206,10 @@ export default function Services() {
                         </div>
                     </div>
                 </div>
-
-                {/* Bottom Fade */}
                 <div className="h-8 sm:h-12 bg-gradient-to-b from-transparent to-white"></div>
             </section>
 
-
-            {/* Services Section - White Background with Cards */}
+            {/* SERVICES SECTION - DYNAMIC FROM DATABASE */}
             <section id="services" className="bg-white py-12 sm:py-16 lg:py-20 px-16">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-10 sm:mb-12 lg:mb-16 text-center">
@@ -251,43 +225,71 @@ export default function Services() {
                     </div>
                     
                     <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
-                        {services.map((service, index) => (
-                            <Card key={index} className="group relative overflow-hidden border-gray-200 bg-white transition-all hover:shadow-xl hover:-translate-y-1">
-                                <div className="absolute top-0 right-0 h-24 w-24 sm:h-32 sm:w-32 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full opacity-50"></div>
-                                <CardHeader className="p-4 sm:p-6">
-                                    <div className="mb-3 sm:mb-4 inline-flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
-                                        <service.icon className="h-6 w-6 sm:h-7 sm:w-7" />
+                        {services && services.length > 0 ? (
+                            services.map((service) => {
+                                const IconComponent = getIconComponent(service.icon);
+                                return(
+                                
+                                <Card 
+                                    key={service.id} 
+                                    className="group relative overflow-hidden border-gray-200 bg-white transition-all hover:shadow-xl hover:-translate-y-1"
+                                >
+                                    <div className="absolute top-0 right-0 h-24 w-24 sm:h-32 sm:w-32 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full opacity-50"></div>
+                                    
+                                    <CardHeader className="p-4 sm:p-6">
+                                        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white">
+                                        <IconComponent className="h-7 w-7" />
                                     </div>
-                                    <CardTitle className="text-lg sm:text-xl text-gray-900">{service.title}</CardTitle>
-                                    <CardDescription className="text-sm sm:text-base text-gray-600 leading-relaxed">{service.description}</CardDescription>
+                                        
+                                        <CardTitle className="text-lg sm:text-xl text-gray-900">
+                                            {service.title}
+                                        </CardTitle>
+                                        
+                                        <CardDescription className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                                            {service.description || service.description}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    
                                     <CardContent className="p-4 sm:p-6 pt-0">
-                                        <ul className="space-y-2 sm:space-y-3">
-                                            {service.features.map((feature, idx) => (
-                                                <li key={idx} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
-                                                    <div className="flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-blue-100 flex-shrink-0">
-                                                        <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-blue-600" />
-                                                    </div>
-                                                    <span>{feature}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                        {service.features && service.features.length > 0 && (
+                                            <ul className="space-y-2 sm:space-y-3">
+                                                {service.features.slice(0, 3).map((feature, idx) => (
+                                                    <li key={idx} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
+                                                        <div className="flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-blue-100 flex-shrink-0">
+                                                            <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-blue-600" />
+                                                        </div>
+                                                        <span>{feature}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </CardContent>
-                                </CardHeader>
-                            </Card>
-                        ))}
+                                </Card>
+                            )})
+                        ) : (
+                            <div className="col-span-full text-center py-12">
+                                <p className="text-gray-500">Belum ada layanan tersedia.</p>
+                            </div>
+                        )}
                     </div>
 
+                    {services && services.length > 0 && (
                         <div className="mt-8 sm:mt-12 text-center">
                             <Link href="/layanan">
-                                <Button size="lg" variant="outline" className="px-9 py-7 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold w-full sm:w-auto">
+                                <Button 
+                                    size="lg" 
+                                    variant="outline" 
+                                    className="px-9 py-7 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold w-full sm:w-auto"
+                                >
                                     Lihat Semua Layanan
                                 </Button>
                             </Link>
                         </div>
+                    )}
                 </div>
             </section>
 
-            {/* Portfolio Section - Light Gray Background */}
+            {/* Portfolio Section */}
             <section id="portfolio" className="bg-gray-50 py-12 sm:py-16 lg:py-20 px-10">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-10 sm:mb-12 lg:mb-16 text-center">
@@ -305,7 +307,7 @@ export default function Services() {
                     <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
                         {portfolios.map((item, index) => (
                             <Card key={index} className="group overflow-hidden border-gray-200 bg-white transition-all hover:shadow-xl">
-                                <div className="px-6"> {/* wrapper padding */}
+                                <div className="px-6">
                                     <div className="relative aspect-[3/2] overflow-hidden">
                                         <div className="flex h-full w-full items-center justify-center">
                                             {item.image ? (
@@ -325,7 +327,6 @@ export default function Services() {
                                                 </Button>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                                 <CardHeader className="px-4 sm:px-6 pt-3 sm:pt-2">
@@ -337,7 +338,7 @@ export default function Services() {
                                     <CardTitle className="text-base sm:text-lg text-gray-900">{item.title}</CardTitle>
                                     <CardDescription className="text-xs sm:text-sm text-gray-600">{item.description}</CardDescription>
                                 </CardHeader>
-                                <CardContent className="">
+                                <CardContent>
                                     <ul className="space-y-2 sm:space-y-3">
                                         {item.features.map((feature, idx) => (
                                             <li key={idx} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
@@ -357,7 +358,7 @@ export default function Services() {
                         <Link href="/portfolio">
                             <Button size="lg" variant="outline" className="px-9 py-3 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold w-full sm:w-auto">
                                 Lihat Semua Proyek
-                                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
                             </Button>
                         </Link>
                     </div>

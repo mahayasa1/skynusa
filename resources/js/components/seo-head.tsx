@@ -25,7 +25,7 @@ export default function SEOHead({
     keywords = seoConfig.defaultKeywords,
     ogImage = seoConfig.defaultImage,
     ogType = 'website',
-    canonical,
+    canonical,  
     author = seoConfig.company.name,
     publishedTime,
     modifiedTime,
