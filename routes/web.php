@@ -1,16 +1,22 @@
 <?php
 
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\PortfolioController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Home Page - dengan data services dari database
 Route::get('/', function () {
+    
     $servicesController = app(ServicesController::class);
+    $portfolioController = app(PortfolioController::class);
+    
     $services = $servicesController->getServicesForHome();
+    $portfolios = $portfolioController->getPortfoliosForHome();
     
     return Inertia::render('index', [
-        'services' => $services
+        'services' => $services,
+        'portfolios' => $portfolios,
     ]);
 })->name('home');
 
@@ -24,9 +30,10 @@ Route::get('/layanan', [ServicesController::class, 'index'])->name('services');
 Route::get('/layanan/{slug}', [ServicesController::class, 'show'])->name('services.show');
 
 // Portfolio
-Route::get('/portfolio', function () {
-    return Inertia::render('portfolio');
-})->name('portfolio');
+Route::controller(PortfolioController::class)->group(function () {
+    Route::get('/portfolio', 'index')->name('portfolio.index');
+    Route::get('/portfolio/{slug}', 'show')->name('portfolio.show');
+});
 
 // Kontak
 Route::get('/kontak', function () {
@@ -73,6 +80,35 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         
         // Duplicate
         Route::post('/{id}/duplicate', 'duplicate')->name('services.duplicate');
+    });
+
+    Route::controller(PortfolioController::class)->prefix('portfolio')->group(function () {
+        
+        // List portfolios
+        Route::get('/', 'adminIndex')->name('portfolio.index');
+        
+        // Create
+        Route::get('/create', 'create')->name('portfolio.create');
+        Route::post('/', 'store')->name('portfolio.store');
+        
+        // Bulk operations (sebelum {id} routes)
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('portfolio.bulk-destroy');
+        Route::post('/bulk-update-status', 'bulkUpdateStatus')->name('portfolio.bulk-update-status');
+        Route::post('/update-order', 'updateOrder')->name('portfolio.update-order');
+        
+        // Single portfolio operations
+        Route::get('/{id}', 'adminShow')->name('portfolio.show');
+        Route::get('/{id}/edit', 'edit')->name('portfolio.edit');
+        Route::put('/{id}', 'update')->name('portfolio.update');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy')->name('portfolio.destroy');
+        
+        // Toggle operations
+        Route::patch('/{id}/toggle-status', 'toggleStatus')->name('portfolio.toggle-status');
+        Route::patch('/{id}/toggle-featured', 'toggleFeatured')->name('portfolio.toggle-featured');
+        
+        // Duplicate
+        Route::post('/{id}/duplicate', 'duplicate')->name('portfolio.duplicate');
     });
 });
 

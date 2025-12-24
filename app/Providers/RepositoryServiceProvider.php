@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Repository\ServicesRepository;
-use App\Services\ServicesService;
+use App\Service\ServicesService;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class RepositoryServiceProvider extends BaseServiceProvider

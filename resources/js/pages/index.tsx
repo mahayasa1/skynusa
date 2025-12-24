@@ -50,8 +50,51 @@ interface Service {
     updated_at: string;
 }
 
+interface Portfolio {
+    id: number;
+    service_id: number;
+
+    title: string;
+    slug: string;
+    description: string;
+    short_description: string | null;
+
+    image: string;
+    gallery: string[] | null;
+
+    client_name: string | null;
+    location: string | null;
+
+    project_date: string | null;
+    duration: string | null;
+
+    technologies: string[] | null;
+    features: string[] | null;
+
+    project_url: string | null;
+
+    is_active: boolean;
+    is_featured: boolean;
+
+    order: number | null;
+
+    meta_title: string | null;
+    meta_description: string | null;
+    meta_keywords: string | null;
+
+    created_at?: string;
+    updated_at?: string;
+
+    service?: {
+        id: number;
+        title: string;
+        slug: string;
+    };
+}
+
 interface IndexPageProps {
     services: Service[];
+    portfolios: Portfolio[];
 }
 
 // =====================
@@ -62,38 +105,6 @@ const getIconComponent = (iconName: string) => {
     return Icons[iconName] || LucideIcons.Code;
 };
 
-
-// Hardcoded data untuk Portfolio & Features (tidak berubah)
-const portfolios = [
-    {
-        title: 'Instalasi CCTV & Sistem Keamanan',
-        category: 'Instalasi Elektronik',
-        description: 'Instalasi 24 kamera CCTV dengan monitoring real time',
-        features: ['IP Camera', 'NVR', 'POE Switch'],
-        image: 'asset/cctv.jpeg'
-    },
-    {
-        title: 'Instalasi AC & Perawatan',
-        category: 'Instalasi & Perawatan AC',
-        description: 'Instalasi sistem AC central untuk kontrol suhu produksi',
-        features: ['Chiller Unit', 'AHU', 'Ducting'],
-        image: 'asset/AC.jpeg'
-    },
-    {
-        title: 'Website Company Profile & Toko Online',
-        category: 'Web Development',
-        description: 'Pembuatan website profesional dengan fitur e-commerce',
-        features: ['React', 'Node.js', 'Payment Gateway'],
-        image: 'asset/web.jpeg'
-    },
-    {
-        title: 'Setup Infrakstruktur IT & Jaringan Kantor',
-        category: 'IT Support',
-        description: 'Setup lengkap server, jaringan LAN, dan sistem IT kantor',
-        features: ['Server Dell', 'Switch Cisco', 'Access Point'],
-        image: 'asset/IT Support.jpeg'
-    }
-];
 
 const features = [
     {
@@ -129,7 +140,8 @@ const features = [
 ];
 
 // Props diterima langsung dari controller
-export default function IndexPage({ services }: IndexPageProps) {
+export default function IndexPage({ services, portfolios }: IndexPageProps) {
+    const safePortfolios = Array.isArray(portfolios) ? portfolios : [];
     return (
         <>
             <SEOHead
@@ -167,7 +179,7 @@ export default function IndexPage({ services }: IndexPageProps) {
             </nav>
 
             {/* Hero Section */}
-            <section id="home" className="relative overflow-hidden bg-gradient-to-br from-blue-600/50 via-blue-700/50 to-indigo-800/50 pt-18">
+            <section id="home" className="relative overflow-hidden bg-linear-to-br from-blue-600/50 via-blue-700/50 to-indigo-800/50 pt-18">
                 <div className="absolute inset-0 bg-[url('asset/bg-main.png')] bg-cover bg-center opacity-20"></div>
                 <div className="absolute inset-0"></div>
                 <div className="relative mx-auto max-w-7xl px-4 py-12 sm:py-20 lg:py-24 sm:px-6 lg:px-8">
@@ -206,7 +218,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                         </div>
                     </div>
                 </div>
-                <div className="h-8 sm:h-12 bg-gradient-to-b from-transparent to-white"></div>
+                <div className="h-8 sm:h-12 bg-linear-to-b from-transparent to-white"></div>
             </section>
 
             {/* SERVICES SECTION - DYNAMIC FROM DATABASE */}
@@ -234,7 +246,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                                     key={service.id} 
                                     className="group relative overflow-hidden border-gray-200 bg-white transition-all hover:shadow-xl hover:-translate-y-1"
                                 >
-                                    <div className="absolute top-0 right-0 h-24 w-24 sm:h-32 sm:w-32 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full opacity-50"></div>
+                                    <div className="absolute top-0 right-0 h-24 w-24 sm:h-32 sm:w-32 bg-linear-to-br from-blue-50 to-transparent rounded-bl-full opacity-50"></div>
                                     
                                     <CardHeader className="p-4 sm:p-6">
                                         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white">
@@ -249,13 +261,13 @@ export default function IndexPage({ services }: IndexPageProps) {
                                             {service.description || service.description}
                                         </CardDescription>
                                     </CardHeader>
-                                    
+
                                     <CardContent className="p-4 sm:p-6 pt-0">
                                         {service.features && service.features.length > 0 && (
                                             <ul className="space-y-2 sm:space-y-3">
                                                 {service.features.slice(0, 3).map((feature, idx) => (
                                                     <li key={idx} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
-                                                        <div className="flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-blue-100 flex-shrink-0">
+                                                        <div className="flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-blue-100 shrink-0">
                                                             <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-blue-600" />
                                                         </div>
                                                         <span>{feature}</span>
@@ -305,53 +317,80 @@ export default function IndexPage({ services }: IndexPageProps) {
                     </div>
                     
                     <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
-                        {portfolios.map((item, index) => (
-                            <Card key={index} className="group overflow-hidden border-gray-200 bg-white transition-all hover:shadow-xl">
-                                <div className="px-6">
-                                    <div className="relative aspect-[3/2] overflow-hidden">
-                                        <div className="flex h-full w-full items-center justify-center">
-                                            {item.image ? (
-                                                <img
-                                                    src={item.image}
-                                                    alt={item.title}
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            ) : (
-                                                <Code className="h-16 w-16 sm:h-20 sm:w-20 text-blue-300" />
-                                            )}
-                                        </div>
-                                        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/50 to-transparent opacity-0 transition-opacity group-hover:opacity-90">
-                                            <div className="flex h-full items-center justify-center">
-                                                <Button variant="secondary" size="sm" className="font-semibold text-xs sm:text-sm">
-                                                    View Project
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <CardHeader className="px-4 sm:px-6 pt-3 sm:pt-2">
-                                    <div className="mb-3 sm:mb-4 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm">
-                                        <span className="bg-blue-100 text-blue-600 rounded-full px-3 py-2">
-                                            {item.category}
-                                        </span>
-                                    </div>
-                                    <CardTitle className="text-base sm:text-lg text-gray-900">{item.title}</CardTitle>
-                                    <CardDescription className="text-xs sm:text-sm text-gray-600">{item.description}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <ul className="space-y-2 sm:space-y-3">
-                                        {item.features.map((feature, idx) => (
-                                            <li key={idx} className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
-                                                <div className="flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-blue-100 flex-shrink-0">
-                                                    <CheckCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-blue-600" />
-                                                </div>
-                                                <span>{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                            </Card>
+                        {safePortfolios.length > 0 ? (
+    safePortfolios.map((item) => (
+        <Card
+            key={item.id}
+            className="group overflow-hidden transition-all hover:shadow-2xl bg-white"
+        >
+            {/* Image */}
+            <div className="relative aspect-16/10 overflow-hidden">
+                <img
+                    src={item?.image ?? '/asset/default.jpg'}
+                    alt={item?.title ?? 'Portfolio'}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+
+                {item?.service?.title && (
+                    <div className="absolute bottom-4 left-4">
+                        <span className="rounded-full bg-blue-600 px-3 py-1 text-sm">
+                            {item.service.title}
+                        </span>
+                    </div>
+                )}
+            </div>
+
+            {/* Header */}
+            <CardHeader className="text-black">
+                <CardTitle className="text-xl">
+                    {item?.title ?? 'Untitled Project'}
+                </CardTitle>
+
+                <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+                    {item?.client_name && <span>{item.client_name}</span>}
+
+                    {item?.client_name && item?.project_date && <span>•</span>}
+
+                    {item?.project_date && (
+                        <span>{new Date(item.project_date).getFullYear()}</span>
+                    )}
+                </div>
+
+                <CardDescription>
+                    {item?.short_description ??
+                        item?.description ??
+                        'No description available.'}
+                </CardDescription>
+            </CardHeader>
+
+            {/* Features */}
+            {Array.isArray(item?.features) && item.features.length > 0 && (
+                <CardContent className="text-black">
+                    <h4 className="mb-2 font-semibold">Features</h4>
+
+                    <ul className="grid grid-cols-2 gap-2">
+                        {item.features.map((feature, idx) => (
+                            <li
+                                key={idx}
+                                className="flex items-start gap-2 text-sm"
+                            >
+                                <CheckCircle className="mt-0.5 h-4 w-4 text-blue-600" />
+                                <span>{feature}</span>
+                            </li>
                         ))}
+                    </ul>
+                </CardContent>
+            )}
+        </Card>
+    ))
+) : (
+    <p className="text-center text-gray-500 col-span-full">
+        Belum ada portfolio.
+    </p>
+)}
+
                     </div>
                     
                     <div className="mt-8 sm:mt-12 text-center">
@@ -471,7 +510,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                         ].map((item, index) => (
                             <div key={index} className="text-center">
                                 <div
-                                    className={`mx-auto h-20 w-20 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-xl shadow`}
+                                    className={`mx-auto h-20 w-20 rounded-2xl bg-linear-to-br ${item.color} flex items-center justify-center text-white font-bold text-xl shadow`}
                                 >
                                     {item.label}
                                 </div>
@@ -485,7 +524,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                     {/* Testimonial Card */}
                     <div className="bg-white rounded-3xl shadow-xl p-8 md:p-10 max-w-4xl mx-auto border border-gray-100">
                         <div className="flex items-start gap-4 mb-6">
-                            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold">
+                            <div className="h-12 w-12 rounded-full bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold">
                                 BS
                             </div>
                             <div>
@@ -540,7 +579,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                         {/* CEO */}
                         <div className="flex justify-center mb-12">
                             <div className="relative">
-                                <Card className="w-64 sm:w-72 border-2 border-blue-600 bg-gradient-to-br from-blue-50/80 to-white shadow-xl hover:shadow-2xl transition">
+                                <Card className="w-64 sm:w-72 border-2 border-blue-600 bg-linear-to-br from-blue-50/80 to-white shadow-xl hover:shadow-2xl transition">
                                     <CardContent className="p-6 text-center">
                                     
                                         <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
@@ -590,7 +629,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-indigo-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mx-auto mb-4 shadow">
+                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mx-auto mb-4 shadow">
                                             <TrendingUp className="h-9 w-9 text-white" />
                                         </div>
                                     
@@ -607,7 +646,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-purple-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow">
+                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-purple-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow">
                                             <Laptop className="h-9 w-9 text-white" />
                                         </div>
                                     
@@ -624,7 +663,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-red-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mx-auto mb-4 shadow">
+                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-red-500 to-red-600 flex items-center justify-center mx-auto mb-4 shadow">
                                             <Wrench className="h-9 w-9 text-white" />
                                         </div>
                                     
@@ -640,7 +679,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-red-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mx-auto mb-4 shadow">
+                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-red-500 to-red-600 flex items-center justify-center mx-auto mb-4 shadow">
                                             <Wrench className="h-9 w-9 text-white" />
                                         </div>
                                     
@@ -674,7 +713,7 @@ export default function IndexPage({ services }: IndexPageProps) {
                             
                                     <Card className="border border-gray-200 bg-white hover:shadow-md transition">
                                         <CardContent className="p-4 text-center">
-                                            <div className="h-14 w-14 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center mx-auto mb-3 shadow">
+                                            <div className="h-14 w-14 rounded-full bg-linear-to-br from-gray-400 to-gray-500 flex items-center justify-center mx-auto mb-3 shadow">
                                                 <m.icon className="h-7 w-7 text-white" />
                                             </div>
                             

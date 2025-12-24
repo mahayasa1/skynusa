@@ -6,16 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class Services extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'title',
         'slug',
@@ -27,23 +22,11 @@ class Services extends Model
         'is_active',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'features' => 'array',
-            'is_active' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'features' => 'array',
+        'is_active' => 'boolean',
+    ];
 
-
-    /**
-     * Boot the model.
-     */
     protected static function boot()
     {
         parent::boot();
@@ -61,19 +44,26 @@ class Services extends Model
         });
     }
 
-    /**
-     * Scope a query to only include active services.
-     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    /**
-     * Scope a query to order by order column.
-     */
     public function scopeOrdered($query)
     {
         return $query->orderBy('order', 'asc');
+    }
+
+    public function portfolios(): HasMany
+    {
+        // Use ::class directly - Laravel will resolve it
+        return $this->hasMany(Portfolio::class, 'service_id');
+    }
+    
+    public function activePortfolios(): HasMany
+    {
+        return $this->hasMany(Portfolio::class, 'service_id')
+            ->where('is_active', true)
+            ->orderBy('order');
     }
 }
