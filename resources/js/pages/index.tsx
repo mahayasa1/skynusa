@@ -318,78 +318,78 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                     
                     <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
                         {safePortfolios.length > 0 ? (
-    safePortfolios.map((item) => (
-        <Card
-            key={item.id}
-            className="group overflow-hidden transition-all hover:shadow-2xl bg-white"
-        >
-            {/* Image */}
-            <div className="relative aspect-16/10 overflow-hidden">
-                <img
-                    src={item?.image ?? '/asset/default.jpg'}
-                    alt={item?.title ?? 'Portfolio'}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-
-                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-
-                {item?.service?.title && (
-                    <div className="absolute bottom-4 left-4">
-                        <span className="rounded-full bg-blue-600 px-3 py-1 text-sm">
-                            {item.service.title}
-                        </span>
-                    </div>
-                )}
-            </div>
-
-            {/* Header */}
-            <CardHeader className="text-black">
-                <CardTitle className="text-xl">
-                    {item?.title ?? 'Untitled Project'}
-                </CardTitle>
-
-                <div className="flex flex-wrap gap-2 text-sm text-gray-500">
-                    {item?.client_name && <span>{item.client_name}</span>}
-
-                    {item?.client_name && item?.project_date && <span>•</span>}
-
-                    {item?.project_date && (
-                        <span>{new Date(item.project_date).getFullYear()}</span>
-                    )}
-                </div>
-
-                <CardDescription>
-                    {item?.short_description ??
-                        item?.description ??
-                        'No description available.'}
-                </CardDescription>
-            </CardHeader>
-
-            {/* Features */}
-            {Array.isArray(item?.features) && item.features.length > 0 && (
-                <CardContent className="text-black">
-                    <h4 className="mb-2 font-semibold">Features</h4>
-
-                    <ul className="grid grid-cols-2 gap-2">
-                        {item.features.map((feature, idx) => (
-                            <li
-                                key={idx}
-                                className="flex items-start gap-2 text-sm"
+                        safePortfolios.map((item) => (
+                            <Card
+                                key={item.id}
+                                className="group overflow-hidden transition-all hover:shadow-2xl bg-white"
                             >
-                                <CheckCircle className="mt-0.5 h-4 w-4 text-blue-600" />
-                                <span>{feature}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </CardContent>
-            )}
-        </Card>
-    ))
-) : (
-    <p className="text-center text-gray-500 col-span-full">
-        Belum ada portfolio.
-    </p>
-)}
+                                {/* Image */}
+                                <div className="relative aspect-16/10 overflow-hidden">
+                                    <img
+                                        src={item?.image ?? '/asset/default.jpg'}
+                                        alt={item?.title ?? 'Portfolio'}
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
+                    
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+                        
+                                    {item?.service?.title && (
+                                        <div className="absolute bottom-4 left-4">
+                                            <span className="rounded-full bg-blue-600 px-3 py-1 text-sm">
+                                                {item.service.title}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                {/* Header */}
+                                <CardHeader className="text-black">
+                                    <CardTitle className="text-xl">
+                                        {item?.title ?? 'Untitled Project'}
+                                    </CardTitle>
+                                
+                                    <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+                                        {item?.client_name && <span>{item.client_name}</span>}
+                                
+                                        {item?.client_name && item?.project_date && <span>•</span>}
+                                
+                                        {item?.project_date && (
+                                            <span>{new Date(item.project_date).getFullYear()}</span>
+                                        )}
+                                    </div>
+                                    
+                                    <CardDescription>
+                                        {item?.short_description ??
+                                            item?.description ??
+                                            'No description available.'}
+                                    </CardDescription>
+                                </CardHeader>
+                                        
+                                {/* Features */}
+                                {Array.isArray(item?.features) && item.features.length > 0 && (
+                                    <CardContent className="text-black">
+                                        <h4 className="mb-2 font-semibold">Features</h4>
+                                
+                                        <ul className="grid grid-cols-2 gap-2">
+                                            {item.features.map((feature, idx) => (
+                                                <li
+                                                    key={idx}
+                                                    className="flex items-start gap-2 text-sm"
+                                                >
+                                                    <CheckCircle className="mt-0.5 h-4 w-4 text-blue-600" />
+                                                    <span>{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </CardContent>
+                                )}
+                            </Card>
+                        ))
+                    ) : (
+                        <p className="text-center text-gray-500 col-span-full">
+                            Belum ada portfolio.
+                        </p>
+                    )}
 
                     </div>
                     
