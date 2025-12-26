@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('pesans', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('telp');
+            $table->string('judul');
+            $table->text('isi');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

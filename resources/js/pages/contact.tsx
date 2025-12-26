@@ -43,7 +43,7 @@ export default function Contact() {
 
 
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">
+            <section className="relative overflow-hidden bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">
                 <div className="absolute inset-0 bg-[url('/asset/bg-main.png')] bg-cover bg-center opacity-20"></div>
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
@@ -66,7 +66,7 @@ export default function Contact() {
                     <div className="grid lg:grid-cols-3 gap-8">
                         {/* Contact Info Cards */}
                         <div className="lg:col-span-1 space-y-6">
-                            <Card>
+                            <Card className='bg-white'>
                                 <CardContent className="p-6">
                                     <div className="flex items-start gap-4">
                                         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
@@ -75,15 +75,14 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">Alamat Kantor</h3>
                                             <p className="text-sm text-gray-600">
-                                                Jl. Raya Denpasar No. 123<br />
-                                                Bali, Indonesia 80361
+                                                Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali
                                             </p>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
 
-                            <Card>
+                            <Card className='bg-white'>
                                 <CardContent className="p-6">
                                     <div className="flex items-start gap-4">
                                         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
@@ -92,15 +91,14 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">Telepon</h3>
                                             <p className="text-sm text-gray-600">
-                                                +62 812-3456-7890<br />
-                                                +62 811-2345-6789
+                                                +62 881-080-888-361
                                             </p>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
 
-                            <Card>
+                            <Card className='bg-white'>
                                 <CardContent className="p-6">
                                     <div className="flex items-start gap-4">
                                         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
@@ -109,15 +107,14 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
                                             <p className="text-sm text-gray-600">
-                                                info@skynusa.com<br />
-                                                support@skynusa.com
+                                                Roycegroupbali@gmail.com
                                             </p>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
 
-                            <Card>
+                            <Card className='bg-white'>
                                 <CardContent className="p-6">
                                     <div className="flex items-start gap-4">
                                         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
@@ -126,10 +123,8 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">Jam Operasional</h3>
                                             <p className="text-sm text-gray-600">
-                                                Senin - Jumat: 08:00 - 17:00<br />
-                                                Sabtu: 08:00 - 13:00<br />
-                                                Minggu: Tutup<br />
-                                                <span className="text-blue-600 font-medium">Emergency 24/7</span>
+                                                Senin - Jumat: 10:00 - 17:00<br />
+                                                Sabtu - Minggu: Tutup<br />
                                             </p>
                                         </div>
                                     </div>
@@ -139,7 +134,7 @@ export default function Contact() {
 
                         {/* Contact Form */}
                         <div className="lg:col-span-2">
-                            <Card>
+                            <Card className='bg-white'>
                                 <CardContent className="p-8">
                                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
                                         Kirim Pesan
@@ -151,7 +146,7 @@ export default function Contact() {
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <Label htmlFor="name">Nama Lengkap *</Label>
+                                                <Label htmlFor="name" className='text-black'>Nama Lengkap <span className='text-red-600'>*</span></Label>
                                                 <Input
                                                     id="name"
                                                     name="name"
@@ -224,7 +219,7 @@ export default function Contact() {
             </section>
 
             {/* Map Section */}
-            <section className="bg-gray-50 py-16">
+            <section className="bg-blue-200 py-16">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-8">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -236,20 +231,20 @@ export default function Contact() {
                     </div>
                     <div className="rounded-2xl overflow-hidden shadow-lg h-[400px]">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.2066240356456!2d115.21287631478198!3d-8.670457593781674!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd240e2fc7d6e31%3A0x1f22b0b4f5b5d1f!2sDenpasar%2C%20Bali!5e0!3m2!1sen!2sid!4v1234567890123!5m2!1sen!2sid"
-                            width="100%"
-                            height="100%"
-                            style={{ border: 0 }}
-                            allowFullScreen
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
+                        title="Royce Group Jimbaran"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3942.827654715452!2d115.14267627402164!3d-8.802256891250302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd24583f5b95ba9%3A0x22369bedb5e3736e!2sRoyce%20Group!5e0!3m2!1sid!2sid!4v1766566808620!5m2!1sid!2sid"
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
                         ></iframe>
                     </div>
                 </div>
             </section>
 
             {/* Quick Contact CTA */}
-            <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-16">
+            <section className="bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 py-16">
                 <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
                     <h2 className="mb-6 text-3xl lg:text-4xl font-bold text-white">
                         Butuh Bantuan Segera?

@@ -92,9 +92,18 @@ interface Portfolio {
     };
 }
 
+interface Company {
+    id: number;
+    name: string;
+    slug: string;
+    logo: string | null;
+    website: string | null;
+}
+
 interface IndexPageProps {
     services: Service[];
     portfolios: Portfolio[];
+    companies: Company[];
 }
 
 // =====================
@@ -140,8 +149,9 @@ const features = [
 ];
 
 // Props diterima langsung dari controller
-export default function IndexPage({ services, portfolios }: IndexPageProps) {
+export default function IndexPage({ services, portfolios, companies }: IndexPageProps) {
     const safePortfolios = Array.isArray(portfolios) ? portfolios : [];
+    const safeCompanies = Array.isArray(companies) ? companies : [];
     return (
         <>
             <SEOHead
@@ -494,31 +504,32 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                                 
                     {/* Clients Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 mb-20">
-                        {[
-                            { label: "MB", name: "PT Maju Bersama", color: "from-blue-500 to-blue-600" },
-                            { label: "MJ", name: "CV Mandiri Jaya", color: "from-purple-500 to-purple-600" },
-                            { label: "HS", name: "Hotel Sejahtera", color: "from-green-500 to-green-600" },
-                            { label: "ABC", name: "Gudang ABC", color: "from-orange-500 to-orange-600" },
-                            { label: "PT", name: "Pabrik Tekstil", color: "from-red-500 to-red-600" },
-                            { label: "TM", name: "Toko Modern", color: "from-indigo-500 to-indigo-600" },
-                            { label: "KP", name: "Klinik Prima", color: "from-pink-500 to-pink-600" },
-                            { label: "SD", name: "Solusi Digital", color: "from-teal-500 to-teal-600" },
-                            { label: "RN", name: "Resto Nusantara", color: "from-yellow-500 to-yellow-600" },
-                            { label: "KPT", name: "Kantor Pusat", color: "from-sky-500 to-sky-600" },
-                            { label: "GP", name: "Gedung Plaza", color: "from-lime-500 to-lime-600" },
-                            { label: "IJ", name: "Industri Jaya", color: "from-rose-500 to-rose-600" },
-                        ].map((item, index) => (
-                            <div key={index} className="text-center">
-                                <div
-                                    className={`mx-auto h-20 w-20 rounded-2xl bg-linear-to-br ${item.color} flex items-center justify-center text-white font-bold text-xl shadow`}
-                                >
-                                    {item.label}
+                        {safeCompanies.length > 0 ? (
+                            safeCompanies.map((company) => (
+                                <div key={company.id} className="text-center group">
+                                    <div className="mx-auto h-20 w-20 rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden shadow hover:shadow-lg transition-shadow">
+                                        {company.logo ? (
+                                            <img 
+                                                src={company.logo} 
+                                                alt={company.name}
+                                                className="h-full w-full object-contain p-2"
+                                            />
+                                        ) : (
+                                            <span className="text-gray-400 text-2xl font-bold">
+                                                {company.name.charAt(0)}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="mt-3 text-gray-700 text-sm font-medium group-hover:text-blue-600 transition-colors">
+                                        {company.name}
+                                    </p>
                                 </div>
-                                <p className="mt-3 text-gray-700 text-sm font-medium">
-                                    {item.name}
-                                </p>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p className="col-span-full text-center text-gray-500">
+                                Belum ada data klien.
+                            </p>
+                        )}
                     </div>
                     
                     {/* Testimonial Card */}
@@ -583,7 +594,7 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                                     <CardContent className="p-6 text-center">
                                     
                                         <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
-                                            <img src="asset/royce.PNG" className="w-full h-full object-cover" />
+                                            <img src="asset/royce.png" className="w-full h-full object-cover" />
                                         </div>
                                     
                                         <h3 className="text-xl font-bold text-gray-900">Royce Francis M.M</h3>
@@ -629,8 +640,8 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-indigo-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mx-auto mb-4 shadow">
-                                            <TrendingUp className="h-9 w-9 text-white" />
+                                        <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
+                                            <img src="asset/arnold.jpeg" className="w-full h-full object-cover" />
                                         </div>
                                     
                                         <h3 className="text-lg font-bold text-gray-900">Arnold Tamelan</h3>
@@ -646,8 +657,8 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-purple-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-purple-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow">
-                                            <Laptop className="h-9 w-9 text-white" />
+                                        <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
+                                            <img src="asset/bgw.jpg" className="w-full h-full object-cover" />
                                         </div>
                                     
                                         <h3 className="text-lg font-bold text-gray-900">Bagus Wisnu</h3>
@@ -663,8 +674,8 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-red-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-red-500 to-red-600 flex items-center justify-center mx-auto mb-4 shadow">
-                                            <Wrench className="h-9 w-9 text-white" />
+                                        <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
+                                            <img src="asset/hassan.jpeg" className="w-full h-full object-cover" />
                                         </div>
                                     
                                         <h3 className="text-lg font-bold text-gray-900">Hassan</h3>
@@ -679,13 +690,13 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                                     
                                 <Card className="border-2 border-red-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
-                                        <div className="h-20 w-20 rounded-full bg-linear-to-br from-red-500 to-red-600 flex items-center justify-center mx-auto mb-4 shadow">
-                                            <Wrench className="h-9 w-9 text-white" />
+                                        <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
+                                            <img src="asset/profile.png" className="w-full h-full object-cover" />
                                         </div>
                                     
-                                        <h3 className="text-lg font-bold text-gray-900">Hassan</h3>
-                                        <p className="text-sm font-semibold text-red-600 mb-1">Head of Engineer</p>
-                                        <p className="text-xs text-gray-600">Electronic Engineering</p>
+                                        <h3 className="text-lg font-bold text-gray-900">Frans</h3>
+                                        <p className="text-sm font-semibold text-red-600 mb-1">Head of Internet of Things</p>
+                                        <p className="text-xs text-gray-600">Electrical Insatalation</p>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -703,18 +714,22 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                         {/* THIRD LEVEL */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
                             {[
-                                { name: 'Rudi', role: 'Front-end Developer', icon: Code },
-                                { name: 'Jelita', role: 'Administrator', icon: Book },
-                                { name: 'Agus Surya', role: 'UI/UX Designer', icon: Brush },
-                                { name: 'Rihaf', role: 'Lighting Installation', icon: Lightbulb },
+                                { name: 'Rudi', role: 'Front-end Developer', image: '/asset/profile.png' },
+                                { name: 'Anjani', role: 'Administrator', image: '/asset/profile.png' },
+                                { name: 'Agus Surya', role: 'UI/UX Designer', image: '/asset/agus.jpg' },
+                                { name: 'Rihaf', role: 'Lighting Installation', image: '/asset/profile.png' },
                             ].map((m, i) => (
                                 <div key={i} className="relative">
                                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-0.5 bg-blue-300"></div>
                             
                                     <Card className="border border-gray-200 bg-white hover:shadow-md transition">
                                         <CardContent className="p-4 text-center">
-                                            <div className="h-14 w-14 rounded-full bg-linear-to-br from-gray-400 to-gray-500 flex items-center justify-center mx-auto mb-3 shadow">
-                                                <m.icon className="h-7 w-7 text-white" />
+                                            <div className="h-14 w-14 rounded-full overflow-hidden mx-auto mb-3 shadow">
+                                                <img 
+                                                    src={m.image} 
+                                                    alt={m.name}
+                                                    className="h-full w-full object-cover"
+                                                />
                                             </div>
                             
                                             <h3 className="text-sm font-semibold text-gray-900">{m.name}</h3>
@@ -765,10 +780,18 @@ export default function IndexPage({ services, portfolios }: IndexPageProps) {
                         <div>
                             <h3 className="mb-3 sm:mb-4 text-sm sm:text-base font-semibold">Hubungi Kami</h3>
                             <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-400">
-                                <li>Email: info@skynusa.com</li>
-                                <li>Phone: +62 812-3456-7890</li>
-                                <li>Address: Bali, Indonesia</li>
-                            </ul>
+                            <li>
+                                <a href="mailto:Roycegroupbali@gmail.com" className="hover:text-blue-400 transition-colors">
+                                    Email: Roycegroupbali@gmail.com
+                                </a>
+                            </li>
+                            <li>
+                                <a href="tel:+62881080888361" className="hover:text-blue-400 transition-colors">
+                                    Phone: +62 881-080-888-361
+                                </a>
+                            </li>
+                            <li>Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali</li>
+                        </ul>
                         </div>
                     </div>
                     <div className="mt-6 sm:mt-8 lg:mt-12 border-t border-gray-800 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-500">

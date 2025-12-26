@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\PesananController;
+use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\PortfolioController;
 use Illuminate\Support\Facades\Route;
@@ -10,13 +13,16 @@ Route::get('/', function () {
     
     $servicesController = app(ServicesController::class);
     $portfolioController = app(PortfolioController::class);
+    $companiesController = app(CompanyController::class);
     
     $services = $servicesController->getServicesForHome();
     $portfolios = $portfolioController->getPortfoliosForHome();
+    $companies = $companiesController->getCompaniesForHome();
     
     return Inertia::render('index', [
         'services' => $services,
         'portfolios' => $portfolios,
+        'companies' => $companies,
     ]);
 })->name('home');
 
@@ -39,6 +45,10 @@ Route::controller(PortfolioController::class)->group(function () {
 Route::get('/kontak', function () {
     return Inertia::render('contact');
 })->name('contact');
+
+Route::controller(PesananController::class)->group(function () {
+    Route::post('/kontak', 'store')->name('contact.store');
+});
 
 // Tim
 Route::get('/tim', function () {
@@ -109,6 +119,38 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         
         // Duplicate
         Route::post('/{id}/duplicate', 'duplicate')->name('portfolio.duplicate');
+    });
+
+    Route::controller(CompanyController::class)->prefix('companies')->group(function () {
+        Route::get('/', 'adminIndex')->name('companies.index');
+        Route::get('/create', 'create')->name('companies.create');
+        Route::post('/', 'store')->name('companies.store');
+        
+        // Bulk operations
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('companies.bulk-destroy');
+        Route::post('/bulk-update-status', 'bulkUpdateStatus')->name('companies.bulk-update-status');
+        
+        Route::get('/{id}', 'adminShow')->name('companies.show');
+        Route::get('/{id}/edit', 'edit')->name('companies.edit');
+        Route::put('/{id}', 'update')->name('companies.update');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy')->name('companies.destroy');
+        Route::patch('/{id}/toggle-status', 'toggleStatus')->name('companies.toggle-status');
+    });
+
+    Route::controller(PesanController::class)->prefix('pesan')->group(function () {
+        Route::get('/', 'adminIndex')->name('pesan.index');
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('pesan.bulk-destroy');
+        Route::post('/bulk-force-destroy', 'bulkForceDestroy')->name('pesan.bulk-force-destroy');
+        Route::get('/export', 'export')->name('pesan.export');
+        Route::get('/trashed', 'trashed')->name('pesan.trashed');
+        Route::get('/{id}', 'show')->name('pesan.show');
+        Route::get('/{id}/edit', 'edit')->name('pesan.edit');
+        Route::put('/{id}', 'update')->name('pesan.update');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy')->name('pesan.destroy');
+        Route::delete('/{id}/force', 'forceDestroy')->name('pesan.force-destroy');
+        Route::post('/{id}/restore', 'restore')->name('pesan.restore');
     });
 });
 

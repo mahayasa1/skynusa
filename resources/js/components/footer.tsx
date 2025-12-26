@@ -61,16 +61,16 @@ export default function Footer() {
                         <h3 className="mb-3 sm:mb-4 text-sm sm:text-base font-semibold">Hubungi Kami</h3>
                         <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-400">
                             <li>
-                                <a href="mailto:info@skynusa.com" className="hover:text-blue-400 transition-colors">
-                                    Email: info@skynusa.com
+                                <a href="mailto:Roycegroupbali@gmail.com" className="hover:text-blue-400 transition-colors">
+                                    Email: Roycegroupbali@gmail.com
                                 </a>
                             </li>
                             <li>
-                                <a href="tel:+6281234567890" className="hover:text-blue-400 transition-colors">
-                                    Phone: +62 812-3456-7890
+                                <a href="tel:+62881080888361" className="hover:text-blue-400 transition-colors">
+                                    Phone: +62 881-080-888-361
                                 </a>
                             </li>
-                            <li>Address: Bali, Indonesia</li>
+                            <li>Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali</li>
                         </ul>
                     </div>
                 </div>
