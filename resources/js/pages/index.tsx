@@ -218,7 +218,7 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                         </div>
                         <div className="mt-12 sm:mt-16 lg:mt-20 grid grid-cols-2 sm:gap-20 border-t border-white/20 pt-8 sm:pt-12 px-4">
                             <div>
-                                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">150+</div>
+                                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">200+</div>
                                 <div className="mt-1 sm:mt-2 text-xs sm:text-3xl text-blue-200">Projects Completed</div>
                             </div>
                             <div>
