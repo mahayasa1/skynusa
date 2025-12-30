@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/react';
 import SEOHead from '@/components/seo-head';
 import { 
+    ChevronDown,
     Code, 
     Database, 
     Globe, 
@@ -31,6 +32,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import * as LucideIcons from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
 
 
 // =====================
@@ -152,6 +154,36 @@ const features = [
 export default function IndexPage({ services, portfolios, companies }: IndexPageProps) {
     const safePortfolios = Array.isArray(portfolios) ? portfolios : [];
     const safeCompanies = Array.isArray(companies) ? companies : [];
+    const [openAbout, setOpenAbout] = useState(false);
+    const [openPesanan, setOpenPesanan] = useState(false);
+
+    const menuRef = useRef<HTMLDivElement | null>(null);
+
+  // Close when clicking outside
+  useEffect(() => {
+  const handleClickOutside = (e: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      setOpenAbout(false);
+      setOpenPesanan(false);
+    }
+  };
+
+  const handleEsc = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setOpenAbout(false);
+      setOpenPesanan(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  document.addEventListener("keydown", handleEsc);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    document.removeEventListener("keydown", handleEsc);
+  };
+}, []);
+    
     return (
         <>
             <SEOHead
@@ -176,13 +208,58 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                                 />
                             </Link>
                         </div>
-                        <div className="absolute left-1/2 hidden -translate-x-1/2 gap-4 lg:gap-8 md:flex">
-                            <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Home</a>
-                            <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Layanan</a>
-                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Portfolio</a>
-                            <a href="#tim" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Tim Kami</a>
-                            <Link href="/kontak" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Kontak</Link>
-                            <Link href="/tentang-kami" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Tentang Kami</Link>
+                        <div ref={menuRef} className="absolute left-1/2 hidden -translate-x-1/2 gap-4 lg:gap-8 md:flex">
+                            <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
+                            Home
+                            </a>
+                            <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
+                            Layanan
+                            </a>
+                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
+                            Portfolio
+                            </a>
+                            {/* === ABOUT === */}
+                            <div className="relative">
+                            <button onClick={() => { setOpenAbout(!openAbout); setOpenPesanan(false); }} className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${ openAbout ? "text-blue-600" : "text-gray-700 hover:text-blue-600" }`}>
+                                About
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${ openAbout ? "rotate-180" : "" }`} />
+                            </button>
+                            {openAbout && (
+                                <div className="absolute left-0 mt-2 w-44 rounded-xl border bg-white shadow-xl transition-all duration-200 ease-out opacity-0 translate-y-2 scale-95 animate-[fadeIn_.2s_ease-out_forwards]">
+                                <Link href="/tim" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5">
+                                    Tim Kami
+                                </Link>
+                                <Link href="/kontak" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
+                                    Kontak
+                                </Link>
+                                <Link href="/tentang-kami" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
+                                    Tentang Kami
+                                </Link>
+                                </div>
+                            )}
+                            </div>
+                          {/* === PESANAN === */}
+                            <div className="relative">
+                            <button onClick={() => { setOpenPesanan(!openPesanan); setOpenAbout(false); }} className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${ openPesanan ? "text-blue-600" : "text-gray-700 hover:text-blue-600" }`}>
+                                Pesanan
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${ openPesanan ? "rotate-180" : "" }`} />
+                            </button>
+                            {openPesanan && (
+                                <div className="absolute left-0 mt-2 w-56 rounded-xl border bg-white shadow-xl transition-all duration-200 ease-out opacity-0 translate-y-2 scale-95 animate-[fadeIn_.2s_ease-out_forwards]">
+                                <Link href="/pesanan/order" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
+                                    Order Pesanan
+                                </Link>
+                                <Link href="/pesanan/tracking" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
+                                    Tracking Pesanan
+                                </Link>
+                                </div>
+                            )}
+                            </div>
+                        
+                          {/* === BERITA === */}
+                            <Link href="/berita" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
+                            Berita
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -545,7 +622,7 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                         </div>
                     
                         <p className="text-gray-700 leading-relaxed mb-4 text-base">
-                            "Bekerja dengan TeknoServis sangat memuaskan. Tim mereka menyelesaikan instalasi sistem kelistrikan gedung kami dengan profesional dan tepat waktu. Hasil kerja sangat rapi dan sesuai standar. Kami sangat merekomendasikan layanan mereka."
+                            "Bekerja dengan Skynusa Tech sangat memuaskan. Tim mereka menyelesaikan instalasi sistem kelistrikan gedung kami dengan profesional dan tepat waktu. Hasil kerja sangat rapi dan sesuai standar. Kami sangat merekomendasikan layanan mereka."
                         </p>
                     
                         {/* Rating */}
@@ -691,7 +768,7 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                                 <Card className="border-2 border-red-500 bg-white shadow-lg hover:shadow-xl transition">
                                     <CardContent className="p-6 text-center">
                                         <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
-                                            <img src="asset/profile.png" className="w-full h-full object-cover" />
+                                            <img src="asset/frans.jpg" className="w-full h-full object-cover" />
                                         </div>
                                     
                                         <h3 className="text-lg font-bold text-gray-900">Frans</h3>

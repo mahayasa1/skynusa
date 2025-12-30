@@ -55,6 +55,18 @@ Route::get('/tim', function () {
     return Inertia::render('tim');
 })->name('tim');
 
+//pesanan
+Route::controller(PesananController::class)->group(function () {
+    // Order form
+    Route::get('/pesanan/order', 'create')->name('order.create');
+    Route::post('/pesanan/order', 'store')->name('order.store');
+    
+    // Tracking
+    Route::get('/pesanan/tracking', 'trackingForm')->name('order.tracking.form');
+    Route::post('/pesanan/tracking', 'track')->name('order.tracking');
+});
+
+
 /**
  * ============================================
  * ADMIN ROUTES - Services Management
@@ -151,6 +163,25 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/{id}', 'destroy')->name('pesan.destroy');
         Route::delete('/{id}/force', 'forceDestroy')->name('pesan.force-destroy');
         Route::post('/{id}/restore', 'restore')->name('pesan.restore');
+    });
+
+    Route::controller(PesananController::class)->prefix('pesanan')->group(function () {
+        // List orders
+        Route::get('/', 'adminIndex')->name('pesanan.index');
+        
+        // Bulk operations
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('pesanan.bulk-destroy');
+        Route::post('/bulk-update-status', 'bulkUpdateStatus')->name('pesanan.bulk-update-status');
+        
+        // Single order operations
+        Route::get('/{id}', 'show')->name('pesanan.show');
+        Route::get('/{id}/edit', 'edit')->name('pesanan.edit');
+        Route::put('/{id}', 'update')->name('pesanan.update');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy')->name('pesanan.destroy');
+        
+        // Update status
+        Route::patch('/{id}/update-status', 'updateStatus')->name('pesanan.update-status');
     });
 });
 

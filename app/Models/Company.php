@@ -26,7 +26,7 @@ class Company extends Model
         'is_active' => 'boolean',
     ];
 
-    public function portfolios(): HasMany
+    public function portfolios ()
     {
         return $this->hasMany(Portfolio::class, 'companies_id');
     }

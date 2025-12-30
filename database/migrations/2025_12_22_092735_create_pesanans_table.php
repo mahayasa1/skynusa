@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('pesanans', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
+            $table->string('name');
+            $table->string('email');
+            $table->string('telp');
+            $table->text('description');
+            $table->date('due_date');
+            $table->enum('status', ['pending', 'verifikasi', 'proses', 'approval', 'running', 'selesai'])->default('pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
