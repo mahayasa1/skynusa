@@ -27,14 +27,12 @@ interface PesananData {
 
 interface TrackingProps {
     pesanan?: PesananData;
-    statuses?: Record<string, string>;
     flash?: {
         pesanan?: PesananData;
-        statuses?: Record<string, string>;
     };
 }
 
-export default function OrderTracking({ pesanan, statuses, flash }: TrackingProps) {
+export default function OrderTracking({ pesanan, flash }: TrackingProps) {
     const orderData = pesanan || flash?.pesanan;
     const { data, setData, post, processing, errors } = useForm({
         code: '',
@@ -59,9 +57,9 @@ export default function OrderTracking({ pesanan, statuses, flash }: TrackingProp
     const statusSteps = [
         { key: 'pending', label: 'Pending', icon: Hourglass },
         { key: 'verifikasi', label: 'Verifikasi', icon: FileSearch },
-        { key: 'proses', label: 'Proses', icon: Clock },
+        { key: 'proses', label: 'Diproses', icon: Clock },
         { key: 'approval', label: 'Approval', icon: Send },
-        { key: 'running', label: 'Running', icon: MessageSquare },
+        { key: 'running', label: 'Tindak Lanjut', icon: MessageSquare },
         { key: 'selesai', label: 'Selesai', icon: CheckCircle },
     ];
 
@@ -189,7 +187,7 @@ export default function OrderTracking({ pesanan, statuses, flash }: TrackingProp
             `}</style>
 
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">
+            <section className="relative overflow-hidden bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">
                 <div className="absolute inset-0 bg-[url('/asset/bg-main.png')] bg-cover bg-center opacity-20"></div>
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
@@ -355,7 +353,7 @@ export default function OrderTracking({ pesanan, statuses, flash }: TrackingProp
                                 {/* Status Description */}
                                 <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
                                     <div className="flex items-start gap-3">
-                                        <div className="flex-shrink-0 mt-0.5">
+                                        <div className="shrink-0 mt-0.5">
                                             <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
                                                 <span className="text-white text-sm font-bold">ℹ️</span>
                                             </div>
@@ -376,8 +374,8 @@ export default function OrderTracking({ pesanan, statuses, flash }: TrackingProp
                             </div>
 
                             {/* Order Details Card */}
-                            <Card className="shadow-lg bg-blue-300">
-                                <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 border-b">
+                            <Card className="shadow-lg">
+                                <CardHeader className="bg-linear-to-r from-blue-50 to-blue-100 border-b">
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <CardTitle className="text-2xl text-gray-800">
@@ -390,7 +388,7 @@ export default function OrderTracking({ pesanan, statuses, flash }: TrackingProp
                                         <Package className="h-12 w-12 text-blue-600" />
                                     </div>
                                 </CardHeader>
-                                <CardContent className="pt-6 space-y-6 bg-blue-300">
+                                <CardContent className="pt-6 space-y-6">
                                     {/* Order Details Grid */}
                                     <div className="grid gap-4 md:grid-cols-2">
                                         <div className="flex gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
