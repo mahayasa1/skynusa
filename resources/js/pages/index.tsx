@@ -27,7 +27,9 @@ import {
     Brush,
     Paperclip,
     Logs,
-    Book
+    Book,
+    Menu, 
+    X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -156,34 +158,42 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
     const safeCompanies = Array.isArray(companies) ? companies : [];
     const [openAbout, setOpenAbout] = useState(false);
     const [openPesanan, setOpenPesanan] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
+    const [mobilePesananOpen, setMobilePesananOpen] = useState(false);
 
     const menuRef = useRef<HTMLDivElement | null>(null);
 
   // Close when clicking outside
-  useEffect(() => {
-  const handleClickOutside = (e: MouseEvent) => {
+useEffect(() => {
+const handleClickOutside = (e: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-      setOpenAbout(false);
-      setOpenPesanan(false);
+    setOpenAbout(false);
+    setOpenPesanan(false);
     }
-  };
+};
 
-  const handleEsc = (e: KeyboardEvent) => {
+const handleEsc = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
-      setOpenAbout(false);
-      setOpenPesanan(false);
+    setOpenAbout(false);
+    setOpenPesanan(false);
     }
-  };
+};
 
-  document.addEventListener("mousedown", handleClickOutside);
-  document.addEventListener("keydown", handleEsc);
+document.addEventListener("mousedown", handleClickOutside);
+document.addEventListener("keydown", handleEsc);
 
-  return () => {
+return () => {
     document.removeEventListener("mousedown", handleClickOutside);
     document.removeEventListener("keydown", handleEsc);
-  };
+};
 }, []);
-    
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+        setMobileAboutOpen(false);
+        setMobilePesananOpen(false);
+    };
+
     return (
         <>
             <SEOHead
@@ -197,73 +207,229 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
             
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white backdrop-blur-md">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="relative flex h-16 items-center">
-                        <div className="flex items-center gap-2">
-                            <Link href="/" className="flex items-center gap-2">
-                                <img
-                                    src="/asset/logo.png"
-                                    alt="SKYNUSA TECH Logo"
-                                    className="h-8 w-auto sm:h-10 max-w-[180px] sm:max-w-[220px]"
-                                />
-                            </Link>
-                        </div>
-                        <div ref={menuRef} className="absolute left-1/2 hidden -translate-x-1/2 gap-4 lg:gap-8 md:flex">
-                            <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="relative flex h-16 items-center justify-between">
+                    {/* Logo */}
+                    <div className="flex items-center gap-2">
+                        <Link href="/" className="flex items-center gap-2">
+                            <img
+                                src="/asset/logo.png"
+                                alt="SKYNUSA TECH Logo"
+                                className="h-8 w-auto sm:h-10 max-w-[180px] sm:max-w-[220px]"
+                            />
+                        </Link>
+                    </div>
+
+                    {/* Desktop Menu - Centered */}
+                    <div ref={menuRef} className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-4 lg:gap-8">
+                        <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                             Home
-                            </a>
-                            <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
+                        </a>
+                        <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                             Layanan
-                            </a>
-                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
+                        </a>
+                        <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                             Portfolio
-                            </a>
-                            {/* === ABOUT === */}
-                            <div className="relative">
-                            <button onClick={() => { setOpenAbout(!openAbout); setOpenPesanan(false); }} className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${ openAbout ? "text-blue-600" : "text-gray-700 hover:text-blue-600" }`}>
+                        </a>
+
+                        {/* About Dropdown - Desktop */}
+                        <div className="relative">
+                            <button 
+                                onClick={() => { 
+                                    setOpenAbout(!openAbout); 
+                                    setOpenPesanan(false); 
+                                }} 
+                                className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+                                    openAbout ? "text-blue-600" : "text-gray-700 hover:text-blue-600"
+                                }`}
+                            >
                                 About
-                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${ openAbout ? "rotate-180" : "" }`} />
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                    openAbout ? "rotate-180" : ""
+                                }`} />
                             </button>
                             {openAbout && (
                                 <div className="absolute left-0 mt-2 w-44 rounded-xl border bg-white shadow-xl transition-all duration-200 ease-out opacity-0 translate-y-2 scale-95 animate-[fadeIn_.2s_ease-out_forwards]">
-                                <Link href="/tim" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5">
-                                    Tim Kami
-                                </Link>
-                                <Link href="/kontak" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
-                                    Kontak
-                                </Link>
-                                <Link href="/tentang-kami" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
-                                    Tentang Kami
-                                </Link>
+                                    <Link href="/tim" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5">
+                                        Tim Kami
+                                    </Link>
+                                    <Link href="/kontak" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5">
+                                        Kontak
+                                    </Link>
+                                    <Link href="/tentang-kami" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5">
+                                        Tentang Kami
+                                    </Link>
                                 </div>
                             )}
-                            </div>
-                          {/* === PESANAN === */}
-                            <div className="relative">
-                            <button onClick={() => { setOpenPesanan(!openPesanan); setOpenAbout(false); }} className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${ openPesanan ? "text-blue-600" : "text-gray-700 hover:text-blue-600" }`}>
+                        </div>
+
+                        {/* Pesanan Dropdown - Desktop */}
+                        <div className="relative">
+                            <button 
+                                onClick={() => { 
+                                    setOpenPesanan(!openPesanan); 
+                                    setOpenAbout(false); 
+                                }} 
+                                className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+                                    openPesanan ? "text-blue-600" : "text-gray-700 hover:text-blue-600"
+                                }`}
+                            >
                                 Pesanan
-                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${ openPesanan ? "rotate-180" : "" }`} />
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                                    openPesanan ? "rotate-180" : ""
+                                }`} />
                             </button>
                             {openPesanan && (
                                 <div className="absolute left-0 mt-2 w-56 rounded-xl border bg-white shadow-xl transition-all duration-200 ease-out opacity-0 translate-y-2 scale-95 animate-[fadeIn_.2s_ease-out_forwards]">
-                                <Link href="/pesanan/order" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
-                                    Order Pesanan
-                                </Link>
-                                <Link href="/pesanan/tracking" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5" >
-                                    Tracking Pesanan
-                                </Link>
+                                    <Link href="/pesanan/order" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5">
+                                        Order Pesanan
+                                    </Link>
+                                    <Link href="/pesanan/tracking" className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg mx-1 my-0.5">
+                                        Tracking Pesanan
+                                    </Link>
                                 </div>
                             )}
-                            </div>
-                        
-                          {/* === BERITA === */}
-                            <Link href="/berita" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors" >
-                            Berita
-                            </Link>
                         </div>
+
+                        <Link href="/berita" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                            Berita
+                        </Link>
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                        aria-label="Toggle menu"
+                    >
+                        {mobileMenuOpen ? (
+                            <X className="h-6 w-6" />
+                        ) : (
+                            <Menu className="h-6 w-6" />
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && (
+                <div className="md:hidden border-t border-gray-100 bg-white">
+                    <div className="px-4 py-4 space-y-1">
+                        <a 
+                            href="#home" 
+                            onClick={closeMobileMenu}
+                            className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                        >
+                            Home
+                        </a>
+                        <a 
+                            href="#services" 
+                            onClick={closeMobileMenu}
+                            className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                        >
+                            Layanan
+                        </a>
+                        <a 
+                            href="#portfolio" 
+                            onClick={closeMobileMenu}
+                            className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                        >
+                            Portfolio
+                        </a>
+
+                        {/* About Dropdown - Mobile */}
+                        <div>
+                            <button
+                                onClick={() => setMobileAboutOpen(!mobileAboutOpen)}
+                                className="flex items-center justify-between w-full px-4 py-3 text-base font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                            >
+                                <span>About</span>
+                                <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                                    mobileAboutOpen ? "rotate-180" : ""
+                                }`} />
+                            </button>
+                            {mobileAboutOpen && (
+                                <div className="ml-4 mt-1 space-y-1">
+                                    <Link 
+                                        href="/tim" 
+                                        onClick={closeMobileMenu}
+                                        className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                    >
+                                        Tim Kami
+                                    </Link>
+                                    <Link 
+                                        href="/kontak" 
+                                        onClick={closeMobileMenu}
+                                        className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                    >
+                                        Kontak
+                                    </Link>
+                                    <Link 
+                                        href="/tentang-kami" 
+                                        onClick={closeMobileMenu}
+                                        className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                    >
+                                        Tentang Kami
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Pesanan Dropdown - Mobile */}
+                        <div>
+                            <button
+                                onClick={() => setMobilePesananOpen(!mobilePesananOpen)}
+                                className="flex items-center justify-between w-full px-4 py-3 text-base font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                            >
+                                <span>Pesanan</span>
+                                <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                                    mobilePesananOpen ? "rotate-180" : ""
+                                }`} />
+                            </button>
+                            {mobilePesananOpen && (
+                                <div className="ml-4 mt-1 space-y-1">
+                                    <Link 
+                                        href="/pesanan/order" 
+                                        onClick={closeMobileMenu}
+                                        className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                    >
+                                        Order Pesanan
+                                    </Link>
+                                    <Link 
+                                        href="/pesanan/tracking" 
+                                        onClick={closeMobileMenu}
+                                        className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                                    >
+                                        Tracking Pesanan
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        <Link 
+                            href="/berita" 
+                            onClick={closeMobileMenu}
+                            className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                        >
+                            Berita
+                        </Link>
                     </div>
                 </div>
-            </nav>
+            )}
+
+            <style>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px) scale(0.95);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+            `}</style>
+        </nav>
 
             {/* Hero Section */}
             <section id="home" className="relative overflow-hidden bg-linear-to-br from-blue-600/50 via-blue-700/50 to-indigo-800/50 pt-18">
