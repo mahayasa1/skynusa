@@ -374,8 +374,8 @@ export default function OrderTracking({ pesanan, flash }: TrackingProps) {
                             </div>
 
                             {/* Order Details Card */}
-                            <Card className="shadow-lg">
-                                <CardHeader className="bg-linear-to-r from-blue-50 to-blue-100 border-b">
+                            <Card className="shadow-lg bg-blue-300">
+                                <CardHeader className="bg-linear-to-r from-blue-50 to-blue-100 border">
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <CardTitle className="text-2xl text-gray-800">
