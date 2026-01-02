@@ -5,6 +5,8 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -69,12 +71,56 @@ Route::controller(PesananController::class)->group(function () {
 
 /**
  * ============================================
- * ADMIN ROUTES - Services Management
- * Middleware: auth, role:admin
+ * ADMIN DASHBOARD - All authenticated users
+ * ============================================
+ */
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+/**
+ * ============================================
+ * ADMIN ROUTES - User Management (Admin Only)
  * ============================================
  */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    
+    Route::controller(UserController::class)->prefix('users')->group(function () {
+        Route::get('/', 'index')->name('users.index');
+        Route::get('/create', 'create')->name('users.create');
+        Route::post('/', 'store')->name('users.store');
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('users.bulk-destroy');
+        Route::get('/{user}', 'show')->name('users.show');
+        Route::get('/{user}/edit', 'edit')->name('users.edit');
+        Route::put('/{user}', 'update')->name('users.update');
+        Route::delete('/{user}', 'destroy')->name('users.destroy');
+    });
+});
+
+/**
+* ============================================
+ * ADMIN ROUTES - Services Management
+ * Admin & Head can access
+ * ============================================
+ */
+Route::middleware(['auth', 'role:admin,head'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::controller(CompanyController::class)->prefix('companies')->group(function () {
+        Route::get('/', 'adminIndex')->name('companies.index');
+        Route::get('/create', 'create')->name('companies.create');
+        Route::post('/', 'store')->name('companies.store');
+        
+        // Bulk operations
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('companies.bulk-destroy');
+        Route::post('/bulk-update-status', 'bulkUpdateStatus')->name('companies.bulk-update-status');
+        
+        Route::get('/{id}', 'adminShow')->name('companies.show');
+        Route::get('/{id}/edit', 'edit')->name('companies.edit');
+        Route::put('/{id}', 'update')->name('companies.update');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy')->name('companies.destroy');
+        Route::patch('/{id}/toggle-status', 'toggleStatus')->name('companies.toggle-status');
+    });
+
     Route::controller(ServicesController::class)->prefix('layanan')->group(function () {
         
         // List services
@@ -103,7 +149,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         // Duplicate
         Route::post('/{id}/duplicate', 'duplicate')->name('services.duplicate');
     });
+});
 
+/**
+ * ============================================
+ * PORTFOLIO ROUTES - Admin, Manager, Head
+ * ============================================
+ */
+Route::middleware(['auth', 'role:admin,manager,head'])->prefix('admin')->name('admin.')->group(function () {
+    
     Route::controller(PortfolioController::class)->prefix('portfolio')->group(function () {
         
         // List portfolios
@@ -132,49 +186,32 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         // Duplicate
         Route::post('/{id}/duplicate', 'duplicate')->name('portfolio.duplicate');
     });
+});
 
-    Route::controller(CompanyController::class)->prefix('companies')->group(function () {
-        Route::get('/', 'adminIndex')->name('companies.index');
-        Route::get('/create', 'create')->name('companies.create');
-        Route::post('/', 'store')->name('companies.store');
-        
-        // Bulk operations
-        Route::post('/bulk-destroy', 'bulkDestroy')->name('companies.bulk-destroy');
-        Route::post('/bulk-update-status', 'bulkUpdateStatus')->name('companies.bulk-update-status');
-        
-        Route::get('/{id}', 'adminShow')->name('companies.show');
-        Route::get('/{id}/edit', 'edit')->name('companies.edit');
-        Route::put('/{id}', 'update')->name('companies.update');
-        Route::patch('/{id}', 'update');
-        Route::delete('/{id}', 'destroy')->name('companies.destroy');
-        Route::patch('/{id}/toggle-status', 'toggleStatus')->name('companies.toggle-status');
-    });
 
-    Route::controller(PesanController::class)->prefix('pesan')->group(function () {
-        Route::get('/', 'adminIndex')->name('pesan.index');
-        Route::post('/bulk-destroy', 'bulkDestroy')->name('pesan.bulk-destroy');
-        Route::post('/bulk-force-destroy', 'bulkForceDestroy')->name('pesan.bulk-force-destroy');
-        Route::get('/export', 'export')->name('pesan.export');
-        Route::get('/trashed', 'trashed')->name('pesan.trashed');
-        Route::get('/{id}', 'show')->name('pesan.show');
-        Route::get('/{id}/edit', 'edit')->name('pesan.edit');
-        Route::put('/{id}', 'update')->name('pesan.update');
-        Route::patch('/{id}', 'update');
-        Route::delete('/{id}', 'destroy')->name('pesan.destroy');
-        Route::delete('/{id}/force', 'forceDestroy')->name('pesan.force-destroy');
-        Route::post('/{id}/restore', 'restore')->name('pesan.restore');
-    });
-
+/**
+ * ============================================
+ * PESANAN ROUTES - Admin, Manager, Staff (read)
+ * ============================================
+ */
+Route::middleware(['auth', 'role:admin,manager,staff'])->prefix('admin')->name('admin.')->group(function () {
     Route::controller(PesananController::class)->prefix('pesanan')->group(function () {
         // List orders
         Route::get('/', 'adminIndex')->name('pesanan.index');
         
+        // Single order operations
+        Route::get('/{id}', 'show')->name('pesanan.show');
+    });
+});
+
+// Pesanan CRUD - Admin & Manager only
+Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.')->group(function () {
+    Route::controller(PesananController::class)->prefix('pesanan')->group(function () {
         // Bulk operations
         Route::post('/bulk-destroy', 'bulkDestroy')->name('pesanan.bulk-destroy');
         Route::post('/bulk-update-status', 'bulkUpdateStatus')->name('pesanan.bulk-update-status');
         
-        // Single order operations
-        Route::get('/{id}', 'show')->name('pesanan.show');
+        // Edit operations
         Route::get('/{id}/edit', 'edit')->name('pesanan.edit');
         Route::put('/{id}', 'update')->name('pesanan.update');
         Route::patch('/{id}', 'update');
@@ -182,6 +219,34 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         
         // Update status
         Route::patch('/{id}/update-status', 'updateStatus')->name('pesanan.update-status');
+    });
+});
+
+/**
+ * ============================================
+ * PESAN ROUTES - Admin & Staff
+ * ============================================
+ */
+Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->name('admin.')->group(function () {
+    Route::controller(PesanController::class)->prefix('pesan')->group(function () {
+        Route::get('/', 'adminIndex')->name('pesan.index');
+        Route::get('/trashed', 'trashed')->name('pesan.trashed');
+        Route::get('/{id}', 'show')->name('pesan.show');
+    });
+});
+
+// Pesan CRUD - Admin only
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::controller(PesanController::class)->prefix('pesan')->group(function () {
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('pesan.bulk-destroy');
+        Route::post('/bulk-force-destroy', 'bulkForceDestroy')->name('pesan.bulk-force-destroy');
+        Route::get('/export', 'export')->name('pesan.export');
+        Route::get('/{id}/edit', 'edit')->name('pesan.edit');
+        Route::put('/{id}', 'update')->name('pesan.update');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy')->name('pesan.destroy');
+        Route::delete('/{id}/force', 'forceDestroy')->name('pesan.force-destroy');
+        Route::post('/{id}/restore', 'restore')->name('pesan.restore');
     });
 });
 
