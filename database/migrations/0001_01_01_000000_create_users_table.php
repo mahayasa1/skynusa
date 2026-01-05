@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('telp');
             $table->enum('role', ['admin', 'staff', 'head', 'manager'])->default('staff');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

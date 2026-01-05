@@ -39,7 +39,6 @@ class DashboardController extends Controller
                 'total_pesanan' => Pesanan::count(),
                 'total_pesan' => Pesan::count(),
                 'pending_pesanan' => Pesanan::where('status', 'pending')->count(),
-                'active_services' => Services::where('status', 'active')->count(),
             ];
 
             // Recent activities

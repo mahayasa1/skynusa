@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         CategorySeeder::class,
         CompanySeeder::class,
         PortfolioSeeder::class,
+        UserSeeder::class,
         ]);
     }
 }
