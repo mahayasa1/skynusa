@@ -35,6 +35,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import * as LucideIcons from 'lucide-react';
 import { useState, useEffect, useRef, RefObject } from "react";
 
+
+function doSomething(options: IntersectionObserverInit) {
+    throw new Error('Function not implemented.');
+}
+
 // Animation Hook
 const useIntersectionObserver = <T extends HTMLElement>(
   options: IntersectionObserverInit = {}
@@ -57,11 +62,17 @@ const useIntersectionObserver = <T extends HTMLElement>(
         ...options,
       }
     );
+    
 
     observer.observe(element);
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+  doSomething(options);
+    }, [options]);
+
 
   return [elementRef, isVisible] as const;
 };

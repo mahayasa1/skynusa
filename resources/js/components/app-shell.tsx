@@ -1,11 +1,7 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-
-interface AppShellProps {
-    children: React.ReactNode;
-    variant?: 'header' | 'sidebar';
-}
+import * as React from 'react';
 
 
 export function AppShell({
