@@ -50,11 +50,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Email Verification Routes
     Route::get('verify-email', EmailVerificationPromptController::class)
-        ->name('verification.notice');
+        ->name('verification.email');
     
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
+        ->name('verification.verifies');
     
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')

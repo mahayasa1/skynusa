@@ -251,8 +251,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 // Settings routes (sudah ada)
-require __DIR__.'/settings.php';
-
-require __DIR__.'/sitemap.php';
-
 require __DIR__.'/auth.php';
+
+require __DIR__.'/settings.php';
