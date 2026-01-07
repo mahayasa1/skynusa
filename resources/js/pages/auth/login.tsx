@@ -214,7 +214,6 @@ function AnimatedBackground() {
 export default function Login({
     status,
     canResetPassword,
-    canRegister,
 }: LoginProps) {
     const [showPassword, setShowPassword] = useState(false);
 

@@ -1,5 +1,5 @@
 import { Link, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -20,11 +20,9 @@ import {
   User,
   Building2,
   Briefcase,
-  Image,
   Tags,
   BadgeCheck,
   Puzzle,
-  BookImage,
   BookText,
 } from 'lucide-react';
 
@@ -84,18 +82,17 @@ export default function ModernSidebar({ currentPath = '' }: SidebarProps) {
 
   const isActive = (href: string) => currentPath.startsWith(href);
 
-  const isManagementActive = menuItems
-  .find((m) => m.name === 'Management')
-  ?.children?.some((c) => isActive(c.href)) ?? false;
+  // ===== cek apakah salah satu child management aktif =====
+  const isManagementActive =
+    menuItems
+      .find((m) => m.name === 'Management')
+      ?.children?.some((c) => isActive(c.href)) ?? false;
 
-const [openManagement, setOpenManagement] = useState(isManagementActive);
+  // ===== state hanya untuk toggle manual =====
+  const [manualOpen, setManualOpen] = useState(false);
 
-  // Auto open dropdown jika salah satu child aktif
-  useEffect(() => {
-  if (isManagementActive) {
-    setOpenManagement(true);
-  }
-}, [isManagementActive]);
+  // ===== final open state =====
+  const openManagement = isManagementActive || manualOpen;
 
   const handleLogout = () => {
     if (confirm('Apakah Anda yakin ingin logout?')) {
@@ -153,7 +150,7 @@ const [openManagement, setOpenManagement] = useState(isManagementActive);
               <SidebarMenuItem key={item.name}>
                 {/* Parent */}
                 <SidebarMenuButton
-                  onClick={() => setOpenManagement(!openManagement)}
+                  onClick={() => setManualOpen((v) => !v)}
                   tooltip={item.name}
                   className="
                     flex items-center gap-3
@@ -172,8 +169,11 @@ const [openManagement, setOpenManagement] = useState(isManagementActive);
 
                 {/* Children */}
                 <div
-                  className={` ml-9 grid transition-all duration-300 ease-in-out ${openManagement ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}
-                  `}
+                  className={`ml-9 grid transition-all duration-300 ease-in-out ${
+                    openManagement
+                      ? 'grid-rows-[1fr] opacity-100'
+                      : 'grid-rows-[0fr] opacity-0'
+                  }`}
                 >
                   <div className="overflow-hidden flex flex-col gap-1 mt-1">
                     {item.children.map((child) => (
