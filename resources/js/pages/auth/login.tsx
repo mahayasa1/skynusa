@@ -20,6 +20,7 @@ interface LoginProps {
 
 function AnimatedBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const mouseRef = useRef({ x: 0, y: 0 });
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -41,44 +42,120 @@ function AnimatedBackground() {
         setCanvasSize();
         window.addEventListener("resize", setCanvasSize);
 
-        const particles = Array.from({ length: 25 }).map(() => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: 2 + Math.random() * 3,
-            dx: (Math.random() - 0.5) * 1,
-            dy: (Math.random() - 0.5) * 1,
-        }));
+        // Track mouse movement on entire window
+        const handleMouseMove = (e: MouseEvent) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseRef.current = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+
+        const particles = Array.from({ length: 50 }).map(() => {
+            const homeX = Math.random() * canvas.width;
+            const homeY = Math.random() * canvas.height;
+            return {
+                x: homeX,
+                y: homeY,
+                homeX: homeX,
+                homeY: homeY,
+                radius: 2 + Math.random() * 3,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                baseVx: (Math.random() - 0.5) * 0.5,
+                baseVy: (Math.random() - 0.5) * 0.5
+            };
+        });
 
         const draw = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 🔹 background gradient subtle tech blue
+            // Background gradient
             const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
             bg.addColorStop(0, "rgba(10,25,60,0.6)");
             bg.addColorStop(1, "rgba(5,15,40,0.6)");
             ctx.fillStyle = bg;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 🔵 Draw particles
+            // Update and draw particles
             particles.forEach(p => {
-                p.x += p.dx;
-                p.y += p.dy;
+                // Calculate distance to mouse
+                const dxMouse = mouseRef.current.x - p.x;
+                const dyMouse = mouseRef.current.y - p.y;
+                const distanceToMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+                
+                // Calculate distance to home
+                const dxHome = p.homeX - p.x;
+                const dyHome = p.homeY - p.y;
+                const distanceToHome = Math.sqrt(dxHome * dxHome + dyHome * dyHome);
+                
+                const attractionRadius = 150;
+                
+                // If mouse is close, move away from mouse
+                if (distanceToMouse < attractionRadius) {
+                    const force = (attractionRadius - distanceToMouse) / attractionRadius;
+                    const moveStrength = 3;
+                    
+                    // Move away from mouse
+                    p.vx -= (dxMouse / distanceToMouse) * force * moveStrength;
+                    p.vy -= (dyMouse / distanceToMouse) * force * moveStrength;
+                } else {
+                    // Return to home position with base movement
+                    const returnStrength = 0.03;
+                    if (distanceToHome > 50) {
+                        p.vx += dxHome * returnStrength;
+                        p.vy += dyHome * returnStrength;
+                    } else {
+                        // Add base floating movement when near home
+                        p.vx += p.baseVx * 0.1;
+                        p.vy += p.baseVy * 0.1;
+                    }
+                }
+                
+                // Always add slight random floating movement
+                p.vx += (Math.random() - 0.5) * 0.05;
+                p.vy += (Math.random() - 0.5) * 0.05;
+                
+                // Apply velocity with damping
+                p.vx *= 0.92;
+                p.vy *= 0.92;
+                
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                // Update home position slowly (drift effect)
+                p.homeX += p.baseVx * 0.3;
+                p.homeY += p.baseVy * 0.3;
+                
+                // Bounce home position off edges
+                if (p.homeX < 0 || p.homeX > canvas.width) {
+                    p.baseVx *= -1;
+                    p.homeX = Math.max(0, Math.min(canvas.width, p.homeX));
+                }
+                if (p.homeY < 0 || p.homeY > canvas.height) {
+                    p.baseVy *= -1;
+                    p.homeY = Math.max(0, Math.min(canvas.height, p.homeY));
+                }
+                
+                // Keep particle within bounds
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                p.x = Math.max(0, Math.min(canvas.width, p.x));
+                p.y = Math.max(0, Math.min(canvas.height, p.y));
 
-                if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-
+                // Draw particle
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-
                 ctx.fillStyle = "rgba(80,170,255,0.9)";
                 ctx.shadowBlur = 20;
                 ctx.shadowColor = "#4ea8ff";
-
                 ctx.fill();
                 ctx.shadowBlur = 0;
             });
 
-            // 🔗 Connect particles with neon lines
+            // Connect particles with lines
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     const a = particles[i];
@@ -100,6 +177,21 @@ function AnimatedBackground() {
                 }
             }
 
+            // Draw glow around mouse
+            const mouseDistance = 150;
+            particles.forEach(p => {
+                const dx = mouseRef.current.x - p.x;
+                const dy = mouseRef.current.y - p.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < mouseDistance) {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius * 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(100,200,255,${(1 - distance / mouseDistance) * 0.3})`;
+                    ctx.fill();
+                }
+            });
+
             animationFrameId = requestAnimationFrame(draw);
         };
 
@@ -108,14 +200,14 @@ function AnimatedBackground() {
         return () => {
             cancelAnimationFrame(animationFrameId);
             window.removeEventListener("resize", setCanvasSize);
+            window.removeEventListener('mousemove', handleMouseMove);
         };
     }, []);
 
     return (
         <canvas
             ref={canvasRef}
-            className="absolute inset-0 -z-10"
-            style={{ filter: "blur(0px)" }}
+            className="absolute inset-0 -z-10 cursor-pointer"
         />
     );
 }
@@ -247,19 +339,10 @@ export default function Login({
                             >
                                 {processing ? <><Spinner /> Signing In...</> : 'Sign In'}
                             </Button>
-
-                            {canRegister && (
-                                <div className="text-center text-sm text-black">
-                                    Don't have an account?{' '}
-                                    <TextLink href={register()} className="text-gray-500 hover:text-black font-semibold">
-                                        Sign up
-                                    </TextLink>
-                                </div>
-                            )}
                         </form>
                     </div>
 
-                    <div className=" mt-2 text-center text-sm text-blue-200/60 opacity-0 animate-fade-in-up animate-delay-600">
+                    <div className=" mt-5 text-center text-sm text-blue-200/60 opacity-0 animate-fade-in-up animate-delay-600">
                         © 2025 SKYNUSA TECH. All rights reserved.
                     </div>
                 </div>

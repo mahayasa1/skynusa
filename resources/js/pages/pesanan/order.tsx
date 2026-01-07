@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ShoppingCart, Calendar, AlertCircle, CheckCircle, Copy, ExternalLink } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import React from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 interface FlashMessages {
   success?: string;
@@ -37,27 +39,146 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
 
     const [copied, setCopied] = React.useState(false);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Show success alert when order is created
+    React.useEffect(() => {
+        if (flash?.success && flash?.tracking_code) {
+            Swal.fire({
+                icon: 'success',
+                width: 420,
+                title: 'Pesanan Berhasil Dibuat!',
+                html: `
+                    <div class="text-left text-sm space-y-4">
+                        <p class="text-gray-700 mb-4">${flash.success}</p>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'px-6 py-3 rounded-lg font-semibold',
+                    cancelButton: 'px-6 py-3 rounded-lg font-semibold'
+                },
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp animate__faster'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/pesanan/order';
+                }
+            });
+        }
+    }, [flash]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        
+        // Get selected service name
+        const selectedService = services.find(s => s.id.toString() === data.service_id);
+        
+        // Konfirmasi dengan SweetAlert
+        const result = await Swal.fire({
+            title: '⚠️ Konfirmasi Pesanan',
+            width: 420, // 👈 bikin popup lebih kecil
+            html: `
+                <div class="text-left text-sm space-y-2">
+                    <p class="text-gray-600 mb-2">
+                        Pastikan data pesanan sudah benar:
+                    </p>
+
+                    <div class="bg-gray-50 rounded-md p-3 space-y-1">
+                        <div class="flex">
+                            <span class="font-medium text-gray-700 w-28">Layanan:</span>
+                            <span class="text-gray-600">${selectedService?.title || '-'}</span>
+                        </div>
+                        <div class="flex">
+                            <span class="font-medium text-gray-700 w-28">Nama:</span>
+                            <span class="text-gray-600">${data.name || '-'}</span>
+                        </div>
+                        <div class="flex">
+                            <span class="font-medium text-gray-700 w-28">Email:</span>
+                            <span class="text-gray-600">${data.email || '-'}</span>
+                        </div>
+                        <div class="flex">
+                            <span class="font-medium text-gray-700 w-28">Telepon:</span>
+                            <span class="text-gray-600">${data.telp || '-'}</span>
+                        </div>
+                        <div class="flex">
+                            <span class="font-medium text-gray-700 w-28">Target:</span>
+                            <span class="text-gray-600">${data.due_date || '-'}</span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Cek Ulang',
+
+            buttonsStyling: false,
+            customClass: {
+                popup: 'rounded-lg p-4', // 👈 padding popup lebih kecil
+                title: 'text-base font-semibold',
+                confirmButton: 'px-3 py-2 text-sm rounded bg-blue-600 text-white',
+                cancelButton: 'px-3 py-2 text-sm rounded bg-gray-300 text-gray-800 ml-2',
+            },
+        });
+
+        
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        // Show loading
+        Swal.fire({
+            width: 420,
+            title: 'Mohon tunggu sebentar...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
         post('/pesanan/order', {
             preserveScroll: true,
             onSuccess: () => {
+                Swal.close();
                 reset();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
             onError: (errors) => {
+                Swal.close();
+                
+                // Show error alert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Membuat Pesanan',
+                    width: 420,
+                    html: `
+                        <div class="text-left text-sm space-y-3">
+                            <p class="text-gray-700 mb-3">Terjadi kesalahan saat memproses pesanan Anda:</p>
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                                <p class="text-red-700 text-sm">
+                                    ${Object.values(errors).join('<br>')}
+                                </p>
+                            </div>
+                            <p class="text-gray-600 text-sm mt-3">Silakan periksa kembali data Anda dan coba lagi.</p>
+                        </div>
+                    `,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#ef4444',
+                    customClass: {
+                        popup: 'rounded-2xl',
+                        confirmButton: 'px-6 py-3 rounded-lg font-semibold'
+                    }
+                });
+                
                 console.error('Validation errors:', errors);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
-    };
-
-    const copyToClipboard = () => {
-        if (flash?.tracking_code) {
-            navigator.clipboard.writeText(flash.tracking_code);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        }
     };
     
     const dateRef = React.useRef<HTMLInputElement>(null);
@@ -72,9 +193,15 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                 description="Pesan layanan instalasi, maintenance, IT support, dan web development dari SKYNUSA TECH"
                 canonical="https://skynusa-tech.com/order"
             />
+
+            {/* Add animate.css for animations */}
+            <link
+                rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            />
             
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">
+            <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-24 pb-16">
                 <div className="absolute inset-0 bg-[url('/asset/bg-main.png')] bg-cover bg-center opacity-20"></div>
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
@@ -105,54 +232,6 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                     <p className="font-semibold text-green-800 text-lg">
                                         {flash.success}
                                     </p>
-                                    
-                                    <div className="bg-white rounded-lg border border-green-300 p-4">
-                                        <p className="text-sm text-gray-700 mb-2">
-                                            Kode Tracking Pesanan Anda:
-                                        </p>
-                                        <div className="flex items-center gap-3">
-                                            <code className="flex-1 text-2xl font-bold text-green-700 font-mono bg-gray-50 px-4 py-3 rounded border border-gray-200">
-                                                {flash.tracking_code}
-                                            </code>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="icon"
-                                                onClick={copyToClipboard}
-                                                className="h-12 w-12"
-                                            >
-                                                {copied ? (
-                                                    <CheckCircle className="h-5 w-5 text-green-600" />
-                                                ) : (
-                                                    <Copy className="h-5 w-5" />
-                                                )}
-                                            </Button>
-                                        </div>
-                                        <p className="text-xs text-gray-600 mt-3">
-                                            💡 Simpan kode ini untuk melacak status pesanan Anda
-                                        </p>
-                                    </div>
-
-                                    <div className="flex gap-3">
-                                        <Button
-                                            asChild
-                                            variant="default"
-                                            className="flex-1"
-                                        >
-                                            <a href="/pesanan/tracking">
-                                                <ExternalLink className="mr-2 h-4 w-4" />
-                                                Lacak Pesanan
-                                            </a>
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="flex-1"
-                                            onClick={() => window.location.reload()}
-                                        >
-                                            Buat Pesanan Baru
-                                        </Button>
-                                    </div>
                                 </div>
                             </AlertDescription>
                         </Alert>

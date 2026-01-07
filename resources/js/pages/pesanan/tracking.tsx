@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, Package, AlertCircle, CheckCircle, Clock, Book, User, Mail, Phone, Calendar, Hourglass, FileSearch, Send, MessageSquare } from 'lucide-react';
+import { Search, Package, AlertCircle, CheckCircle, Clock, Book, User, Mail, Phone, Calendar, Hourglass, FileSearch, Send, MessageSquare, Flag } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import React from 'react';
 
@@ -60,7 +60,7 @@ export default function OrderTracking({ pesanan, flash }: TrackingProps) {
         { key: 'proses', label: 'Diproses', icon: Clock },
         { key: 'approval', label: 'Approval', icon: Send },
         { key: 'running', label: 'Tindak Lanjut', icon: MessageSquare },
-        { key: 'selesai', label: 'Selesai', icon: CheckCircle },
+        { key: 'selesai', label: 'Selesai', icon: Flag },
     ];
 
     const getStatusIndex = (status: string) => {

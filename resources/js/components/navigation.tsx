@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, LogIn } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 export default function Navigation() {
@@ -34,7 +34,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
 
@@ -168,16 +168,29 @@ export default function Navigation() {
             >
               Berita
             </Link>
+            
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          {/* Right Side - Login Button & Mobile Menu */}
+          <div className="flex items-center gap-3">
+            {/* Desktop Login Button */}
+            <Link
+              href="/login"
+              className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Login</span>
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -321,6 +334,18 @@ export default function Navigation() {
             >
               Berita
             </Link>
+
+            {/* Mobile Login Button */}
+            <div className="pt-3 mt-3 border-t border-gray-100">
+              <Link
+                href="/login"
+                onClick={closeMobileMenu}
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg shadow-md transition-all duration-200"
+              >
+                <LogIn className="w-5 h-5" />
+                <span>Login</span>
+              </Link>
+            </div>
           </div>
         </div>
       )}
