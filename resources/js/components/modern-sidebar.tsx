@@ -84,15 +84,18 @@ export default function ModernSidebar({ currentPath = '' }: SidebarProps) {
 
   const isActive = (href: string) => currentPath.startsWith(href);
 
-  const [openManagement, setOpenManagement] = useState(false);
+  const isManagementActive = menuItems
+  .find((m) => m.name === 'Management')
+  ?.children?.some((c) => isActive(c.href)) ?? false;
+
+const [openManagement, setOpenManagement] = useState(isManagementActive);
 
   // Auto open dropdown jika salah satu child aktif
   useEffect(() => {
-    const management = menuItems.find((m) => m.name === 'Management');
-    if (management?.children?.some((c) => isActive(c.href))) {
-      setOpenManagement(true);
-    }
-  }, [currentPath]);
+  if (isManagementActive) {
+    setOpenManagement(true);
+  }
+}, [isManagementActive]);
 
   const handleLogout = () => {
     if (confirm('Apakah Anda yakin ingin logout?')) {

@@ -37,8 +37,6 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
         due_date: '',
     });
 
-    const [copied, setCopied] = React.useState(false);
-
     // Show success alert when order is created
     React.useEffect(() => {
         if (flash?.success && flash?.tracking_code) {
