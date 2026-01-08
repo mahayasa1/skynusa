@@ -185,7 +185,7 @@ class PesananController extends Controller
         $orders = $this->pesananService->getAdminPaginated($perPage, $search, $status, $serviceId);
         $services = Services::active()->ordered()->get(['id', 'title']);
 
-        return Inertia::render('Admin/Pesanan/Index', [
+        return Inertia::render('admin/order/index', [
             'orders' => $orders,
             'services' => $services,
             'filters' => $request->only(['search', 'per_page', 'status', 'service_id']),
@@ -205,7 +205,7 @@ class PesananController extends Controller
             abort(404);
         }
 
-        return Inertia::render('Admin/Pesanan/Show', [
+        return Inertia::render('admin/order/show', [
             'pesanan' => $pesanan,
             'statuses' => Pesanan::getStatuses(),
             'nextStatusOptions' => $this->pesananService->getNextStatusOptions($pesanan->status),
@@ -225,7 +225,7 @@ class PesananController extends Controller
 
         $services = Services::active()->ordered()->get(['id', 'title']);
 
-        return Inertia::render('Admin/Pesanan/Edit', [
+        return Inertia::render('admin/order/edit', [
             'pesanan' => $pesanan,
             'services' => $services,
             'statuses' => Pesanan::getStatuses(),

@@ -12,7 +12,6 @@ import {
 import {
   LayoutDashboard,
   ShoppingCart,
-  FileText,
   MessageSquare,
   LogOut,
   Settings,
@@ -20,10 +19,7 @@ import {
   User,
   Building2,
   Briefcase,
-  Tags,
-  BadgeCheck,
-  Puzzle,
-  BookText,
+  FolderKanban,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -51,31 +47,18 @@ export default function ModernSidebar({ currentPath = '' }: SidebarProps) {
       icon: LayoutDashboard,
     },
     {
-      name: 'Order',
+      name: 'Pesanan',
       href: '/admin/pesanan',
       icon: ShoppingCart,
-    },
-    {
-      name: 'Berita',
-      href: '/admin/berita',
-      icon: FileText,
-    },
-    {
-      name: 'Ulasan',
-      href: '/admin/ulasan',
-      icon: MessageSquare,
     },
     {
       name: 'Management',
       icon: Settings,
       children: [
-        { name: 'User', href: '/admin/management/user', icon: User },
-        { name: 'Company', href: '/admin/management/company', icon: Building2 },
-        { name: 'Service', href: '/admin/management/service', icon: Briefcase },
-        { name: 'Portfolio', href: '/admin/management/portfolio', icon: BookText },
-        { name: 'Categories', href: '/admin/management/categories', icon: Tags },
-        { name: 'Jabatan', href: '/admin/management/jabatan', icon: BadgeCheck },
-        { name: 'Features', href: '/admin/management/features', icon: Puzzle },
+        { name: 'Users', href: '/admin/users', icon: User },
+        { name: 'Companies', href: '/admin/companies', icon: Building2 },
+        { name: 'Layanan', href: '/admin/layanan', icon: Briefcase },
+        { name: 'Portfolio', href: '/admin/portfolio', icon: FolderKanban },
       ],
     },
   ];
