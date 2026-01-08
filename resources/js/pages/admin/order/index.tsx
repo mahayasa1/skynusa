@@ -115,7 +115,7 @@ export default function PesananIndex({
     statuses 
 }: PesananIndexProps) {
     const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
-    const { data, setData, get } = useForm({
+    const { data, setData, } = useForm({
         search: filters.search || '',
         status: filters.status || 'all',
         service_id: filters.service_id || 'all',
