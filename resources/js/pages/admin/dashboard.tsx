@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { type BreadcrumbItem } from '@/types'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 interface DashboardStats {
     total_pesanan?: number
@@ -63,8 +63,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ]
 
-const INDONESIA_TOPO_JSON = "https://raw.githubusercontent.com/superpikar/indonesia-geojson/master/indonesia.geojson"
-
 export default function AdminDashboard({
     stats: initialStats,
     recent_pesanan: initialPesanan = [],
@@ -110,35 +108,36 @@ export default function AdminDashboard({
     ]
 
     // Function untuk fetch data terbaru
-    const fetchDashboardData = async () => {
-        setIsRefreshing(true)
-        
-        router.reload({
-            only: ['stats', 'recent_pesanan', 'recent_pesan', 'chart_data', 'visitor_locations'],
-            onSuccess: (page) => {
-                const props = page.props as any
-                setStats(props.stats)
-                setRecentPesanan(props.recent_pesanan || [])
-                setRecentPesan(props.recent_pesan || [])
-                setChartData(props.chart_data || defaultChartData)
-                setLocations(props.visitor_locations || defaultLocations)
-                setLastUpdate(new Date())
-                setIsRefreshing(false)
-            },
-            onError: () => {
-                setIsRefreshing(false)
-            }
-        })
-    }
+    const fetchDashboardData = useCallback(async () => {
+    setIsRefreshing(true)
+
+    router.reload({
+        only: ['stats', 'recent_pesanan', 'recent_pesan', 'chart_data', 'visitor_locations'],
+        onSuccess: (page) => {
+            const props = page.props as any
+            setStats(props.stats)
+            setRecentPesanan(props.recent_pesanan || [])
+            setRecentPesan(props.recent_pesan || [])
+            setChartData(props.chart_data || defaultChartData)
+            setLocations(props.visitor_locations || defaultLocations)
+            setLastUpdate(new Date())
+            setIsRefreshing(false)
+        },
+        onError: () => {
+            setIsRefreshing(false)
+        }
+    })
+}, [])
+
 
     // Auto refresh setiap 30 detik
     useEffect(() => {
-        const interval = setInterval(() => {
-            fetchDashboardData()
-        }, 30000) // 30 detik
+    const interval = setInterval(() => {
+        fetchDashboardData()
+    }, 30000)
 
-        return () => clearInterval(interval)
-    }, [])
+    return () => clearInterval(interval)
+}, [fetchDashboardData])
 
     // Set data default jika kosong
     const displayChartData = chartData.length > 0 ? chartData : defaultChartData
