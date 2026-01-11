@@ -205,7 +205,7 @@ export default function BeritaShow({ berita, related, popular }: BeritaShowProps
                     </div>
                     
                     <div className="space-y-6">
-                      {popular.map((article, index) => (
+                      {popular.map((article) => (
                         <Link
                           key={article.id}
                           href={`/berita/${article.slug}`}
