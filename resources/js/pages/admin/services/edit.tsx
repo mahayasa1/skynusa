@@ -62,7 +62,7 @@ export default function ServicesEdit({ service }: ServicesEditProps) {
 
     useEffect(() => {
         setData('features', features.filter(f => f.trim() !== ''));
-    }, [features]);
+    }, [features, setData]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

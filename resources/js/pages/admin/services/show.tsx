@@ -59,10 +59,6 @@ export default function ServicesShow({ service }: ServicesShowProps) {
         router.patch(`/admin/layanan/${service.id}/toggle-status`);
     };
 
-    const handleToggleFeatured = () => {
-        router.patch(`/admin/layanan/${service.id}/toggle-featured`);
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={service.title} />
