@@ -15,7 +15,6 @@ import {
 } from 'lucide-react'
 import { type BreadcrumbItem } from '@/types'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps'
 import { useEffect, useState } from 'react'
 
 interface DashboardStats {
@@ -335,47 +334,6 @@ export default function AdminDashboard({
                         </CardHeader>
                         <CardContent>
                             <div className="h-[300px] bg-gray-50 rounded-lg overflow-hidden">
-                                <ComposableMap
-                                    projection="geoMercator"
-                                    projectionConfig={{
-                                        scale: 1400,
-                                        center: [118, -2]
-                                    }}
-                                    width={800}
-                                    height={600}
-                                >
-                                    <Geographies geography={INDONESIA_TOPO_JSON}>
-                                        {({ geographies }: { geographies: any[] }) =>
-                                            geographies.map((geo) => (
-                                                <Geography
-                                                    key={geo.rsmKey}
-                                                    geography={geo}
-                                                    fill="#e5e7eb"
-                                                    stroke="#9ca3af"
-                                                    strokeWidth={0.5}
-                                                    style={{
-                                                        default: { outline: 'none' },
-                                                        hover: { fill: '#d1d5db', outline: 'none' },
-                                                        pressed: { outline: 'none' },
-                                                    }}
-                                                />
-                                            ))
-                                        }
-                                    </Geographies>
-                                    {displayLocations.map((location) => (
-                                        <Marker key={location.city} coordinates={location.coordinates}>
-                                            <circle 
-                                                r={Math.sqrt(location.visitors) / 4} 
-                                                fill="#8b5cf6" 
-                                                fillOpacity={0.6}
-                                                stroke="#ffffff"
-                                                strokeWidth={1.5}
-                                                className="animate-pulse"
-                                            />
-                                            <title>{`${location.city}: ${location.visitors} pengunjung`}</title>
-                                        </Marker>
-                                    ))}
-                                </ComposableMap>
                             </div>
                             
                             {/* City Legend */}
