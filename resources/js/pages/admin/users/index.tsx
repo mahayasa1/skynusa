@@ -71,7 +71,7 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
     const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
     const { data, setData, get } = useForm({
         search: filters.search || '',
-        role: filters.role || '',
+        role: filters.role || 'all',
     });
 
     const handleSearch = (e: React.FormEvent) => {
@@ -108,7 +108,7 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users Management" />
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-6 p-6 bg-white text-black">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
@@ -135,12 +135,12 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                                 className="pl-9"
                             />
                         </div>
-                        <Select value={data.role} onValueChange={(value) => setData('role', value)}>
+                        <Select value={data.role} onValueChange={(value) => setData('role', value)} >
                             <SelectTrigger className="w-40">
                                 <SelectValue placeholder="All Roles" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="">All Roles</SelectItem>
+                                <SelectItem value="all">All Roles</SelectItem>
                                 <SelectItem value="admin">Admin</SelectItem>
                                 <SelectItem value="manager">Manager</SelectItem>
                                 <SelectItem value="head">Head</SelectItem>
@@ -167,25 +167,23 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                 {/* Table */}
                 <div className="rounded-lg border">
                     <Table>
-                        <TableHeader>
-                            <TableRow>
+                        <TableHeader className='bg-blue-300 '>
                                 <TableHead className="w-12">
                                     <Checkbox
                                         checked={selectedUsers.length === users.data.length}
                                         onCheckedChange={toggleSelectAll}
                                     />
                                 </TableHead>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Username</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Role</TableHead>
-                                <TableHead>Created</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
+                                <TableHead className='text-black'>Name</TableHead>
+                                <TableHead className='text-black'>Username</TableHead>
+                                <TableHead className='text-black'>Email</TableHead>
+                                <TableHead className='text-black'>Role</TableHead>
+                                <TableHead className='text-black'>Created</TableHead>
+                                <TableHead className="text-black text-right">Actions</TableHead>
                         </TableHeader>
                         <TableBody>
                             {users.data.map((user) => (
-                                <TableRow key={user.id}>
+                                <TableRow className='hover:bg-blue-100' key={user.id}>
                                     <TableCell>
                                         <Checkbox
                                             checked={selectedUsers.includes(user.id)}
@@ -206,11 +204,11 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                                     <TableCell className="text-right">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
+                                                <Button variant="ghost" size="icon" className='hover:bg-blue-400'>
                                                     <MoreVertical className="h-4 w-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
+                                            <DropdownMenuContent className='bg-white text-black' align="end">
                                                 <DropdownMenuItem asChild>
                                                     <Link href={`/admin/users/${user.id}`}>
                                                         <Eye className="mr-2 h-4 w-4" />
@@ -224,7 +222,6 @@ export default function UsersIndex({ users, filters }: UsersIndexProps) {
                                                     </Link>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
-                                                    className="text-red-600"
                                                     onClick={() => {
                                                         if (confirm('Delete this user?')) {
                                                             router.delete(`/admin/users/${user.id}`);

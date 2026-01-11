@@ -40,7 +40,7 @@ class CompanySeeder extends Seeder
             ],
             [
                 'name' => 'Rare Coffee',
-                'logo' => null,
+                'logo' => '/asset/rare-coffee.jpeg',
                 'website' => null,
                 'email' => null,
                 'phone' => null,

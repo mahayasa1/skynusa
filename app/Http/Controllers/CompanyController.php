@@ -51,7 +51,7 @@ class CompanyController extends Controller
         
         $companies = $this->companyService->getAdminPaginated($perPage, $search, $status);
         
-        return Inertia::render('Admin/Company/Index', [
+        return Inertia::render('admin/company/index', [
             'companies' => $companies,
             'filters' => $request->only(['search', 'per_page', 'status']),
             'statistics' => $this->companyService->getAdminStatistics(),
@@ -63,7 +63,7 @@ class CompanyController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Company/Create');
+        return Inertia::render('admin/company/create');
     }
 
     /**
@@ -99,7 +99,7 @@ class CompanyController extends Controller
             abort(404);
         }
         
-        return Inertia::render('Admin/Company/Show', [
+        return Inertia::render('admin/company/show', [
             'company' => $company,
         ]);
     }
@@ -115,7 +115,7 @@ class CompanyController extends Controller
             abort(404);
         }
         
-        return Inertia::render('Admin/Company/Edit', [
+        return Inertia::render('admin/company/edit', [
             'company' => $company,
         ]);
     }

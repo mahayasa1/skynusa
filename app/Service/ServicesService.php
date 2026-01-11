@@ -24,9 +24,9 @@ class ServicesService
             'image' => $service->image,
             'features' => $service->features ?? [],
             'price' => $service->price,
+            'is_active' => $service->is_active,
             'price_text' => $service->price_text,
             'duration' => $service->duration,
-            'is_featured' => $service->is_featured,
         ];
     }
 
@@ -50,7 +50,7 @@ class ServicesService
     public function getBySlug(string $slug): ?Services
     {
         return Cache::remember("services.{$slug}", 3600, function () use ($slug) {
-            return $this->serviceRepository->findBySlug($slug)->map(fn ($s) => $this->transformService($s));
+            return $this->serviceRepository->findBySlug($slug);
         });
     }
 
@@ -59,7 +59,7 @@ class ServicesService
      */
     public function findById(int $id): ?Services
     {
-        return $this->serviceRepository->findById($id)->map(fn ($s) => $this->transformService($s));
+        return $this->serviceRepository->findById($id);
     }
 
     /**
@@ -67,7 +67,7 @@ class ServicesService
      */
     public function getAdminPaginated(int $perPage = 15, ?string $search = null, ?string $status = null)
     {
-        return $this->serviceRepository->getAdminPaginated($perPage, $search, $status)->map(fn ($s) => $this->transformService($s));
+        return $this->serviceRepository->getAdminPaginated($perPage, $search, $status)->through(fn ($s) => $this->transformService($s));
     }
 
     /**
@@ -95,7 +95,6 @@ class ServicesService
         
         // Set default values
         $data['is_active'] = $data['is_active'] ?? true;
-        $data['is_featured'] = $data['is_featured'] ?? false;
         
         $service = $this->serviceRepository->create($data);
         
@@ -288,7 +287,6 @@ class ServicesService
             'total' => Services::count(),
             'active' => Services::where('is_active', true)->count(),
             'inactive' => Services::where('is_active', false)->count(),
-            'featured' => Services::where('is_featured', true)->count(),
         ];
     }
 

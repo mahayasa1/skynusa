@@ -62,7 +62,7 @@ class UserController extends Controller
             'password' => 'required|string|min:8',
             'telp' => 'required|string|max:20',
             'role' => 'required|in:admin,staff,head,manager',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|max:20480',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -111,7 +111,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8',
             'telp' => 'required|string|max:20',
             'role' => 'required|in:admin,staff,head,manager',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|max:20480',
         ]);
 
         if ($request->filled('password')) {

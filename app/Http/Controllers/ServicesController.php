@@ -49,7 +49,6 @@ class ServicesController extends Controller
                 'price' => $service['price'],
                 'price_text' => $service['price_text'],
                 'duration' => $service['duration'],
-                'is_featured' => $service['is_featured'],
             ];
         });
     }
@@ -69,7 +68,7 @@ class ServicesController extends Controller
             ->where('id', '!=', $service->id)
             ->take(3);
         
-        return Inertia::render('Services/Show', [
+        return Inertia::render('admin/services/show', [
             'service' => $service,
             'relatedServices' => $relatedServices,
         ]);
@@ -90,7 +89,7 @@ class ServicesController extends Controller
         
         $services = $this->serviceService->getAdminPaginated($perPage, $search, $status);
         
-        return Inertia::render('Admin/Services/Index', [
+        return Inertia::render('admin/services/index', [
             'services' => $services,
             'filters' => $request->only(['search', 'per_page', 'status']),
             'statistics' => $this->serviceService->getAdminStatistics(),
@@ -102,7 +101,7 @@ class ServicesController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Services/Create');
+        return Inertia::render('admin/services/create');
     }
 
     /**
@@ -121,7 +120,6 @@ class ServicesController extends Controller
             'price_text' => 'nullable|string|max:100',
             'duration' => 'nullable|string|max:100',
             'is_active' => 'boolean',
-            'is_featured' => 'boolean',
             'order' => 'nullable|integer|min:0',
         ]);
         
@@ -143,7 +141,7 @@ class ServicesController extends Controller
             abort(404);
         }
         
-        return Inertia::render('Admin/Services/Show', [
+        return Inertia::render('admin/services/show', [
             'service' => $service,
         ]);
     }
@@ -159,7 +157,7 @@ class ServicesController extends Controller
             abort(404);
         }
         
-        return Inertia::render('Admin/Services/Edit', [
+        return Inertia::render('admin/services/edit', [
             'service' => $service,
         ]);
     }
@@ -180,7 +178,6 @@ class ServicesController extends Controller
             'price_text' => 'nullable|string|max:100',
             'duration' => 'nullable|string|max:100',
             'is_active' => 'boolean',
-            'is_featured' => 'boolean',
             'order' => 'nullable|integer|min:0',
         ]);
         

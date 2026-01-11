@@ -331,7 +331,7 @@ export default function Login({
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white"
+                                className="mt-2 w-full bg-linear-to-r from-blue-500 to-indigo-600 text-white"
                                 disabled={processing}
                             >
                                 {processing ? <><Spinner /> Signing In...</> : 'Sign In'}
