@@ -14,8 +14,21 @@ import {
     RefreshCw,
 } from 'lucide-react'
 import { type BreadcrumbItem } from '@/types'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from 'recharts'
 import { useEffect, useState, useCallback } from 'react'
+
+/* =======================
+   TYPES
+======================= */
 
 interface DashboardStats {
     total_pesanan?: number
@@ -56,12 +69,46 @@ interface DashboardProps {
     visitor_locations?: VisitorLocation[]
 }
 
+/* =======================
+   CONSTANT DATA (OUTSIDE COMPONENT)
+======================= */
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
         href: '/admin/dashboard',
     },
 ]
+
+const defaultChartData: ChartData[] = [
+    { month: 'Jan', pesanan: 12, kunjungan: 450 },
+    { month: 'Feb', pesanan: 19, kunjungan: 520 },
+    { month: 'Mar', pesanan: 15, kunjungan: 480 },
+    { month: 'Apr', pesanan: 25, kunjungan: 620 },
+    { month: 'May', pesanan: 22, kunjungan: 590 },
+    { month: 'Jun', pesanan: 30, kunjungan: 720 },
+    { month: 'Jul', pesanan: 28, kunjungan: 680 },
+    { month: 'Aug', pesanan: 35, kunjungan: 810 },
+    { month: 'Sep', pesanan: 32, kunjungan: 750 },
+    { month: 'Oct', pesanan: 40, kunjungan: 920 },
+    { month: 'Nov', pesanan: 38, kunjungan: 880 },
+    { month: 'Dec', pesanan: 45, kunjungan: 1050 },
+]
+
+const defaultLocations: VisitorLocation[] = [
+    { city: 'Jakarta', coordinates: [106.8456, -6.2088], visitors: 1250 },
+    { city: 'Surabaya', coordinates: [112.7521, -7.2575], visitors: 890 },
+    { city: 'Bandung', coordinates: [107.6191, -6.9175], visitors: 650 },
+    { city: 'Medan', coordinates: [98.6722, 3.5952], visitors: 520 },
+    { city: 'Denpasar', coordinates: [115.2126, -8.6705], visitors: 980 },
+    { city: 'Makassar', coordinates: [119.4327, -5.1477], visitors: 420 },
+    { city: 'Semarang', coordinates: [110.4203, -6.9932], visitors: 380 },
+    { city: 'Yogyakarta', coordinates: [110.3695, -7.7956], visitors: 610 },
+]
+
+/* =======================
+   COMPONENT
+======================= */
 
 export default function AdminDashboard({
     stats: initialStats,
@@ -70,8 +117,6 @@ export default function AdminDashboard({
     chart_data: initialChartData = [],
     visitor_locations: initialLocations = [],
 }: DashboardProps) {
-
-    // State untuk data realtime
     const [stats, setStats] = useState(initialStats)
     const [recentPesanan, setRecentPesanan] = useState(initialPesanan)
     const [recentPesan, setRecentPesan] = useState(initialPesan)
@@ -80,125 +125,118 @@ export default function AdminDashboard({
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [lastUpdate, setLastUpdate] = useState(new Date())
 
-    // Default data jika backend belum siap
-    const defaultChartData: ChartData[] = [
-        { month: 'Jan', pesanan: 12, kunjungan: 450 },
-        { month: 'Feb', pesanan: 19, kunjungan: 520 },
-        { month: 'Mar', pesanan: 15, kunjungan: 480 },
-        { month: 'Apr', pesanan: 25, kunjungan: 620 },
-        { month: 'May', pesanan: 22, kunjungan: 590 },
-        { month: 'Jun', pesanan: 30, kunjungan: 720 },
-        { month: 'Jul', pesanan: 28, kunjungan: 680 },
-        { month: 'Aug', pesanan: 35, kunjungan: 810 },
-        { month: 'Sep', pesanan: 32, kunjungan: 750 },
-        { month: 'Oct', pesanan: 40, kunjungan: 920 },
-        { month: 'Nov', pesanan: 38, kunjungan: 880 },
-        { month: 'Dec', pesanan: 45, kunjungan: 1050 },
-    ]
+    /* =======================
+       FETCH DATA
+    ======================= */
 
-    const defaultLocations: VisitorLocation[] = [
-        { city: 'Jakarta', coordinates: [106.8456, -6.2088], visitors: 1250 },
-        { city: 'Surabaya', coordinates: [112.7521, -7.2575], visitors: 890 },
-        { city: 'Bandung', coordinates: [107.6191, -6.9175], visitors: 650 },
-        { city: 'Medan', coordinates: [98.6722, 3.5952], visitors: 520 },
-        { city: 'Denpasar', coordinates: [115.2126, -8.6705], visitors: 980 },
-        { city: 'Makassar', coordinates: [119.4327, -5.1477], visitors: 420 },
-        { city: 'Semarang', coordinates: [110.4203, -6.9932], visitors: 380 },
-        { city: 'Yogyakarta', coordinates: [110.3695, -7.7956], visitors: 610 },
-    ]
-
-    // Function untuk fetch data terbaru
     const fetchDashboardData = useCallback(async () => {
-    setIsRefreshing(true)
+        setIsRefreshing(true)
 
-    router.reload({
-        only: ['stats', 'recent_pesanan', 'recent_pesan', 'chart_data', 'visitor_locations'],
-        onSuccess: (page) => {
-            const props = page.props as any
-            setStats(props.stats)
-            setRecentPesanan(props.recent_pesanan || [])
-            setRecentPesan(props.recent_pesan || [])
-            setChartData(props.chart_data || defaultChartData)
-            setLocations(props.visitor_locations || defaultLocations)
-            setLastUpdate(new Date())
-            setIsRefreshing(false)
-        },
-        onError: () => {
-            setIsRefreshing(false)
-        }
-    })
-}, [])
+        router.reload({
+            only: [
+                'stats',
+                'recent_pesanan',
+                'recent_pesan',
+                'chart_data',
+                'visitor_locations',
+            ],
+            onSuccess: (page) => {
+                const props = page.props as any
+                setStats(props.stats)
+                setRecentPesanan(props.recent_pesanan || [])
+                setRecentPesan(props.recent_pesan || [])
+                setChartData(props.chart_data || defaultChartData)
+                setLocations(props.visitor_locations || defaultLocations)
+                setLastUpdate(new Date())
+                setIsRefreshing(false)
+            },
+            onError: () => {
+                setIsRefreshing(false)
+            },
+        })
+    }, [])
 
+    /* =======================
+       AUTO REFRESH
+    ======================= */
 
-    // Auto refresh setiap 30 detik
     useEffect(() => {
-    const interval = setInterval(() => {
-        fetchDashboardData()
-    }, 30000)
+        const interval = setInterval(() => {
+            fetchDashboardData()
+        }, 30000)
 
-    return () => clearInterval(interval)
-}, [fetchDashboardData])
+        return () => clearInterval(interval)
+    }, [fetchDashboardData])
 
-    // Set data default jika kosong
-    const displayChartData = chartData.length > 0 ? chartData : defaultChartData
-    const displayLocations = locations.length > 0 ? locations : defaultLocations
+    /* =======================
+       DISPLAY DATA
+    ======================= */
+
+    const displayChartData =
+        chartData.length > 0 ? chartData : defaultChartData
+    const displayLocations =
+        locations.length > 0 ? locations : defaultLocations
+
+    const totalVisitors = displayLocations.reduce(
+        (sum, loc) => sum + loc.visitors,
+        0,
+    )
+
+    const formatLastUpdate = () => {
+        const now = new Date()
+        const diff = Math.floor(
+            (now.getTime() - lastUpdate.getTime()) / 1000,
+        )
+
+        if (diff < 60) return `${diff} detik yang lalu`
+        if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`
+        return lastUpdate.toLocaleTimeString('id-ID')
+    }
 
     const statCards = [
         {
-            title: 'Pesanan Masuk',
+            title: 'Total Pesanan',
             value: stats.total_pesanan || 0,
-            icon: FileTextIcon,
-            color: 'text-emerald-600',
-            bg: 'bg-emerald-100',
+            icon: FileText,
+            bg: 'bg-blue-100',
+            color: 'text-blue-600',
         },
         {
-            title: 'Pesanan Belum Diverifikasi',
+            title: 'Pesanan Pending',
             value: stats.pending_pesanan || 0,
-            icon: AlertCircle,
-            color: 'text-red-600',
-            bg: 'bg-red-100',
-        },
-        {
-            title: 'Pesanan Sedang Diproses',
-            value: stats.processing_pesanan || 0,
             icon: Clock,
-            color: 'text-yellow-600',
             bg: 'bg-yellow-100',
+            color: 'text-yellow-600',
         },
         {
             title: 'Pesanan Selesai',
             value: stats.completed_pesanan || 0,
             icon: CheckCircle2,
-            color: 'text-green-600',
             bg: 'bg-green-100',
+            color: 'text-green-600',
         },
         {
-            title: 'Total Feedback Masuk',
+            title: 'Pesanan Proses',
+            value: stats.processing_pesanan || 0,
+            icon: RefreshCw,
+            bg: 'bg-purple-100',
+            color: 'text-purple-600',
+        },
+        {
+            title: 'Total Feedback',
             value: stats.total_feedback || 0,
             icon: MessageSquare,
-            color: 'text-blue-600',
-            bg: 'bg-blue-100',
+            bg: 'bg-pink-100',
+            color: 'text-pink-600',
         },
         {
-            title: 'Total Berita Dipublikasikan',
+            title: 'Total Berita',
             value: stats.total_berita || 0,
             icon: FileCheck,
-            color: 'text-gray-700',
-            bg: 'bg-gray-200',
+            bg: 'bg-indigo-100',
+            color: 'text-indigo-600',
         },
     ]
-
-    const totalVisitors = displayLocations.reduce((sum, loc) => sum + loc.visitors, 0)
-
-    // Format waktu update terakhir
-    const formatLastUpdate = () => {
-        const now = new Date()
-        const diff = Math.floor((now.getTime() - lastUpdate.getTime()) / 1000)
-        
-        if (diff < 60) return `${diff} detik yang lalu`
-        if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`
-        return lastUpdate.toLocaleTimeString('id-ID')
-    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
