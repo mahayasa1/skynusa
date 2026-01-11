@@ -2,12 +2,32 @@ import { Head, Link } from '@inertiajs/react';
 import SEOHead from '@/components/seo-head';
 import PublicLayout from '@/layouts/public-layout';
 import { Button } from '@/components/ui/button';
-import { Code, TrendingUp, Laptop, Wrench, Monitor, Lightbulb, Brush, Book } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { TrendingUp, Laptop, Monitor } from 'lucide-react';
+
+const colorMap = {
+    blue: {
+        border: 'border-blue-500',
+        text: 'text-blue-600',
+    },
+    indigo: {
+        border: 'border-indigo-500',
+        text: 'text-indigo-600',
+    },
+    purple: {
+        border: 'border-purple-500',
+        text: 'text-purple-600',
+    },
+    red: {
+        border: 'border-red-500',
+        text: 'text-red-600',
+    },
+};
 
 export default function Team() {
     return (
         <PublicLayout>
-             <SEOHead
+            <SEOHead
                 title="Tim Kami - Teknisi & Engineer Profesional Bersertifikat"
                 description="Kenali tim profesional SKYNUSA TECH: teknisi bersertifikat, engineer berpengalaman 10+ tahun. Dipimpin CEO Royce Francis M.M dengan tim solid untuk kesuksesan project Anda."
                 keywords="tim skynusa tech, teknisi profesional, engineer bersertifikat, cto mahayasa wibawa, team management, teknisi bali"
@@ -21,7 +41,9 @@ export default function Team() {
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
                         <div className="mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2">
-                            <span className="text-xl font-extrabold text-white">TIM SKYNUSA TECH</span>
+                            <span className="text-xl font-extrabold text-white">
+                                TIM SKYNUSA TECH
+                            </span>
                         </div>
                         <h1 className="mb-6 text-4xl lg:text-5xl font-bold text-white">
                             Tim Profesional yang Solid dan Berpengalaman
@@ -35,151 +57,166 @@ export default function Team() {
 
             {/* Organization Chart */}
             <section className="bg-white py-16 lg:py-20">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    
-                    {/* CEO - Level 1 */}
+                <div className="relative">
+                    {/* CEO */}
                     <div className="flex justify-center mb-12">
                         <div className="relative">
-                            <div className="flex flex-col items-center bg-white rounded-2xl border-2 border-blue-600 p-8 shadow-xl max-w-sm">
-                                <div className="h-24 w-24 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 mb-4 shadow-lg">
-                                    <img 
-                                        src="/asset/Royce.jpg" 
-                                        alt="Royce Francis M.M"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900">Royce Francis M.M</h3>
-                                <p className="text-base font-semibold text-blue-600 mb-1">CEO & Founder</p>
-                                <p className="text-sm text-gray-600">Business Strategy</p>
-                            </div>
-                            {/* Vertical Line */}
-                            <div className="absolute left-1/2 -translate-x-1/2 top-full h-12 w-0.5 bg-blue-300"></div>
+                            <Card className="w-64 sm:w-72 border-2 border-blue-600 bg-linear-to-br from-blue-50/80 to-white shadow-xl">
+                                <CardContent className="p-6 text-center">
+                                    <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
+                                        <img
+                                            src="asset/royce.png"
+                                            className="w-full h-full object-cover"
+                                            alt="Royce Francis"
+                                        />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900">
+                                        Royce Francis M.M
+                                    </h3>
+                                    <p className="text-base font-semibold text-blue-600 mb-1">
+                                        CEO & Founder
+                                    </p>
+                                    <p className="text-xs text-gray-600 mb-3">
+                                        Business Strategy
+                                    </p>
+                                </CardContent>
+                            </Card>
+                            <div className="absolute left-1/2 -translate-x-1/2 top-full h-8 w-0.5 bg-blue-300"></div>
                         </div>
                     </div>
 
-                    {/* Horizontal Line for Level 2 */}
                     <div className="flex justify-center mb-12">
-                        <div className="w-full max-w-6xl h-0.5 bg-blue-300"></div>
+                        <div className="w-full max-w-5xl h-0.5 bg-blue-300"></div>
                     </div>
 
-                    {/* Management Team - Level 2 */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-12">
-                        
-                        {/* CTO */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-2xl border-2 border-blue-500 p-6 shadow-lg hover:shadow-xl transition">
-                                <div className="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 mb-4 shadow">
-                                    <img 
-                                        src="/asset/id.png" 
-                                        alt="Mahayasa Wibawa"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-900 text-center">Mahayasa Wibawa</h3>
-                                <p className="text-sm font-semibold text-blue-600 mb-1">Chief Technology Officer</p>
-                                <p className="text-xs text-gray-600 text-center">Technical Leadership</p>
-                            </div>
-                        </div>
+                    {/* SECOND LEVEL */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 max-w-6xl mx-auto mb-8">
+                        {[
+                            {
+                                name: 'Mahayasa Wibawa',
+                                role: 'Chief Technology Officer',
+                                subRole: 'Technical Leadership',
+                                img: 'asset/id.png',
+                                color: 'blue',
+                            },
+                            {
+                                name: 'Arnold Tamelan',
+                                role: 'Head of Operations',
+                                subRole: 'Project Management',
+                                img: 'asset/arnold.jpeg',
+                                color: 'indigo',
+                            },
+                            {
+                                name: 'Bagus Wisnu',
+                                role: 'Head of Design',
+                                subRole: 'UI/UX & Creative',
+                                img: 'asset/bgw.jpg',
+                                color: 'purple',
+                            },
+                            {
+                                name: 'Hassan',
+                                role: 'Head of Engineer',
+                                subRole: 'Electronic Engineering',
+                                img: 'asset/hassan.jpeg',
+                                color: 'red',
+                            },
+                            {
+                                name: 'Frans',
+                                role: 'Head of Internet of Things',
+                                subRole: 'Electrical Installation',
+                                img: 'asset/frans.jpg',
+                                color: 'red',
+                            },
+                        ].map((member, index) => {
+                            const colors =
+                                colorMap[
+                                    member.color as keyof typeof colorMap
+                                ];
 
-                        {/* Head of Operations */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-2xl border-2 border-indigo-500 p-6 shadow-lg hover:shadow-xl transition">
-                                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mb-4 shadow">
-                                    <TrendingUp className="h-10 w-10 text-white" />
+                            return (
+                                <div key={index} className="relative">
+                                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-0.5 bg-blue-300"></div>
+                                    <Card
+                                        className={`border-2 ${colors.border} bg-white shadow-lg`}
+                                    >
+                                        <CardContent className="p-6 text-center">
+                                            <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
+                                                <img
+                                                    src={member.img}
+                                                    className="w-full h-full object-cover"
+                                                    alt={member.name}
+                                                />
+                                            </div>
+                                            <h3 className="text-lg font-bold text-gray-900">
+                                                {member.name}
+                                            </h3>
+                                            <p
+                                                className={`text-sm font-semibold ${colors.text} mb-1`}
+                                            >
+                                                {member.role}
+                                            </p>
+                                            <p className="text-xs text-gray-600">
+                                                {member.subRole}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
                                 </div>
-                                <h3 className="text-lg font-bold text-gray-900 text-center">Arnold Tamelan</h3>
-                                <p className="text-sm font-semibold text-indigo-600 mb-1">Head of Operations</p>
-                                <p className="text-xs text-gray-600 text-center">Project Management</p>
-                            </div>
-                        </div>
-
-                        {/* Head of Design */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-2xl border-2 border-purple-500 p-6 shadow-lg hover:shadow-xl transition">
-                                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 shadow">
-                                    <Laptop className="h-10 w-10 text-white" />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-900 text-center">Bagus Wisnu</h3>
-                                <p className="text-sm font-semibold text-purple-600 mb-1">Head of Design</p>
-                                <p className="text-xs text-gray-600 text-center">UI/UX & Creative</p>
-                            </div>
-                        </div>
-
-                        {/* Head of Engineer */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-2xl border-2 border-red-500 p-6 shadow-lg hover:shadow-xl transition">
-                                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-4 shadow">
-                                    <Wrench className="h-10 w-10 text-white" />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-900 text-center">Frans</h3>
-                                <p className="text-sm font-semibold text-red-600 mb-1">Head of Engineer</p>
-                                <p className="text-xs text-gray-600 text-center">Electronic Engineering</p>
-                            </div>
-                        </div>
+                            );
+                        })}
                     </div>
 
-                    {/* Horizontal Lines for Level 3 */}
-                    <div className="flex justify-between mb-12 max-w-6xl mx-auto px-8">
-                        <div className="w-56 h-0.5 bg-blue-300"></div>
-                        <div className="w-56 h-0.5 bg-blue-300"></div>
-                        <div className="w-56 h-0.5 bg-blue-300"></div>
-                        <div className="w-56 h-0.5 bg-blue-300"></div>
+                    <div className="flex justify-start mb-10">
+                        <div className="ml-8 w-60 h-0.5 bg-blue-300"></div>
+                        <div className="ml-12 w-60 h-0.5 bg-blue-300"></div>
+                        <div className="ml-8 w-60 h-0.5 bg-blue-300"></div>
+                        <div className="ml-12 w-60 h-0.5 bg-blue-300"></div>
                     </div>
 
-                    {/* Team Members - Level 3 */}
+                    {/* THIRD LEVEL */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-                        
-                        {/* Rudi */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-xl border border-gray-200 p-4 shadow hover:shadow-md transition">
-                                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center mb-3 shadow">
-                                    <Code className="h-8 w-8 text-white" />
-                                </div>
-                                <h3 className="text-sm font-semibold text-gray-900 text-center">Rudi</h3>
-                                <p className="text-xs text-gray-600 text-center">Front-end Developer</p>
+                        {[
+                            {
+                                name: 'Rudi',
+                                role: 'Front-end Developer',
+                                image: '/asset/profile.png',
+                            },
+                            {
+                                name: 'Anjani',
+                                role: 'Administrator',
+                                image: '/asset/profile.png',
+                            },
+                            {
+                                name: 'Agus Surya',
+                                role: 'UI/UX Designer',
+                                image: '/asset/agus.jpg',
+                            },
+                            {
+                                name: 'Rihaf',
+                                role: 'Lighting Installation',
+                                image: '/asset/profile.png',
+                            },
+                        ].map((m, i) => (
+                            <div key={i} className="relative">
+                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-0.5 bg-blue-300"></div>
+                                <Card className="border border-gray-200 bg-white">
+                                    <CardContent className="p-4 text-center">
+                                        <div className="h-14 w-14 rounded-full overflow-hidden mx-auto mb-3 shadow">
+                                            <img
+                                                src={m.image}
+                                                alt={m.name}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        </div>
+                                        <h3 className="text-sm font-semibold text-gray-900">
+                                            {m.name}
+                                        </h3>
+                                        <p className="text-xs text-gray-600">
+                                            {m.role}
+                                        </p>
+                                    </CardContent>
+                                </Card>
                             </div>
-                        </div>
-
-                        {/* Jelita */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-xl border border-gray-200 p-4 shadow hover:shadow-md transition">
-                                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center mb-3 shadow">
-                                    <Book className="h-8 w-8 text-white" />
-                                </div>
-                                <h3 className="text-sm font-semibold text-gray-900 text-center">Jelita</h3>
-                                <p className="text-xs text-gray-600 text-center">Administrator</p>
-                            </div>
-                        </div>
-
-                        {/* Agus Surya */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-xl border border-gray-200 p-4 shadow hover:shadow-md transition">
-                                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center mb-3 shadow">
-                                    <Brush className="h-8 w-8 text-white" />
-                                </div>
-                                <h3 className="text-sm font-semibold text-gray-900 text-center">Agus Surya</h3>
-                                <p className="text-xs text-gray-600 text-center">UI/UX Designer</p>
-                            </div>
-                        </div>
-
-                        {/* Rihaf */}
-                        <div className="relative">
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-0.5 bg-blue-300"></div>
-                            <div className="flex flex-col items-center bg-white rounded-xl border border-gray-200 p-4 shadow hover:shadow-md transition">
-                                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center mb-3 shadow">
-                                    <Lightbulb className="h-8 w-8 text-white" />
-                                </div>
-                                <h3 className="text-sm font-semibold text-gray-900 text-center">Rihaf</h3>
-                                <p className="text-xs text-gray-600 text-center">Lighting Installation</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -192,7 +229,8 @@ export default function Team() {
                             Kenapa Bergabung dengan Tim Kami?
                         </h2>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            Kami menciptakan lingkungan kerja yang mendukung pertumbuhan dan inovasi
+                            Kami menciptakan lingkungan kerja yang mendukung
+                            pertumbuhan dan inovasi
                         </p>
                     </div>
 
@@ -205,7 +243,8 @@ export default function Team() {
                                 Pengembangan Karir
                             </h3>
                             <p className="text-gray-600">
-                                Peluang berkembang dengan training dan sertifikasi profesional
+                                Peluang berkembang dengan training dan sertifikasi
+                                profesional
                             </p>
                         </div>
 
@@ -243,16 +282,24 @@ export default function Team() {
                         Tertarik Bergabung dengan Tim Kami?
                     </h2>
                     <p className="mx-auto mb-8 max-w-2xl text-lg text-blue-100">
-                        Kami selalu mencari talenta terbaik untuk bergabung dengan tim profesional kami
+                        Kami selalu mencari talenta terbaik untuk bergabung
+                        dengan tim profesional kami
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link href="/kontak">
-                            <Button size="lg" className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold">
+                            <Button
+                                size="lg"
+                                className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold"
+                            >
                                 Kirim Lamaran
                             </Button>
                         </Link>
                         <Link href="/tentang-kami">
-                            <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold">
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold"
+                            >
                                 Pelajari Lebih Lanjut
                             </Button>
                         </Link>

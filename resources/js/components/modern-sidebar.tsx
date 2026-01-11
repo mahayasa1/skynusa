@@ -20,6 +20,7 @@ import {
   Building2,
   Briefcase,
   FolderKanban,
+  FileText,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -59,6 +60,7 @@ export default function ModernSidebar({ currentPath = '' }: SidebarProps) {
         { name: 'Companies', href: '/admin/companies', icon: Building2 },
         { name: 'Layanan', href: '/admin/layanan', icon: Briefcase },
         { name: 'Portfolio', href: '/admin/portfolio', icon: FolderKanban },
+        {name: 'Berita',href: '/admin/berita',icon: FileText,},
       ],
     },
   ];

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\PesanController;
@@ -66,6 +67,13 @@ Route::controller(PesananController::class)->group(function () {
     // Tracking
     Route::get('/pesanan/tracking', 'trackingForm')->name('order.tracking.form');
     Route::post('/pesanan/tracking', 'track')->name('order.tracking');
+});
+
+
+Route::controller(BeritaController::class)->group(function () {
+    Route::get('/berita', 'index')->name('berita.index');
+    Route::get('/berita/category/{category}', 'category')->name('berita.category');
+    Route::get('/berita/{slug}', 'show')->name('berita.show');
 });
 
 
@@ -232,6 +240,25 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->name('admin.')
         Route::get('/', 'adminIndex')->name('pesan.index');
         Route::get('/trashed', 'trashed')->name('pesan.trashed');
         Route::get('/{id}', 'show')->name('pesan.show');
+    });
+
+    Route::controller(BeritaController::class)->prefix('berita')->group(function () {
+        Route::get('/', 'adminIndex')->name('berita.index');
+        Route::get('/create', 'create')->name('berita.create');
+        Route::post('/', 'store')->name('berita.store');
+        
+        // Bulk operations
+        Route::post('/bulk-destroy', 'bulkDestroy')->name('berita.bulk-destroy');
+        Route::post('/bulk-update-status', 'bulkUpdateStatus')->name('berita.bulk-update-status');
+        
+        Route::get('/{id}', 'adminShow')->name('berita.show');
+        Route::get('/{id}/edit', 'edit')->name('berita.edit');
+        Route::put('/{id}', 'update')->name('berita.update');
+        Route::patch('/{id}', 'update');
+        Route::delete('/{id}', 'destroy')->name('berita.destroy');
+        
+        Route::patch('/{id}/toggle-publish', 'togglePublish')->name('berita.toggle-publish');
+        Route::patch('/{id}/toggle-featured', 'toggleFeatured')->name('berita.toggle-featured');
     });
 });
 

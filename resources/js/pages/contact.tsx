@@ -253,11 +253,18 @@ export default function Contact() {
                         Tim support kami siap membantu Anda 24/7 untuk kebutuhan emergency
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold">
-                            Hubungi Emergency
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold">
-                            Chat via WhatsApp
+                        <Button
+                            asChild
+                            size="lg"
+                            className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold"
+                        >
+                            <a
+                                href="https://wa.me/+6281339579969"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Chat Via WhatsApp
+                            </a>
                         </Button>
                     </div>
                 </div>

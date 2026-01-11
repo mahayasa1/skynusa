@@ -1,6 +1,7 @@
 import PublicLayout from '@/layouts/public-layout';
 import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
+import { Link } from '@inertiajs/react';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 
@@ -159,12 +160,11 @@ export default function Services({ services, statistics }: ServicesProps) {
                         Hubungi kami sekarang untuk konsultasi gratis dan dapatkan solusi terbaik untuk kebutuhan Anda
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold">
-                            Hubungi Kami Sekarang
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold">
-                            Chat via WhatsApp
-                        </Button>
+                        <Link href='/kontak'>
+                            <Button size="lg" className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold">
+                                Hubungi Kami Sekarang
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </section>

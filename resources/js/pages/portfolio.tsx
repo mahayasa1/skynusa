@@ -1,4 +1,5 @@
 import PublicLayout from '@/layouts/public-layout';
+import { Link } from '@inertiajs/react';
 import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
 import {
@@ -248,6 +249,7 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                     </p>
 
                     <div className="flex flex-col justify-center gap-4 sm:flex-row">
+                        <Link href="/kontak">
                         <Button
                             size="lg"
                             className="bg-yellow-400 font-semibold text-gray-900 hover:bg-yellow-300"
@@ -255,14 +257,7 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                             Konsultasi Gratis
                             <ArrowRight className="ml-2 h-5 w-5" />
                         </Button>
-
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-2 border-white font-semibold text-white hover:bg-white hover:text-blue-600"
-                        >
-                            Hubungi Kami
-                        </Button>
+                        </Link>
                     </div>
                 </div>
             </section>

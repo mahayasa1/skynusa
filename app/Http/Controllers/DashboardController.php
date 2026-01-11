@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Services;
+use App\Models\Berita;
 use App\Models\Portfolio;
 use App\Models\Pesanan;
 use App\Models\Pesan;
@@ -38,6 +39,7 @@ class DashboardController extends Controller
                 'total_companies' => Company::count(),
                 'total_pesanan' => Pesanan::count(),
                 'total_pesan' => Pesan::count(),
+                'total_berita' => Berita::count(),
                 'pending_pesanan' => Pesanan::where('status', 'pending')->count(),
             ];
 
@@ -98,6 +100,7 @@ class DashboardController extends Controller
             $data['stats'] = [
                 'total_pesanan' => Pesanan::count(),
                 'total_pesan' => Pesan::count(),
+                'total_berita' => Berita::where('is_published', true)->count(),
                 'pending_pesanan' => Pesanan::where('status', 'pending')->count(),
             ];
 

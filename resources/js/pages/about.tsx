@@ -1,7 +1,5 @@
-import { Head } from '@inertiajs/react';
 import PublicLayout from '@/layouts/public-layout';
 import SEOHead from '@/components/seo-head';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Award, Users, TrendingUp, Shield, CheckCircle, CircleDivide, CircleIcon, UserCog, Briefcase, Heart, Badge, Eye, Target } from 'lucide-react';
 
