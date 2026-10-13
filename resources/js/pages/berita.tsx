@@ -135,7 +135,7 @@ export default function BeritaPage({ beritas, featured = [], categories, current
               <Link
                 key={article.id}
                 href={`/berita/${article.slug}`}
-                className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300"
+                className="group bg-white r1ounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300"
               >
                 <div className="relative h-52 overflow-hidden">
                   <img

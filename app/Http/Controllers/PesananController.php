@@ -41,84 +41,76 @@ class PesananController extends Controller
      * Store new order
      */
     public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'service_id' => 'required|exists:services,id',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'telp' => 'required|string|max:20',
-            'description' => 'required|string|max:5000',
-            'due_date' => 'required|date|after:today',
-        ], [
-            'service_id.required' => 'Pilih layanan yang diinginkan',
-            'name.required' => 'Nama wajib diisi',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'telp.required' => 'Nomor telepon wajib diisi',
-            'description.required' => 'Deskripsi pesanan wajib diisi',
-            'due_date.required' => 'Tanggal target selesai wajib diisi',
-            'due_date.after' => 'Tanggal target harus setelah hari ini',
+{
+    $validated = $request->validate([
+        'service_id' => 'required|exists:services,id',
+        'name'        => 'required|string|max:255',
+        'email'       => 'required|email|max:255',
+        'telp'        => 'required|string|max:20',
+        'description' => 'required|string|max:5000',
+        'due_date'    => 'required|date|after:today',
+    ], [
+        'service_id.required' => 'Pilih layanan yang diinginkan',
+        'name.required'       => 'Nama wajib diisi',
+        'email.required'      => 'Email wajib diisi',
+        'email.email'         => 'Format email tidak valid',
+        'telp.required'       => 'Nomor telepon wajib diisi',
+        'description.required'=> 'Deskripsi pesanan wajib diisi',
+        'due_date.required'   => 'Tanggal target selesai wajib diisi',
+        'due_date.after'      => 'Tanggal target harus setelah hari ini',
+    ]);
+
+    // ✅ Keep DB transaction tight — only DB operations inside
+    try {
+        DB::beginTransaction();
+        $pesanan = $this->pesananService->createOrder($validated);
+        $pesanan->load('service');
+        DB::commit();
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        Log::error('Order creation failed', [
+            'email' => $validated['email'] ?? 'unknown',
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(), // ✅ added for easier debugging
         ]);
 
-        DB::beginTransaction();
-
-        try {
-            // Create order
-            $pesanan = $this->pesananService->createOrder($validated);
-
-            // Load service relationship untuk email
-            $pesanan->load('service');
-
-            // Send email to customer
-            try {
-                Mail::to($pesanan->email)->send(new OrderCreatedMail($pesanan));
-
-                Log::info('Order email sent successfully', [
-                    'order_code' => $pesanan->code,
-                    'email' => $pesanan->email
-                ]);
-
-                $emailSent = true;
-            } catch (\Exception $e) {
-                Log::error('Failed to send order email', [
-                    'order_code' => $pesanan->code,
-                    'email' => $pesanan->email,
-                    'error' => $e->getMessage()
-                ]);
-
-                $emailSent = false;
-            }
-
-            DB::commit();
-
-            // Success message
-            $successMessage = 'Pesanan berhasil dibuat!';
-
-            if ($emailSent) {
-                $successMessage .= ' Kode tracking telah dikirim ke email Anda.';
-            } else {
-                $successMessage .= ' Namun email notifikasi gagal dikirim. Silakan simpan kode tracking di bawah ini.';
-            }
-
-            return back()->with([
-                'success' => $successMessage,
-                'tracking_code' => $pesanan->code,
-                'email_sent' => $emailSent,
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Log::error('Order creation failed', [
-                'email' => $validated['email'] ?? 'unknown',
-                'error' => $e->getMessage()
-            ]);
-
-            return back()
-                ->withErrors(['error' => 'Terjadi kesalahan saat membuat pesanan. Silakan coba lagi.'])
-                ->withInput();
-        }
+        return back()
+            ->withErrors(['error' => 'Terjadi kesalahan saat membuat pesanan. Silakan coba lagi.'])
+            ->withInput();
     }
+
+    // ✅ Send email AFTER commit — outside transaction
+    $emailSent = false;
+    try {
+        Mail::to($pesanan->email)->send(new OrderCreatedMail($pesanan));
+
+        Log::info('Order email sent successfully', [
+            'order_code' => $pesanan->code,
+            'email'      => $pesanan->email,
+        ]);
+
+        $emailSent = true;
+    } catch (\Exception $e) {
+        Log::error('Failed to send order email', [
+            'order_code' => $pesanan->code,
+            'email'      => $pesanan->email,
+            'error'      => $e->getMessage(),
+            'trace'      => $e->getTraceAsString(), // ✅ added
+        ]);
+    }
+
+    $successMessage = 'Pesanan berhasil dibuat!';
+    $successMessage .= $emailSent
+        ? ' Kode tracking telah dikirim ke email Anda.'
+        : ' Namun email notifikasi gagal dikirim. Silakan simpan kode tracking di bawah ini.';
+
+    return back()->with([
+        'success'       => $successMessage,
+        'tracking_code' => $pesanan->code,
+        'email_sent'    => $emailSent,
+    ]);
+}
 
     /**
      * Display tracking page

@@ -3,15 +3,15 @@
 namespace App\Mail;
 
 use App\Models\Pesanan;
-use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 
 class OrderCreatedMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use SerializesModels; // removed Queueable
 
     public function __construct(
         public Pesanan $pesanan
@@ -20,6 +20,10 @@ class OrderCreatedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: new Address(
+                config('mail.from.address'),
+                config('mail.from.name')
+            ),
             subject: 'Pesanan Anda Telah Diterima - ' . $this->pesanan->code,
         );
     }
