@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DashboardApiController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PesananController;
@@ -84,7 +85,20 @@ Route::controller(BeritaController::class)->group(function () {
  */
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Endpoint data dashboard (JSON). Dulunya di routes/api.php dengan auth:sanctum;
+    // dipindah ke sini karena dipakai oleh halaman Inertia yang sama domain (session auth).
+    Route::prefix('dashboard')->name('dashboard.')->controller(DashboardApiController::class)->group(function () {
+        Route::get('/chart-data', 'getChartData')->name('chart-data');
+        Route::get('/visitor-locations', 'getVisitorLocations')->name('visitor-locations');
+        Route::get('/visitor-stats', 'getVisitorStats')->name('visitor-stats');
+        Route::post('/clear-cache', 'clearCache')->middleware('role:admin')->name('clear-cache');
+    });
 });
+
+// Alias /dashboard -> /admin/dashboard.
+// Dipakai oleh frontend (import { dashboard } from '@/routes') dan redirect bawaan Fortify.
+Route::redirect('/dashboard', '/admin/dashboard')->middleware('auth')->name('dashboard');
 
 /**
  * ============================================
@@ -277,7 +291,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     });
 });
 
-// Settings routes (sudah ada)
-require __DIR__.'/auth.php';
+// Route autentikasi (login, register, reset password, verifikasi email, 2FA)
+// disediakan oleh Laravel Fortify, jadi tidak ada lagi routes/auth.php.
 
+// Settings routes
 require __DIR__.'/settings.php';
