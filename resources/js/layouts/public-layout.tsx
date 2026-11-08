@@ -2,6 +2,7 @@ import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 import { ReactNode } from 'react';
 import { GoogleAnalytics } from '@/components/analytics';
+import AiChatWidget from '@/components/ai-chat-widget';
 
 
 interface PublicLayoutProps {
@@ -17,6 +18,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 {children}
             </main>
             <Footer />
+            <AiChatWidget />
         </div>
     );
 }

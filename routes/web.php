@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\HeroController;
@@ -52,9 +53,14 @@ Route::get('/kontak', function () {
     return Inertia::render('contact');
 })->name('contact');
 
-Route::controller(PesananController::class)->group(function () {
-    Route::post('/kontak', 'store')->name('contact.store');
-});
+Route::post('/kontak', [PesanController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
+
+// Skybot (asisten AI)
+Route::post('/ai/chat', [AiChatController::class, 'chat'])
+    ->middleware('throttle:15,1')
+    ->name('ai.chat');
 
 // Tim
 Route::get('/tim', function () {
@@ -65,7 +71,7 @@ Route::get('/tim', function () {
 Route::controller(PesananController::class)->group(function () {
     // Order form
     Route::get('/pesanan/order', 'create')->name('order.create');
-    Route::post('/pesanan/order', 'store')->name('order.store');
+    Route::post('/pesanan/order', 'store')->middleware('throttle:5,1')->name('order.store');
     
     // Tracking
     Route::get('/pesanan/tracking', 'trackingForm')->name('order.tracking.form');

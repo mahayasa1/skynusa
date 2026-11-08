@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pesan;
+use App\Rules\Turnstile;
 use Illuminate\Http\Request;
 
 class PesanController extends Controller
@@ -28,7 +29,26 @@ class PesanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|max:255',
+            'phone'   => 'required|string|max:20',
+            'subject' => 'nullable|string|max:255',
+            'message' => 'required|string|max:5000',
+            'captcha' => ['required', new Turnstile],
+        ], [
+            'captcha.required' => 'Selesaikan verifikasi keamanan terlebih dahulu',
+        ]);
+
+        Pesan::create([
+            'name'  => $validated['name'],
+            'email' => $validated['email'],
+            'telp'  => $validated['phone'],
+            'judul' => $validated['subject'] ?? 'Pesan dari website',
+            'isi'   => $validated['message'],
+        ]);
+
+        return back()->with('success', 'Pesan berhasil dikirim.');
     }
 
     /**

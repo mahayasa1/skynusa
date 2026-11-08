@@ -28,6 +28,16 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'turnstile' => [
+        'secret' => env('TURNSTILE_SECRET_KEY'),
+    ],
+
+    'gemini' => [
+        'key'         => env('GEMINI_API_KEY'),
+        'model'       => env('GEMINI_MODEL', 'gemini-3.5-flash-lite'),
+        'daily_limit' => env('GEMINI_DAILY_LIMIT', 200),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
