@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\HeroController;
+use App\Models\SiteSetting;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ServicesController;
@@ -26,6 +28,7 @@ Route::get('/', function () {
         'services' => $services,
         'portfolios' => $portfolios,
         'companies' => $companies,
+        'hero' => SiteSetting::hero(),
     ]);
 })->name('home');
 
@@ -111,6 +114,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
  * ============================================
  */
 Route::middleware(['auth', 'role:admin,head'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/hero', [HeroController::class, 'edit'])->name('hero.edit');
+    Route::post('/hero', [HeroController::class, 'update'])->name('hero.update');
 
     Route::controller(CompanyController::class)->prefix('companies')->group(function () {
         Route::get('/', 'adminIndex')->name('companies.index');

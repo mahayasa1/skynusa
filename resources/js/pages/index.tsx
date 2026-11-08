@@ -1,9 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
 import SEOHead from '@/components/seo-head';
 import OrgChart from '@/components/OrgChart';
-import { 
-    ChevronDown,
-    Code, 
+import PublicLayout from '@/layouts/public-layout';
+import {
+    Code,
     ArrowRight,
     Users,
     TrendingUp,
@@ -12,9 +12,6 @@ import {
     Shield,
     HeadphonesIcon,
     CheckCircle,
-    Menu, 
-    X,
-    LogIn,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -63,11 +60,21 @@ interface Company {
 }
 interface IndexPageProps {
     services: Service[]; portfolios: Portfolio[]; companies: Company[];
+    hero?: { mode?: 'video' | 'foto' | 'keduanya'; video_url: string | null; poster_url: string | null };
 }
 
 const getIconComponent = (iconName: string) => {
     const Icons = LucideIcons as any;
     return Icons[iconName] || LucideIcons.Code;
+};
+
+// ISI DENGAN ANGKA ASLI. Dipakai di hero, kartu statistik, dan teks keunggulan
+// supaya angkanya tidak beda-beda antar bagian.
+const STATS = {
+    projects: '188+',
+    satisfaction: '95%',
+    technicians: '20+',
+    years: '10+',
 };
 
 const features = [
@@ -76,19 +83,17 @@ const features = [
     { icon: Zap, title: 'Respon Cepat', description: 'Respon cepat untuk layanan darurat dan penyelesaian sesuai timeline yang disepakati.' },
     { icon: HeadphonesIcon, title: 'Dukungan Penuh', description: 'Customer support responsif dan maintenance berkala untuk menjaga sistem Anda optimal.' },
     { icon: Shield, title: 'Garansi Terjamin', description: 'Setiap pekerjaan dilengkapi garansi resmi dan jaminan kepuasan klien.' },
-    { icon: TrendingUp, title: 'Track Record Terbukti', description: 'Lebih dari 300 proyek berhasil dengan tingkat kepuasan klien 95%.' }
+    { icon: TrendingUp, title: 'Track Record Terbukti', description: `Lebih dari ${STATS.projects} proyek selesai dengan tingkat kepuasan klien ${STATS.satisfaction}.` }
 ];
 
-export default function IndexPage({ services, portfolios, companies }: IndexPageProps) {
+export default function IndexPage({ services, portfolios, companies, hero }: IndexPageProps) {
+    const heroPoster = hero?.poster_url ?? '/asset/bg-main.png';
+    const heroVideo = hero?.video_url ?? null;
+    const heroMode = hero?.mode ?? 'video';
+    const showVideo = heroMode !== 'foto';
+    const showPhoto = heroMode !== 'video';
     const safePortfolios = Array.isArray(portfolios) ? portfolios : [];
     const safeCompanies = Array.isArray(companies) ? companies : [];
-    const [openAbout, setOpenAbout] = useState(false);
-    const [openPesanan, setOpenPesanan] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
-    const [mobilePesananOpen, setMobilePesananOpen] = useState(false);
-    const menuRef = useRef<HTMLDivElement | null>(null);
-
     const [heroRef, heroVisible] = useIntersectionObserver<HTMLElement>();
     const [servicesRef, servicesVisible] = useIntersectionObserver<HTMLElement>();
     const [portfolioRef, portfolioVisible] = useIntersectionObserver<HTMLElement>();
@@ -96,31 +101,8 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
     const [testimonialsRef, testimonialsVisible] = useIntersectionObserver<HTMLElement>();
     const [teamRef, teamVisible] = useIntersectionObserver<HTMLElement>();
 
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setOpenAbout(false); setOpenPesanan(false);
-            }
-        };
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === "Escape") { setOpenAbout(false); setOpenPesanan(false); }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleEsc);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleEsc);
-        };
-    }, []);
-
-    // Draw org chart horizontal connector lines
-
-    const closeMobileMenu = () => {
-        setMobileMenuOpen(false); setMobileAboutOpen(false); setMobilePesananOpen(false);
-    };
-
     return (
-        <>
+        <PublicLayout>
             <SEOHead
                 title="SKYNUSA TECH - Solusi Instalasi Listrik, AC, IT Support & Web Development Profesional"
                 description="SKYNUSA TECH menyediakan layanan instalasi listrik, service AC, IT support, dan web development profesional di Bali."
@@ -184,164 +166,67 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                 }
             `}</style>
 
-            {/* ── Navigation ── */}
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white backdrop-blur-md">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-14 sm:h-16 items-center justify-between">
-
-                        <Link href="/" className="flex items-center gap-2 shrink-0">
-                            <img src="/asset/logo.png" alt="SKYNUSA TECH Logo"
-                                className="h-7 sm:h-9 w-auto max-w-[140px] sm:max-w-[200px]" />
-                        </Link>
-
-                        {/* Desktop Nav */}
-                        <div ref={menuRef} className="hidden lg:flex items-center gap-6">
-                            <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Home</a>
-                            <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Layanan</a>
-                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Portfolio</a>
-
-                            <div className="relative">
-                                <button onClick={() => { setOpenAbout(!openAbout); setOpenPesanan(false); }}
-                                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${openAbout ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}>
-                                    About
-                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openAbout ? "rotate-180" : ""}`} />
-                                </button>
-                                {openAbout && (
-                                    <div className="absolute left-0 mt-2 w-44 rounded-xl border border-gray-100 bg-white shadow-lg z-50">
-                                        <div className="py-1">
-                                            <a href="/tim" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Tim Kami</a>
-                                            <a href="/kontak" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Kontak</a>
-                                            <a href="/tentang-kami" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Tentang Kami</a>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="relative">
-                                <button onClick={() => { setOpenPesanan(!openPesanan); setOpenAbout(false); }}
-                                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${openPesanan ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}>
-                                    Pesanan
-                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openPesanan ? "rotate-180" : ""}`} />
-                                </button>
-                                {openPesanan && (
-                                    <div className="absolute left-0 mt-2 w-48 rounded-xl border border-gray-100 bg-white shadow-lg z-50">
-                                        <div className="py-1">
-                                            <a href="/pesanan/order" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Order Pesanan</a>
-                                            <a href="/pesanan/tracking" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Tracking Pesanan</a>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <a href="/berita" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Berita</a>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <a href="/login"
-                                className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg shadow hover:shadow-md transition-all duration-200">
-                                <LogIn className="w-3.5 h-3.5" />
-                                Login
-                            </a>
-                            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="lg:hidden p-1.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Toggle menu">
-                                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile Menu */}
-                {mobileMenuOpen && (
-                    <div className="lg:hidden border-t border-gray-100 bg-white max-h-[80vh] overflow-y-auto">
-                        <div className="px-3 py-3 space-y-0.5">
-                            <a href="#home" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Home</a>
-                            <a href="#services" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Layanan</a>
-                            <a href="#portfolio" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Portfolio</a>
-                            <div>
-                                <button onClick={() => setMobileAboutOpen(!mobileAboutOpen)}
-                                    className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">
-                                    About
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileAboutOpen ? "rotate-180" : ""}`} />
-                                </button>
-                                {mobileAboutOpen && (
-                                    <div className="ml-3 mt-0.5 space-y-0.5 border-l-2 border-blue-100 pl-3">
-                                        <a href="/tim" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Tim Kami</a>
-                                        <a href="/kontak" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Kontak</a>
-                                        <a href="/tentang-kami" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Tentang Kami</a>
-                                    </div>
-                                )}
-                            </div>
-                            <div>
-                                <button onClick={() => setMobilePesananOpen(!mobilePesananOpen)}
-                                    className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">
-                                    Pesanan
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobilePesananOpen ? "rotate-180" : ""}`} />
-                                </button>
-                                {mobilePesananOpen && (
-                                    <div className="ml-3 mt-0.5 space-y-0.5 border-l-2 border-blue-100 pl-3">
-                                        <a href="/pesanan/order" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Order Pesanan</a>
-                                        <a href="/pesanan/tracking" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Tracking Pesanan</a>
-                                    </div>
-                                )}
-                            </div>
-                            <a href="/berita" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Berita</a>
-                            <div className="pt-2 mt-1 border-t border-gray-100">
-                                <a href="/login" onClick={closeMobileMenu}
-                                    className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow transition-all duration-200">
-                                    <LogIn className="w-4 h-4" /> Login
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </nav>
-
             {/* ── Hero ── */}
-            <section id="home" ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-14 sm:pt-16">
-                <div className="absolute inset-0 bg-[url('/asset/bg-main.png')] bg-cover bg-center opacity-15"></div>
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-24">
-                    <div className="text-start max-w-3xl">
-                        <div className={`mb-3 sm:mb-5 inline-flex items-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 py-1.5 ${heroVisible ? 'anim-down hidden-init' : 'hidden-init'}`}>
-                            <span className="text-xs sm:text-sm font-bold text-white tracking-wide">SOLUSI TEKNIS TERPERCAYA</span>
-                        </div>
-                        <h1 className={`mb-3 sm:mb-4 text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight ${heroVisible ? 'anim-left hidden-init d100' : 'hidden-init'}`}>
-                            Layanan Instalasi, Maintenance & IT Support Profesional
+            <section id="home" ref={heroRef} className="relative isolate overflow-hidden bg-gray-900 pt-14 sm:pt-16">
+                {/* Video latar diatur dari Admin > Hero Beranda. Kalau kosong, pakai public/asset/hero.mp4.
+                    Poster tampil saat video belum siap atau user mengaktifkan "reduce motion". */}
+                {/* Mode diatur dari Admin > Hero Beranda: video | foto | keduanya.
+                    Pada mode "video", foto hanya muncul untuk pengunjung "reduce motion". */}
+                <img src={heroPoster} alt="" aria-hidden="true"
+                    className={`absolute inset-0 -z-10 h-full w-full object-cover opacity-50 ${showPhoto ? '' : 'hidden motion-reduce:block'}`} />
+                {showVideo && (
+                    <video key={heroVideo ?? 'static'} autoPlay muted loop playsInline preload="metadata" poster={heroPoster} aria-hidden="true"
+                        className={`absolute inset-0 -z-10 h-full w-full object-cover motion-reduce:hidden ${heroMode === 'keduanya' ? 'opacity-40' : 'opacity-50'}`}>
+                        {heroVideo ? (
+                            <source src={heroVideo} />
+                        ) : (
+                            <>
+                                <source src="/asset/hero.webm" type="video/webm" />
+                                <source src="/asset/hero.mp4" type="video/mp4" />
+                            </>
+                        )}
+                    </video>
+                )}
+                <div className="absolute inset-0 -z-10 bg-gradient-to-r from-gray-900 via-gray-900/85 to-gray-900/30" />
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
+                    <div className="max-w-2xl">
+                        <p className={`mb-4 text-sm font-medium text-brand ${heroVisible ? 'anim-down hidden-init' : 'hidden-init'}`}>
+                            Teknisi lokal di Jimbaran, Bali
+                        </p>
+                        <h1 className={`mb-5 text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] ${heroVisible ? 'anim-up hidden-init d100' : 'hidden-init'}`}>
+                            Instalasi, AC, IT support, dan website. Satu tim sampai tuntas.
                         </h1>
-                        <p className={`mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg text-blue-100 leading-relaxed ${heroVisible ? 'anim-left hidden-init d200' : 'hidden-init'}`}>
-                            Tim teknisi berpengalaman kami siap membantu kebutuhan instalasi elektronik, perawatan AC, maintenance, dukungan IT, dan pembuatan website untuk rumah, kantor, dan industri Anda.
+                        <p className={`mb-8 max-w-xl text-base sm:text-lg text-gray-300 leading-relaxed ${heroVisible ? 'anim-up hidden-init d200' : 'hidden-init'}`}>
+                            Dari instalasi listrik dan perawatan AC sampai jaringan kantor dan pembuatan website, untuk rumah, villa, kantor, dan industri.
                         </p>
                         <div className={`flex flex-col sm:flex-row gap-3 ${heroVisible ? 'anim-up hidden-init d300' : 'hidden-init'}`}>
-                            <Link href="/kontak">
-                                <Button size="sm" className="gap-2 bg-white text-blue-600 hover:bg-blue-50 font-semibold px-5 py-2.5 text-sm w-full sm:w-auto sm:text-base sm:px-6 sm:py-3">
-                                    Konsultasi Gratis <ArrowRight className="h-4 w-4" />
-                                </Button>
+                            <Link href="/kontak"
+                                className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-base font-semibold text-gray-900 hover:bg-brand-strong transition-colors">
+                                Konsultasi gratis <ArrowRight className="h-4 w-4" />
                             </Link>
-                            <Link href="/portfolio">
-                                <Button size="sm" variant="outline" className="bg-amber-400 border-amber-400 text-white hover:bg-amber-500 font-semibold px-5 py-2.5 text-sm w-full sm:w-auto sm:text-base sm:px-6 sm:py-3">
-                                    Lihat Portfolio
-                                </Button>
+                            <Link href="/portfolio"
+                                className="inline-flex items-center justify-center rounded-full border border-white/30 px-6 py-3 text-base font-semibold text-white hover:bg-white/10 transition-colors">
+                                Lihat portfolio
                             </Link>
                         </div>
-                        <div className={`mt-8 sm:mt-12 grid grid-cols-2 gap-4 sm:gap-8 border-t border-white/20 pt-6 sm:pt-8 ${heroVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
+                        <dl className={`mt-12 flex gap-10 border-t border-white/15 pt-6 ${heroVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
                             <div>
-                                <div className="text-2xl sm:text-4xl font-bold text-white">200+</div>
-                                <div className="mt-0.5 text-xs sm:text-sm text-blue-200">Projects Completed</div>
+                                <dd className="font-display text-3xl font-bold text-white">{STATS.projects}</dd>
+                                <dt className="mt-1 text-sm text-gray-300">Proyek selesai</dt>
                             </div>
                             <div>
-                                <div className="text-2xl sm:text-4xl font-bold text-white">98%</div>
-                                <div className="mt-0.5 text-xs sm:text-sm text-blue-200">Client Satisfaction</div>
+                                <dd className="font-display text-3xl font-bold text-white">{STATS.satisfaction}</dd>
+                                <dt className="mt-1 text-sm text-gray-300">Klien puas</dt>
                             </div>
-                        </div>
+                        </dl>
                     </div>
                 </div>
-                <div className="h-6 sm:h-10 bg-gradient-to-b from-transparent to-white"></div>
             </section>
 
             {/* ── Services ── */}
             <section id="services" ref={servicesRef} className="bg-white py-10 sm:py-14 lg:py-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className={`mb-8 sm:mb-12 text-center ${servicesVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <div className="mb-2 sm:mb-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">OUR SERVICES</div>
                         <h2 className="mb-2 sm:mb-3 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">Solusi Teknis Lengkap untuk Kebutuhan Anda</h2>
                         <p className="mx-auto max-w-2xl text-sm sm:text-base text-gray-600">Layanan instalasi, maintenance, IT support, dan web development dengan standar profesional tinggi</p>
                     </div>
@@ -387,7 +272,7 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                     {services && services.length > 0 && (
                         <div className={`mt-8 text-center ${servicesVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
                             <Link href="/layanan">
-                                <Button size="sm" variant="outline" className="px-6 py-2.5 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold text-sm sm:text-base sm:px-8 sm:py-3">
+                                <Button size="sm" variant="outline" className="px-6 py-2.5 rounded-full border-gray-900 bg-gray-900 text-white hover:bg-blue-700 hover:border-blue-700 font-semibold text-sm sm:text-base sm:px-8 sm:py-3">
                                     Lihat Semua Layanan
                                 </Button>
                             </Link>
@@ -400,7 +285,6 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
             <section id="portfolio" ref={portfolioRef} className="bg-gray-50 py-10 sm:py-14 lg:py-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className={`mb-8 sm:mb-12 text-center ${portfolioVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <div className="mb-2 sm:mb-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">PORTFOLIO</div>
                         <h2 className="mb-2 sm:mb-3 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">Project yang Telah Kami Kerjakan</h2>
                         <p className="mx-auto max-w-2xl text-sm sm:text-base text-gray-600">Proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan</p>
                     </div>
@@ -454,7 +338,7 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                     </div>
                     <div className={`mt-8 text-center ${portfolioVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
                         <Link href="/portfolio">
-                            <Button size="sm" variant="outline" className="px-6 py-2.5 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold text-sm sm:text-base sm:px-8">
+                            <Button size="sm" variant="outline" className="px-6 py-2.5 rounded-full border-gray-900 bg-gray-900 text-white hover:bg-blue-700 hover:border-blue-700 font-semibold text-sm sm:text-base sm:px-8">
                                 Lihat Semua Proyek <ArrowRight className="h-4 w-4 ml-1.5" />
                             </Button>
                         </Link>
@@ -466,7 +350,6 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
             <section id="features" ref={featuresRef} className="bg-white py-10 sm:py-14 lg:py-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className={`mb-8 sm:mb-12 text-center ${featuresVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <div className="mb-2 sm:mb-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">WHY CHOOSE US</div>
                         <h2 className="mb-2 sm:mb-3 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">Keunggulan Layanan Kami</h2>
                         <p className="mx-auto max-w-2xl text-sm sm:text-base text-gray-600">Keahlian teknis, pengalaman industri, dan pendekatan customer-centric untuk hasil terbaik</p>
                     </div>
@@ -489,10 +372,10 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                     <div className={`mt-10 sm:mt-14 ${featuresVisible ? 'anim-scale hidden-init d400' : 'hidden-init'}`}>
                         <div className="bg-white rounded-2xl shadow-lg py-6 px-4 sm:py-8 sm:px-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center border border-gray-100">
                             {[
-                                { value: '95%', label: 'Kepuasan Klien' },
-                                { value: '188+', label: 'Proyek Selesai' },
-                                { value: '20+', label: 'Teknisi Ahli' },
-                                { value: '10+', label: 'Tahun Berpengalaman' },
+                                { value: STATS.satisfaction, label: 'Kepuasan Klien' },
+                                { value: STATS.projects, label: 'Proyek Selesai' },
+                                { value: STATS.technicians, label: 'Teknisi Ahli' },
+                                { value: STATS.years, label: 'Tahun Berpengalaman' },
                             ].map((stat, i) => (
                                 <div key={i}>
                                     <div className="text-lg sm:text-2xl font-bold text-blue-600">{stat.value}</div>
@@ -507,10 +390,7 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
             {/* ── Testimonials ── */}
             <section ref={testimonialsRef} className="bg-white py-10 sm:py-14 lg:py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className={`text-center mb-2 ${testimonialsVisible ? 'anim-down hidden-init' : 'hidden-init'}`}>
-                        <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs sm:text-sm font-medium">Dipercaya Oleh</span>
-                    </div>
-                    <h2 className={`text-center text-xl sm:text-3xl font-bold text-gray-900 mb-2 mt-3 ${testimonialsVisible ? 'anim-up hidden-init d100' : 'hidden-init'}`}>
+                    <h2 className={`text-center text-xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 ${testimonialsVisible ? 'anim-up hidden-init d100' : 'hidden-init'}`}>
                         Klien yang Telah Bekerja Sama
                     </h2>
                     <p className={`text-center text-sm sm:text-base text-gray-600 mb-8 sm:mb-12 ${testimonialsVisible ? 'anim-up hidden-init d200' : 'hidden-init'}`}>
@@ -536,24 +416,9 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                             <p className="col-span-full text-center text-sm text-gray-500">Belum ada data klien.</p>
                         )}
                     </div>
-                    <div className={`bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-3xl mx-auto border border-gray-100 ${testimonialsVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
-                        <div className="flex items-start gap-3 mb-4">
-                            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm shrink-0">BS</div>
-                            <div>
-                                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Budi Santoso</h3>
-                                <p className="text-gray-600 text-xs sm:text-sm">Direktur Operasional, PT Maju Bersama</p>
-                            </div>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-sm sm:text-base mb-3">
-                            "Bekerja dengan Skynusa Tech sangat memuaskan. Tim mereka menyelesaikan instalasi sistem kelistrikan gedung kami dengan profesional dan tepat waktu. Hasil kerja sangat rapi dan sesuai standar."
-                        </p>
-                        <div className="flex text-yellow-400 text-lg">
-                            {Array.from({ length: 5 }).map((_, i) => <span key={i}>★</span>)}
-                        </div>
-                    </div>
                     <div className={`mt-8 text-center ${testimonialsVisible ? 'anim-up hidden-init d500' : 'hidden-init'}`}>
                         <Link href="/kontak">
-                            <Button size="sm" variant="outline" className="px-8 py-2.5 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold text-sm sm:text-base">
+                            <Button size="sm" variant="outline" className="px-8 py-2.5 rounded-full border-gray-900 bg-gray-900 text-white hover:bg-blue-700 hover:border-blue-700 font-semibold text-sm sm:text-base">
                                 Hubungi Kami Sekarang
                             </Button>
                         </Link>
@@ -565,7 +430,6 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
             <section id="tim" ref={teamRef} className="bg-gray-50 py-10 sm:py-14 lg:py-20">
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <div className={`mb-8 sm:mb-12 text-center ${teamVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <span className="inline-block mb-2 rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">OUR TEAM</span>
                         <h2 className="mb-2 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">SKYNUSA TEAM</h2>
                         <p className="mx-auto max-w-xl text-sm sm:text-base text-gray-600">Tim profesional yang solid dan berpengalaman untuk kesuksesan project Anda</p>
                     </div>
@@ -573,48 +437,6 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                 </div>
             </section>
 
-            {/* ── Footer ── */}
-            <footer className="border-t border-gray-200 bg-gray-900 py-8 sm:py-12 text-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid gap-6 sm:gap-8 grid-cols-2 lg:grid-cols-4">
-                        <div className="col-span-2 sm:col-span-1">
-                            <img src="asset/footer-logo.png" alt="SKYNUSA TECH Logo" className="mb-4 h-7 sm:h-8 w-auto max-w-[160px]" />
-                            <p className="text-xs text-gray-400 leading-relaxed">Solusi profesional untuk instalasi, maintenance, IT support, dan web development.</p>
-                        </div>
-                        <div>
-                            <h3 className="mb-3 text-sm font-semibold">Menu Cepat</h3>
-                            <ul className="space-y-1.5 text-xs text-gray-400">
-                                <li><Link href="/tentang-kami" className="hover:text-blue-400 transition-colors">Tentang Kami</Link></li>
-                                <li><Link href="/portfolio" className="hover:text-blue-400 transition-colors">Portfolio</Link></li>
-                                <li><Link href="/layanan" className="hover:text-blue-400 transition-colors">Layanan</Link></li>
-                                <li><Link href="/tim" className="hover:text-blue-400 transition-colors">Tim Kami</Link></li>
-                                <li><Link href="/kontak" className="hover:text-blue-400 transition-colors">Kontak</Link></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="mb-3 text-sm font-semibold">Layanan Kami</h3>
-                            <ul className="space-y-1.5 text-xs text-gray-400">
-                                <li>Instalasi Elektronik</li>
-                                <li>Service AC</li>
-                                <li>Maintenance</li>
-                                <li>IT Support</li>
-                                <li>Web Development</li>
-                            </ul>
-                        </div>
-                        <div className="col-span-2 sm:col-span-1">
-                            <h3 className="mb-3 text-sm font-semibold">Hubungi Kami</h3>
-                            <ul className="space-y-1.5 text-xs text-gray-400">
-                                <li><a href="mailto:Roycegroupbali@gmail.com" className="hover:text-blue-400 transition-colors break-all">Roycegroupbali@gmail.com</a></li>
-                                <li><a href="tel:+62881080888361" className="hover:text-blue-400 transition-colors">+62 881-080-888-361</a></li>
-                                <li className="leading-relaxed">Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="mt-8 border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
-                        <p>Developed by © {new Date().getFullYear()} SKYNUSA TECH.</p>
-                    </div>
-                </div>
-            </footer>
-        </>
+        </PublicLayout>
     );
 }

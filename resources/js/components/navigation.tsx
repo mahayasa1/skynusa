@@ -30,7 +30,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/70 bg-white/85 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 sm:h-16 items-center justify-between">
 
@@ -65,7 +65,7 @@ export default function Navigation() {
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openAbout ? "rotate-180" : ""}`} />
               </button>
               {openAbout && (
-                <div className="absolute left-0 mt-2 w-44 rounded-xl border bg-white shadow-xl z-50 animate-[fadeIn_.2s_ease-out_forwards]">
+                <div className="absolute left-0 mt-2 w-44 rounded-xl border border-gray-200 bg-white shadow-lg z-50 animate-[fadeIn_.2s_ease-out_forwards]">
                   <div className="p-1">
                     <Link href="/tim" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Tim Kami</Link>
                     <Link href="/kontak" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Kontak</Link>
@@ -85,7 +85,7 @@ export default function Navigation() {
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openPesanan ? "rotate-180" : ""}`} />
               </button>
               {openPesanan && (
-                <div className="absolute left-0 mt-2 w-48 rounded-xl border bg-white shadow-xl z-50 animate-[fadeIn_.2s_ease-out_forwards]">
+                <div className="absolute left-0 mt-2 w-48 rounded-xl border border-gray-200 bg-white shadow-lg z-50 animate-[fadeIn_.2s_ease-out_forwards]">
                   <div className="p-1">
                     <Link href="/pesanan/order" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Order Pesanan</Link>
                     <Link href="/pesanan/tracking" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Tracking Pesanan</Link>
@@ -103,10 +103,16 @@ export default function Navigation() {
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg shadow hover:shadow-md transition-all duration-200"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
             >
               <LogIn className="w-3.5 h-3.5" />
               Login
+            </Link>
+            <Link
+              href="/pesanan/order"
+              className="hidden lg:inline-flex items-center rounded-full bg-brand px-5 py-2 text-sm font-semibold text-gray-900 hover:bg-brand-strong transition-colors"
+            >
+              Pesan Layanan
             </Link>
 
             <button
@@ -165,10 +171,13 @@ export default function Navigation() {
 
             <Link href="/berita" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/berita' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>Berita</Link>
 
-            <div className="pt-2 mt-1 border-t border-gray-100">
-              <Link href="/login" onClick={closeMobileMenu} className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow transition-all duration-200">
+            <div className="pt-3 mt-1 border-t border-gray-100 grid grid-cols-2 gap-2">
+              <Link href="/login" onClick={closeMobileMenu} className="flex items-center justify-center gap-2 rounded-full border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700">
                 <LogIn className="w-4 h-4" />
                 Login
+              </Link>
+              <Link href="/pesanan/order" onClick={closeMobileMenu} className="flex items-center justify-center rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-gray-900">
+                Pesan Layanan
               </Link>
             </div>
           </div>

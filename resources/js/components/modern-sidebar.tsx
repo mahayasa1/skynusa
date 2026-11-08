@@ -21,6 +21,7 @@ import {
   Briefcase,
   FolderKanban,
   FileText,
+  Video,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -58,6 +59,7 @@ export default function ModernSidebar({ currentPath = '' }: SidebarProps) {
       children: [
         { name: 'Users', href: '/admin/users', icon: User },
         { name: 'Companies', href: '/admin/companies', icon: Building2 },
+        { name: 'Hero Beranda', href: '/admin/hero', icon: Video },
         { name: 'Layanan', href: '/admin/layanan', icon: Briefcase },
         { name: 'Portfolio', href: '/admin/portfolio', icon: FolderKanban },
         {name: 'Berita',href: '/admin/berita',icon: FileText,},
