@@ -1,4 +1,7 @@
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
+import Turnstile from '@/components/turnstile';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 import PublicLayout from '@/layouts/public-layout';
 import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
@@ -10,26 +13,38 @@ import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Contact() {
-    const [formData, setFormData] = useState({
+    const { data: formData, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         phone: '',
         subject: '',
-        message: ''
+        message: '',
+        captcha: '',
     });
+    const [captchaReset, setCaptchaReset] = useState(0);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission here
-        console.log('Form submitted:', formData);
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
+        post('/kontak', {
+            preserveScroll: true,
+            onSuccess: () => {
+                reset();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pesan terkirim',
+                    text: 'Tim kami akan menghubungi Anda dalam 24 jam.',
+                    confirmButtonText: 'Tutup',
+                });
+            },
+            onFinish: () => {
+                setData('captcha', '');
+                setCaptchaReset((n) => n + 1);
+            },
         });
     };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+        setData(e.target.name as keyof typeof formData, e.target.value);
 
     return (
         <PublicLayout>
@@ -207,8 +222,13 @@ export default function Contact() {
                                             />
                                         </div>
 
-                                        <Button type="submit" size="lg" className="w-full md:w-auto">
-                                            Kirim Pesan
+                                        <div className="space-y-2">
+                                            <Turnstile onVerify={(t) => setData('captcha', t)} resetKey={captchaReset} />
+                                            {errors.captcha && <p className="text-sm text-red-600">{errors.captcha}</p>}
+                                        </div>
+
+                                        <Button type="submit" size="lg" className="w-full md:w-auto" disabled={processing || !formData.captcha}>
+                                            {processing ? 'Mengirim...' : 'Kirim Pesan'}
                                         </Button>
                                     </form>
                                 </CardContent>

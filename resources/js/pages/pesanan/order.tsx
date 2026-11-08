@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ShoppingCart, Calendar, AlertCircle, CheckCircle, Copy, ExternalLink } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import React from 'react';
+import Turnstile from '@/components/turnstile';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -35,7 +36,10 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
         telp: '',
         description: '',
         due_date: '',
+        captcha: '',
     });
+    const [captchaReset, setCaptchaReset] = React.useState(0);
+    const resetCaptcha = () => { setData('captcha', ''); setCaptchaReset((n) => n + 1); };
 
     // Show success alert when order is created
     React.useEffect(() => {
@@ -144,10 +148,12 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
             onSuccess: () => {
                 Swal.close();
                 reset();
+                resetCaptcha();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
             onError: (errors) => {
                 Swal.close();
+                resetCaptcha();
                 
                 // Show error alert
                 Swal.fire({
@@ -390,13 +396,19 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                     </ul>
                                 </div>
 
+                                {/* Captcha */}
+                                <div className="space-y-2">
+                                    <Turnstile onVerify={(t) => setData('captcha', t)} resetKey={captchaReset} />
+                                    {errors.captcha && <p className="text-sm text-red-600">{errors.captcha}</p>}
+                                </div>
+
                                 {/* Submit Button */}
                                 <div className="flex gap-4">
                                     <Button
                                         type="submit"
                                         size="lg"
                                         className="flex-1"
-                                        disabled={processing}
+                                        disabled={processing || !data.captcha}
                                     >
                                         {processing ? (
                                             <>

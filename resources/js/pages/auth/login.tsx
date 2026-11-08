@@ -8,6 +8,7 @@ import { useForm } from '@inertiajs/react';
 import { request } from '@/routes/password';
 import { Head, Link } from '@inertiajs/react';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import Turnstile from '@/components/turnstile';
 import { useState, useRef, useEffect } from 'react';
 
 interface LoginProps {
@@ -221,12 +222,17 @@ export default function Login({
         email: '',
         password: '',
         remember: false,
+        captcha: '',
     });
+    const [captchaReset, setCaptchaReset] = useState(0);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/login', {
-            onFinish: () => setData('password', ''),
+            onFinish: () => {
+                setData((d) => ({ ...d, password: '', captcha: '' }));
+                setCaptchaReset((n) => n + 1);
+            },
         });
     };
 
@@ -329,10 +335,15 @@ export default function Login({
                                 )}
                             </div>
 
+                            <div>
+                                <Turnstile onVerify={(t) => setData('captcha', t)} resetKey={captchaReset} />
+                                <InputError message={errors.captcha} />
+                            </div>
+
                             <Button
                                 type="submit"
                                 className="mt-2 w-full bg-linear-to-r from-blue-500 to-indigo-600 text-white"
-                                disabled={processing}
+                                disabled={processing || !data.captcha}
                             >
                                 {processing ? <><Spinner /> Signing In...</> : 'Sign In'}
                             </Button>
