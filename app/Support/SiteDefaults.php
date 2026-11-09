@@ -26,23 +26,23 @@ class SiteDefaults
     {
         return [
             'hero_badge'        => 'Teknisi lokal di Jimbaran, Bali',
-            'hero_title'        => 'Instalasi, AC, IT support, dan website. Satu tim sampai tuntas.',
-            'hero_subtitle'     => 'Dari instalasi listrik dan perawatan AC sampai jaringan kantor dan pembuatan website, untuk rumah, villa, kantor, dan industri.',
+            'hero_title'        => 'Riset dan pengembangan teknologi, solusi IT, dan website. Satu tim sampai tuntas.',
+            'hero_subtitle'     => 'Dari riset dan pengembangan sistem, solusi IT dan jaringan kantor, sampai pembuatan website dan instalasi perangkat, untuk rumah, villa, kantor, dan industri, termasuk perawatan AC.',
             'hero_tagline'      => '> beyond technology. beyond limits.',
             'hero_cta_primary'  => 'Konsultasi gratis',
             'hero_cta_secondary' => 'Lihat portfolio',
 
-            'services_title'    => 'Solusi Teknis Lengkap untuk Kebutuhan Anda',
-            'services_subtitle' => 'Layanan instalasi, maintenance, IT support, dan web development dengan standar profesional tinggi',
+            'services_title'    => 'Riset, Teknologi, dan Solusi Digital untuk Kebutuhan Anda',
+            'services_subtitle' => 'Riset dan pengembangan (R&D), IT support, web development, dan instalasi perangkat, serta service AC, dengan standar profesional tinggi',
 
             'portfolio_title'    => 'Project yang Telah Kami Kerjakan',
-            'portfolio_subtitle' => 'Proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan',
+            'portfolio_subtitle' => 'Proyek riset dan pengembangan, IT support, web development, dan instalasi, termasuk service AC, yang telah kami selesaikan',
 
             'features_title'    => 'Keunggulan Layanan Kami',
-            'features_subtitle' => 'Keahlian teknis, pengalaman industri, dan pendekatan customer-centric untuk hasil terbaik',
+            'features_subtitle' => 'Keahlian teknis, semangat riset dan inovasi, serta pendekatan customer-centric untuk hasil terbaik',
             'features' => [
                 ['icon' => 'Award', 'title' => 'Standar Profesional', 'description' => 'Mengikuti standar industri terbaik dan prosedur keamanan yang ketat untuk setiap proyek.'],
-                ['icon' => 'Users', 'title' => 'Tim Berpengalaman', 'description' => 'Teknisi bersertifikasi dengan pengalaman bertahun-tahun di bidang elektronik, AC, IT, dan web.'],
+                ['icon' => 'Users', 'title' => 'Tim Berpengalaman', 'description' => 'Engineer dan teknisi bersertifikasi dengan pengalaman bertahun-tahun di bidang riset dan pengembangan, IT, web, instalasi, dan AC.'],
                 ['icon' => 'Zap', 'title' => 'Respon Cepat', 'description' => 'Respon cepat untuk layanan darurat dan penyelesaian sesuai timeline yang disepakati.'],
                 ['icon' => 'Headphones', 'title' => 'Dukungan Penuh', 'description' => 'Customer support responsif dan maintenance berkala untuk menjaga sistem Anda optimal.'],
                 ['icon' => 'Shield', 'title' => 'Garansi Terjamin', 'description' => 'Setiap pekerjaan dilengkapi garansi resmi dan jaminan kepuasan klien.'],
@@ -50,7 +50,7 @@ class SiteDefaults
             ],
 
             'skybot_title' => 'Kenalan dengan Skybot',
-            'skybot_desc'  => 'Bingung mau pasang CCTV, bikin website, atau layanan lain? Tanya Skybot, asisten AI SKYNUSA TECH. Untuk harga dan penawaran, tim kami yang akan menjawab langsung.',
+            'skybot_desc'  => 'Bingung mau bikin website, mengembangkan sistem digital, atau pasang CCTV? Tanya Skybot, asisten AI SKYNUSA TECH. Untuk harga dan penawaran, tim kami yang akan menjawab langsung.',
             'skybot_questions' => ['Pasang CCTV butuh apa saja?', 'Website butuh apa saja?', 'Bagaimana cara memesan?'],
 
             'clients_title' => 'Klien yang Telah Bekerja Sama',
@@ -60,7 +60,7 @@ class SiteDefaults
             'team_desc'  => 'Tim profesional yang solid dan berpengalaman untuk kesuksesan project Anda',
 
             'cta_title' => 'Siap mulai proyek Anda?',
-            'cta_desc'  => 'Ceritakan kebutuhan Anda. Tim kami di Bali siap membantu dari konsultasi sampai tuntas.',
+            'cta_desc'  => 'Ceritakan kebutuhan Anda. Tim kami di Bali siap membantu dari riset dan konsultasi sampai tuntas.',
         ];
     }
 
@@ -80,7 +80,7 @@ class SiteDefaults
         return [
             'title'   => 'Our Digital Footprint',
             'tagline' => 'Connecting Bali Through Technology',
-            'desc'    => 'Dari basis kami di Jimbaran, tim SkyNusa mengerjakan instalasi, jaringan, dan sistem digital di berbagai wilayah Bali.',
+            'desc'    => 'Dari basis kami di Jimbaran, tim SkyNusa mengerjakan pengembangan sistem digital, jaringan, dan instalasi di berbagai wilayah Bali.',
             'note'    => 'Peta ini menampilkan lokasi portofolio proyek SkyNusa Tech di Bali.',
             'hq' => ['name' => 'SkyNusa Tech', 'place' => 'Jimbaran', 'lon' => 115.165, 'lat' => -8.775],
             'regions' => [
@@ -116,13 +116,13 @@ class SiteDefaults
     {
         return [
             'hero_title' => 'Tentang Skynusa Tech',
-            'hero_p1'    => 'Kami adalah tim teknisi profesional dan berpengalaman yang berdedikasi memberikan solusi instalasi, maintenance, IT support, dan web development terbaik.',
+            'hero_p1'    => 'Kami adalah tim engineer dan teknisi profesional yang berfokus pada riset dan pengembangan teknologi, solusi IT, pembuatan website, dan instalasi perangkat, serta perawatan AC.',
             'hero_p2'    => 'Sejak 2015, kami telah melayani berbagai klien mulai dari rumah tinggal, perkantoran, hingga industri manufaktur dengan hasil yang memuaskan.',
 
             'who_title' => 'Siapa Kami?',
             'who_paragraphs' => [
-                'SKYNUSA TECH adalah perusahaan penyedia layanan teknis profesional yang berdiri sejak 2025. Kami fokus memberikan solusi terbaik dalam bidang instalasi elektronik, perawatan AC, maintenance perangkat, dukungan IT, dan pengembangan website.',
-                'Tim kami terdiri dari teknisi bersertifikat dan engineer berpengalaman yang berkomitmen memberikan layanan berkualitas tinggi dengan standar industri terbaik.',
+                'SKYNUSA TECH adalah perusahaan teknologi dan layanan teknis profesional yang berdiri sejak 2025. Kami berfokus pada riset dan pengembangan, dukungan IT, pengembangan website, dan instalasi elektronik, serta maintenance perangkat dan perawatan AC.',
+                'Tim kami terdiri dari engineer berpengalaman dan teknisi bersertifikat yang berkomitmen memberikan layanan berkualitas tinggi dengan standar industri terbaik.',
                 'Kepuasan klien adalah prioritas utama kami. Setiap proyek dikerjakan dengan dedikasi penuh dan perhatian terhadap detail untuk memastikan hasil yang optimal.',
             ],
             'who_image' => 'asset/about.jpeg',
@@ -134,13 +134,13 @@ class SiteDefaults
                 ['title' => 'Profesionalisme', 'description' => 'Kami berkomitmen memberikan layanan profesional dengan standar kualitas tertinggi.'],
                 ['title' => 'Dedikasi', 'description' => 'Tim kami berdedikasi penuh untuk memastikan kepuasan dan keberhasilan setiap proyek.'],
                 ['title' => 'Integritas', 'description' => 'Kami menjunjung tinggi kejujuran dan transparansi dalam setiap hubungan dengan klien.'],
-                ['title' => 'Inovasi', 'description' => 'Kami selalu mengikuti perkembangan teknologi dan metode terbaru di industri.'],
+                ['title' => 'Inovasi', 'description' => 'Kami terus melakukan riset dan pengembangan agar selalu mengikuti perkembangan teknologi dan metode terbaru di industri.'],
             ],
 
             'achievements_title' => 'Pencapaian Kami',
 
-            'mission' => 'Memberikan solusi teknis berkualitas tinggi dengan harga kompetitif, didukung oleh teknis profesional dan pelayanan customer service yang responsif untuk menaikkan kepuasan setiap klien.',
-            'vision'  => 'Menjadi penyedia layanan instalasi, maintenance, IT support, dan web development terdepan dan terpercaya di Indonesia, dikenal karena kualitas kerja dan kepuasan pelanggan yang konsisten.',
+            'mission' => 'Memberikan solusi teknologi berkualitas tinggi melalui riset dan pengembangan yang berkelanjutan, dengan harga kompetitif, didukung tim profesional dan layanan pelanggan yang responsif untuk meningkatkan kepuasan setiap klien.',
+            'vision'  => 'Menjadi perusahaan teknologi terdepan dan terpercaya di Indonesia di bidang riset dan pengembangan, IT support, web development, dan instalasi, serta layanan AC, dikenal karena kualitas kerja dan kepuasan pelanggan yang konsisten.',
         ];
     }
 }

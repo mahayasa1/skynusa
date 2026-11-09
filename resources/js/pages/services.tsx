@@ -37,9 +37,9 @@ export default function Services({ services, statistics }: ServicesProps) {
     return (
         <PublicLayout>
             <SEOHead
-                title="Layanan Kami - Instalasi, Maintenance, IT & Web Development"
-                description="Layanan lengkap: Instalasi & Maintenance Listrik, Service AC Split & Central, IT Support Profesional, dan Web Development. Teknisi bersertifikat, garansi resmi, harga kompetitif."
-                keywords="instalasi listrik, maintenance listrik, service ac, instalasi ac central, it support, troubleshooting komputer, web development, website company profile, e-commerce"
+                title="Layanan Kami - Riset & Pengembangan, IT, Web Development & Instalasi"
+                description="Layanan lengkap: Riset & Pengembangan Teknologi, IT Support Profesional, Web Development, Instalasi & Maintenance Listrik, serta Service AC Split & Central. Teknisi bersertifikat, garansi resmi, harga kompetitif."
+                keywords="riset dan pengembangan, it support, troubleshooting komputer, web development, website company profile, e-commerce, instalasi listrik, maintenance listrik, service ac, instalasi ac central"
                 canonical="https://skynusa-tech.com/layanan"
                 ogImage="/asset/logo.png"
             />
@@ -53,10 +53,10 @@ export default function Services({ services, statistics }: ServicesProps) {
                             <span className="text-xl font-extrabold text-white">LAYANAN KAMI</span>
                         </div>
                         <h1 className="mb-6 text-4xl lg:text-5xl font-bold text-white">
-                            Solusi Teknis Lengkap untuk Kebutuhan Anda
+                            Riset, Teknologi, dan Solusi Digital untuk Kebutuhan Anda
                         </h1>
                         <p className="mx-auto max-w-3xl text-lg text-blue-100">
-                            Kami menyediakan {statistics?.total_services || services.length} layanan profesional untuk instalasi, maintenance, IT support, dan web development
+                            Kami menyediakan {statistics?.total_services || services.length} layanan profesional untuk riset dan pengembangan, IT support, web development, instalasi, dan service AC
                         </p>
                     </div>
                 </div>

@@ -82,27 +82,27 @@ interface HomeContent {
 
 const DEFAULT_CONTENT: HomeContent = {
     hero_badge: 'Teknisi lokal di Jimbaran, Bali',
-    hero_title: 'Instalasi, AC, IT support, dan website. Satu tim sampai tuntas.',
-    hero_subtitle: 'Dari instalasi listrik dan perawatan AC sampai jaringan kantor dan pembuatan website, untuk rumah, villa, kantor, dan industri.',
+    hero_title: 'Riset dan pengembangan teknologi, solusi IT, dan website. Satu tim sampai tuntas.',
+    hero_subtitle: 'Dari riset dan pengembangan sistem, solusi IT dan jaringan kantor, sampai pembuatan website dan instalasi perangkat, untuk rumah, villa, kantor, dan industri, termasuk perawatan AC.',
     hero_tagline: '> beyond technology. beyond limits.',
     hero_cta_primary: 'Konsultasi gratis',
     hero_cta_secondary: 'Lihat portfolio',
-    services_title: 'Solusi Teknis Lengkap untuk Kebutuhan Anda',
-    services_subtitle: 'Layanan instalasi, maintenance, IT support, dan web development dengan standar profesional tinggi',
+    services_title: 'Riset, Teknologi, dan Solusi Digital untuk Kebutuhan Anda',
+    services_subtitle: 'Riset dan pengembangan (R&D), IT support, web development, dan instalasi perangkat, serta service AC, dengan standar profesional tinggi',
     portfolio_title: 'Project yang Telah Kami Kerjakan',
-    portfolio_subtitle: 'Proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan',
+    portfolio_subtitle: 'Proyek riset dan pengembangan, IT support, web development, dan instalasi, termasuk service AC, yang telah kami selesaikan',
     features_title: 'Keunggulan Layanan Kami',
-    features_subtitle: 'Keahlian teknis, pengalaman industri, dan pendekatan customer-centric untuk hasil terbaik',
+    features_subtitle: 'Keahlian teknis, semangat riset dan inovasi, serta pendekatan customer-centric untuk hasil terbaik',
     features: [],
     skybot_title: 'Kenalan dengan Skybot',
-    skybot_desc: 'Bingung mau pasang CCTV, bikin website, atau layanan lain? Tanya Skybot, asisten AI SKYNUSA TECH. Untuk harga dan penawaran, tim kami yang akan menjawab langsung.',
+    skybot_desc: 'Bingung mau bikin website, mengembangkan sistem digital, atau pasang CCTV? Tanya Skybot, asisten AI SKYNUSA TECH. Untuk harga dan penawaran, tim kami yang akan menjawab langsung.',
     skybot_questions: ['Pasang CCTV butuh apa saja?', 'Website butuh apa saja?', 'Bagaimana cara memesan?'],
     clients_title: 'Klien yang Telah Bekerja Sama',
     clients_desc: 'Bergabunglah dengan ratusan klien yang mempercayakan kebutuhan teknis mereka kepada kami.',
     team_title: 'SKYNUSA TEAM',
     team_desc: 'Tim profesional yang solid dan berpengalaman untuk kesuksesan project Anda',
     cta_title: 'Siap mulai proyek Anda?',
-    cta_desc: 'Ceritakan kebutuhan Anda. Tim kami di Bali siap membantu dari konsultasi sampai tuntas.',
+    cta_desc: 'Ceritakan kebutuhan Anda. Tim kami di Bali siap membantu dari riset dan konsultasi sampai tuntas.',
 };
 
 const getIconComponent = (iconName: string) => {
@@ -125,7 +125,7 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
     }));
     const mapTitle = map?.title ?? 'Our Digital Footprint';
     const mapTagline = map?.tagline ?? 'Connecting Bali Through Technology';
-    const mapDesc = map?.desc ?? 'Dari basis kami di Jimbaran, tim SkyNusa mengerjakan instalasi, jaringan, dan sistem digital di berbagai wilayah Bali.';
+    const mapDesc = map?.desc ?? 'Dari basis kami di Jimbaran, tim SkyNusa mengerjakan pengembangan sistem digital, jaringan, dan instalasi di berbagai wilayah Bali.';
     const heroPoster = hero?.poster_url ?? '/asset/bg-main.png';
     const heroVideo = hero?.video_url ?? null;
     const heroMode = hero?.mode ?? 'video';
@@ -147,9 +147,9 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
     return (
         <PublicLayout>
             <SEOHead
-                title="SKYNUSA TECH - Solusi Instalasi Listrik, AC, IT Support & Web Development Profesional"
-                description="SKYNUSA TECH menyediakan layanan instalasi listrik, service AC, IT support, dan web development profesional di Bali."
-                keywords="instalasi listrik bali, service ac bali, it support bali, web development bali"
+                title="SKYNUSA TECH - Riset & Pengembangan, IT Support, Web Development, Instalasi & Service AC Profesional"
+                description="SKYNUSA TECH menyediakan layanan riset dan pengembangan teknologi, IT support, web development, instalasi listrik, dan service AC profesional di Bali."
+                keywords="riset dan pengembangan bali, it support bali, web development bali, instalasi listrik bali, service ac bali"
                 canonical="https://skynusa-tech.com"
                 ogImage="/asset/logo.png"
             />

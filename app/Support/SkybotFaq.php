@@ -42,8 +42,8 @@ class SkybotFaq
         return [
             'greeting' => [
                 'patterns' => ['^\s*(halo|hai|hi|hello|hey|selamat\s+(pagi|siang|sore|malam)|permisi)\b'],
-                'id' => "Halo! Saya Skybot, asisten SKYNUSA TECH. Anda bisa bertanya soal pasang CCTV, website, service AC, listrik, IT support, atau cara memesan layanan kami.",
-                'en' => "Hi! I'm Skybot, the SKYNUSA TECH assistant. You can ask about CCTV installation, websites, AC service, electrical work, IT support, or how to order our services.",
+                'id' => "Halo! Saya Skybot, asisten SKYNUSA TECH. Anda bisa bertanya soal riset dan pengembangan, website, IT support, pasang CCTV, listrik, service AC, atau cara memesan layanan kami.",
+                'en' => "Hi! I'm Skybot, the SKYNUSA TECH assistant. You can ask about research and development, websites, IT support, CCTV installation, electrical work, AC service, or how to order our services.",
             ],
             'thanks' => [
                 'patterns' => ['^\s*(terima\s+kasih|makasih|thanks|thank\s+you)'],
@@ -57,13 +57,13 @@ class SkybotFaq
             ],
             'tentang' => [
                 'patterns' => ['tentang\s+(skynusa|perusahaan|kalian|kamu)', 'profil\s+perusahaan', 'perusahaan\s+apa', 'apa\s+itu\s+skynusa', 'about\s+(skynusa|you|the\s+company)', 'what\s+is\s+skynusa'],
-                'id' => "SKYNUSA TECH adalah perusahaan penyedia layanan teknis yang berbasis di Jimbaran, Bali. Bidangnya: instalasi elektronik dan kelistrikan, instalasi dan service AC, maintenance, IT support, serta web development, dikerjakan oleh tim teknisi dan engineer. Selengkapnya ada di halaman Tentang Kami.",
-                'en' => "SKYNUSA TECH is a technical services company based in Jimbaran, Bali. Our fields: electronics and electrical installation, AC installation and service, maintenance, IT support, and web development, handled by a team of technicians and engineers. More details are on the About Us page.",
+                'id' => "SKYNUSA TECH adalah perusahaan penyedia layanan teknis yang berbasis di Jimbaran, Bali. Bidangnya: riset dan pengembangan teknologi, IT support, web development, instalasi elektronik dan kelistrikan, maintenance, serta instalasi dan service AC, dikerjakan oleh tim engineer dan teknisi. Selengkapnya ada di halaman Tentang Kami.",
+                'en' => "SKYNUSA TECH is a technical services company based in Jimbaran, Bali. Our fields: research and development, IT support, web development, electronics and electrical installation, maintenance, and AC installation and service, handled by a team of engineers and technicians. More details are on the About Us page.",
             ],
             'layanan' => [
                 'patterns' => ['layanan\s+apa', 'apa\s+saja\s+layanan', 'jasa\s+apa', 'bisa\s+bantu\s+apa', 'what\s+services', 'services\s+do\s+you', 'what\s+can\s+you\s+do'],
-                'id' => "Layanan SKYNUSA TECH:\n1. Instalasi elektronik, termasuk CCTV\n2. Instalasi dan maintenance listrik\n3. Instalasi dan service AC\n4. IT support dan maintenance\n5. Web development\n\nKetik nama layanannya untuk penjelasan lebih lanjut, atau langsung pesan lewat menu Pesanan > Order Pesanan.",
-                'en' => "SKYNUSA TECH services:\n1. Electronics installation, including CCTV\n2. Electrical installation and maintenance\n3. AC installation and service\n4. IT support and maintenance\n5. Web development\n\nType a service name for more details, or order directly through Orders > Place Order.",
+                'id' => "Layanan SKYNUSA TECH:\n1. Riset dan pengembangan teknologi\n2. IT support dan maintenance\n3. Web development\n4. Instalasi elektronik (termasuk CCTV) dan maintenance listrik\n5. Instalasi dan service AC\n\nKetik nama layanannya untuk penjelasan lebih lanjut, atau langsung pesan lewat menu Pesanan > Order Pesanan.",
+                'en' => "SKYNUSA TECH services:\n1. Research and development\n2. IT support and maintenance\n3. Web development\n4. Electronics installation (including CCTV) and electrical maintenance\n5. AC installation and service\n\nType a service name for more details, or order directly through Orders > Place Order.",
             ],
             'cctv' => [
                 'patterns' => ['\bcctv\b', 'kamera\s+pengawas', 'security\s+camera', 'surveillance'],

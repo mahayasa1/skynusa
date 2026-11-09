@@ -15,23 +15,23 @@ const id = {
     'nav.cta': 'Pesan Layanan',
 
     // Footer
-    'footer.desc': 'Solusi profesional untuk instalasi, maintenance, IT support, dan web development.',
+    'footer.desc': 'Riset dan pengembangan teknologi, IT support, web development, instalasi, dan layanan AC profesional.',
     'footer.quickLinks': 'Menu Cepat',
     'footer.ourServices': 'Layanan Kami',
-    'footer.s1': 'Instalasi Elektronik',
-    'footer.s2': 'Service AC',
-    'footer.s3': 'Maintenance',
-    'footer.s4': 'IT Support',
-    'footer.s5': 'Web Development',
+    'footer.s1': 'Riset & Pengembangan',
+    'footer.s2': 'IT Support',
+    'footer.s3': 'Web Development',
+    'footer.s4': 'Instalasi & Maintenance',
+    'footer.s5': 'Service AC',
     'footer.contactUs': 'Hubungi Kami',
     'footer.rights': 'Hak cipta dilindungi.',
 
     // Halaman Kontak
     'contact.seoTitle': 'Kontak Kami - Hubungi SKYNUSA TECH untuk Konsultasi Gratis',
-    'contact.seoDesc': 'Hubungi SKYNUSA TECH untuk konsultasi gratis layanan instalasi, maintenance, IT support. Respon cepat 24/7 untuk emergency. Lokasi: Bali, Indonesia.',
+    'contact.seoDesc': 'Hubungi SKYNUSA TECH untuk konsultasi gratis riset dan pengembangan, IT support, web development, dan instalasi. Respon cepat 24/7 untuk emergency. Lokasi: Bali, Indonesia.',
     'contact.badge': 'HUBUNGI KAMI',
     'contact.heroTitle': 'Mari Berdiskusi Tentang Project Anda',
-    'contact.heroDesc': 'Tim ahli kami siap membantu mewujudkan kebutuhan teknis bisnis Anda dengan solusi profesional',
+    'contact.heroDesc': 'Tim ahli kami siap membantu mewujudkan ide dan kebutuhan teknologi bisnis Anda, dari riset sampai implementasi',
     'contact.address': 'Alamat Kantor',
     'contact.phone': 'Telepon',
     'contact.email': 'Email',
@@ -59,7 +59,7 @@ const id = {
 
     // Halaman Order
     'order.seoTitle': 'Buat Pesanan - SKYNUSA TECH',
-    'order.seoDesc': 'Pesan layanan instalasi, maintenance, IT support, dan web development dari SKYNUSA TECH',
+    'order.seoDesc': 'Pesan layanan riset dan pengembangan, IT support, web development, instalasi, dan service AC dari SKYNUSA TECH',
     'order.badge': 'BUAT PESANAN',
     'order.heroTitle': 'Pesan Layanan Kami',
     'order.heroDesc': 'Isi form di bawah ini untuk membuat pesanan. Tim kami akan segera memproses pesanan Anda',

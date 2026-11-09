@@ -80,9 +80,9 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
     return (
         <PublicLayout>
             <SEOHead
-                title="Portfolio Project - Instalasi, IT & Web Development"
-                description="Portfolio project instalasi CCTV, AC central, IT infrastructure, dan web development. Lebih dari 180+ project berhasil dengan klien profesional."
-                keywords="portfolio cctv, portfolio instalasi ac, portfolio it support, web development project"
+                title="Portfolio Project - Riset, IT, Web Development & Instalasi"
+                description="Portfolio project riset dan pengembangan, IT infrastructure, web development, instalasi CCTV, dan AC central. Lebih dari 180+ project berhasil dengan klien profesional."
+                keywords="portfolio riset dan pengembangan, portfolio it support, web development project, portfolio cctv, portfolio instalasi ac"
                 canonical="https://skynusa-tech.com/portfolio"
                 ogImage="/asset/logo.png"
             />
@@ -102,7 +102,7 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                     </h1>
 
                     <p className="mx-auto max-w-3xl text-lg text-blue-100">
-                        Lihat berbagai proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan dengan hasil memuaskan 
+                        Lihat berbagai proyek riset dan pengembangan, IT support, web development, instalasi, dan maintenance yang telah kami selesaikan dengan hasil memuaskan 
                     </p>
                 </div>
             </section>

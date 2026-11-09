@@ -26,9 +26,9 @@ export default function About({ about }: { about: AboutContent }) {
     return (
         <PublicLayout>
              <SEOHead
-                title="Tentang Kami - SKYNUSA TECH | Perusahaan Teknisi Profesional Bali"
-                description="SKYNUSA TECH adalah perusahaan penyedia layanan teknis profesional sejak 2015. Tim teknisi bersertifikat dengan 188+ proyek berhasil dan tingkat kepuasan klien 95%."
-                keywords="tentang skynusa tech, perusahaan teknisi bali, jasa instalasi profesional, teknisi bersertifikat, layanan teknis bali"
+                title="Tentang Kami - SKYNUSA TECH | Perusahaan Teknologi & Teknisi Profesional Bali"
+                description="SKYNUSA TECH adalah perusahaan teknologi dan layanan teknis profesional sejak 2015, berfokus pada riset dan pengembangan, IT, web, dan instalasi. Tim bersertifikat dengan 188+ proyek berhasil dan tingkat kepuasan klien 95%."
+                keywords="tentang skynusa tech, perusahaan teknologi bali, riset dan pengembangan, it support, web development, jasa instalasi profesional, teknisi bersertifikat"
                 canonical="https://skynusa-tech.com/tentang-kami"
                 ogImage="/asset/logo.png"
             />

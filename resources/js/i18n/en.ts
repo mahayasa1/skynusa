@@ -17,23 +17,23 @@ const en: Record<keyof typeof id, string> = {
     'nav.cta': 'Order a Service',
 
     // Footer
-    'footer.desc': 'Professional solutions for installation, maintenance, IT support, and web development.',
+    'footer.desc': 'Professional research and development, IT support, web development, installation, and AC services.',
     'footer.quickLinks': 'Quick Links',
     'footer.ourServices': 'Our Services',
-    'footer.s1': 'Electronics Installation',
-    'footer.s2': 'AC Service',
-    'footer.s3': 'Maintenance',
-    'footer.s4': 'IT Support',
-    'footer.s5': 'Web Development',
+    'footer.s1': 'Research & Development',
+    'footer.s2': 'IT Support',
+    'footer.s3': 'Web Development',
+    'footer.s4': 'Installation & Maintenance',
+    'footer.s5': 'AC Service',
     'footer.contactUs': 'Contact Us',
     'footer.rights': 'All rights reserved.',
 
     // Contact page
     'contact.seoTitle': 'Contact Us - Reach SKYNUSA TECH for a Free Consultation',
-    'contact.seoDesc': 'Contact SKYNUSA TECH for a free consultation on installation, maintenance, and IT support. Fast 24/7 response for emergencies. Location: Bali, Indonesia.',
+    'contact.seoDesc': 'Contact SKYNUSA TECH for a free consultation on research and development, IT support, web development, and installation. Fast 24/7 response for emergencies. Location: Bali, Indonesia.',
     'contact.badge': 'CONTACT US',
     'contact.heroTitle': "Let's Talk About Your Project",
-    'contact.heroDesc': 'Our expert team is ready to help meet your business technical needs with professional solutions',
+    'contact.heroDesc': 'Our expert team is ready to turn your ideas and technology needs into reality, from research to implementation',
     'contact.address': 'Office Address',
     'contact.phone': 'Phone',
     'contact.email': 'Email',
@@ -61,7 +61,7 @@ const en: Record<keyof typeof id, string> = {
 
     // Order page
     'order.seoTitle': 'Place an Order - SKYNUSA TECH',
-    'order.seoDesc': 'Order installation, maintenance, IT support, and web development services from SKYNUSA TECH',
+    'order.seoDesc': 'Order research and development, IT support, web development, installation, and AC services from SKYNUSA TECH',
     'order.badge': 'PLACE AN ORDER',
     'order.heroTitle': 'Order Our Services',
     'order.heroDesc': 'Fill out the form below to place an order. Our team will process it right away',
