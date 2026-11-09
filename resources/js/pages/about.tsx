@@ -1,9 +1,28 @@
 import PublicLayout from '@/layouts/public-layout';
 import SEOHead from '@/components/seo-head';
 import { Card, CardContent } from '@/components/ui/card';
-import { Award, Users, TrendingUp, Shield, CheckCircle, CircleDivide, CircleIcon, UserCog, Briefcase, Heart, Badge, Eye, Target } from 'lucide-react';
+import { Award, Heart, Eye, Target } from 'lucide-react';
+import { useSite } from '@/hooks/use-site';
 
-export default function About() {
+interface AboutContent {
+    hero_title: string; hero_p1: string; hero_p2: string;
+    who_title: string; who_paragraphs: string[]; who_image_url: string | null;
+    values_badge: string; values_title: string; values_desc: string;
+    values: { title: string; description: string }[];
+    achievements_title: string; mission: string; vision: string;
+}
+
+// Ikon nilai berurutan; kalau nilainya lebih dari 4 ikon diulang.
+const VALUE_ICONS = [Target, Heart, Award, Eye];
+
+export default function About({ about }: { about: AboutContent }) {
+    const { stats } = useSite();
+    const achievements = [
+        { number: stats.years, label: 'Tahun Pengalaman' },
+        { number: stats.projects, label: 'Project Selesai' },
+        { number: stats.satisfaction, label: 'Kepuasan Klien' },
+        { number: stats.technicians, label: 'Teknisi Profesional' },
+    ];
     return (
         <PublicLayout>
              <SEOHead
@@ -20,14 +39,14 @@ export default function About() {
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-start mx-14">
                         <h1 className="mb-6 mt-6 text-4xl lg:text-5xl font-bold text-white">
-                            Tentang Skynusa Tech
+                            {about.hero_title}
                         </h1>
-                        <p className=" max-w-3xl text-lg text-blue-100 mb-8">
-                            Kami adalah tim teknisi profesional dan berpengalaman yang berdedikasi memberikan solusi instalasi, maintenance, IT support, dan web development terbaik.
-                        </p>
-                        <p className=" max-w-3xl text-lg text-blue-100 mb-8">
-                            Sejak 2015, kami telah melayani berbagai klien mulai dari rumah tinggal, perkantoran, hingga industri manufaktur dengan hasil yang memuaskan.
-                        </p>
+                        {about.hero_p1 && (
+                            <p className=" max-w-3xl text-lg text-blue-100 mb-8">{about.hero_p1}</p>
+                        )}
+                        {about.hero_p2 && (
+                            <p className=" max-w-3xl text-lg text-blue-100 mb-8">{about.hero_p2}</p>
+                        )}
                     </div>
                 </div>
             </section>
@@ -38,23 +57,17 @@ export default function About() {
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div>
                             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                                Siapa Kami?
+                                {about.who_title}
                             </h2>
                             <div className="space-y-4 text-gray-600">
-                                <p>
-                                    SKYNUSA TECH adalah perusahaan penyedia layanan teknis profesional yang berdiri sejak 2025. Kami fokus memberikan solusi terbaik dalam bidang instalasi elektronik, perawatan AC, maintenance perangkat, dukungan IT, dan pengembangan website.
-                                </p>
-                                <p>
-                                    Tim kami terdiri dari teknisi bersertifikat dan engineer berpengalaman yang berkomitmen memberikan layanan berkualitas tinggi dengan standar industri terbaik.
-                                </p>
-                                <p>
-                                    Kepuasan klien adalah prioritas utama kami. Setiap proyek dikerjakan dengan dedikasi penuh dan perhatian terhadap detail untuk memastikan hasil yang optimal.
-                                </p>
+                                {about.who_paragraphs.map((para, i) => (
+                                    <p key={i}>{para}</p>
+                                ))}
                             </div>
                         </div>
                         <div className="relative">
                             <img 
-                                src="/asset/about.jpeg" 
+                                src={about.who_image_url ?? '/asset/about.jpeg'} 
                                 alt="Team Working" 
                                 className="rounded-2xl shadow-2xl"
                             />
@@ -68,43 +81,24 @@ export default function About() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <span className="inline-block mb-4 rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-600">
-                            Nilai-Nilai Kami
+                            {about.values_badge}
                         </span>
                         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                            Prinsip yang kami Junjung
+                            {about.values_title}
                         </h2>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            Nilai-nilai fundamental yang menjadi fondasi dalam setiap pekerjaan yang kami lakukan.
+                            {about.values_desc}
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {[
-                            {
-                                icon: Target,
-                                title: 'Profesionalisme',
-                                description: 'Kami berkomitmen memberikan layanan profesional dengan standar kualitas tertinggi.'
-                            },
-                            {
-                                icon: Heart,
-                                title: 'Dedikasi',
-                                description: 'Tim kami berdedikasi penuh untuk memastikan kepuasan dan keberhasilan setiap proyek.'
-                            },
-                            {
-                                icon: Award,
-                                title: 'Integritas',
-                                description: 'Kami menjunjung tinggi kejujuran dan transparansi dalam setiap hubungan dengan klien.'
-                            },
-                            {
-                                icon: Eye,
-                                title: 'Inovasi',
-                                description: 'Kami selalu mengikuti perkembangan teknologi dan metode terbaru di industri.'
-                            }
-                        ].map((value, index) => (
+                        {about.values.map((value, index) => {
+                            const ValueIcon = VALUE_ICONS[index % VALUE_ICONS.length];
+                            return (
                             <Card key={index} className="text-center hover:shadow-lg transition-shadow bg-white">
                                 <CardContent className="pt-8 pb-6">
                                     <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600 mb-4">
-                                        <value.icon className="h-8 w-8" />
+                                        <ValueIcon className="h-8 w-8" />
                                     </div>
                                     <h3 className="text-xl font-semibold text-gray-900 mb-2">
                                         {value.title}
@@ -114,7 +108,8 @@ export default function About() {
                                     </p>
                                 </CardContent>
                             </Card>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -124,17 +119,12 @@ export default function About() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                            Pencapaian Kami
+                            {about.achievements_title}
                         </h2>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {[
-                            { number: '10+', label: 'Tahun Pengalaman' },
-                            { number: '188+', label: 'Project Selesai' },
-                            { number: '95%', label: 'Kepuasan Klien' },
-                            { number: '20+', label: 'Teknisi Profesional' }
-                        ].map((stat, index) => (
+                        {achievements.map((stat, index) => (
                             <div key={index} className="text-center">
                                 <div className="text-5xl font-bold text-blue-600 mb-2">
                                     {stat.number}
@@ -161,7 +151,7 @@ export default function About() {
                     <h3 className="text-4xl font-bold text-white">MISI KAMI</h3>
                 </div>
                 <p className="text-white/90 leading-relaxed">
-                    Memberikan solusi teknis berkualitas tinggi dengan harga kompetitif, didukung oleh teknis profesional dan pelayanan customer service yang responsif untuk menaikkan kepuasan setiap klien.
+                    {about.mission}
                 </p>
             </div>
 
@@ -174,7 +164,7 @@ export default function About() {
                     <h3 className="text-4xl font-bold text-white">VISI KAMI</h3>
                 </div>
                 <p className="text-white/90 leading-relaxed">
-                    Menjadi penyedia layanan instalasi, maintenance, IT support, dan web development terdepan dan terpercaya di Indonesia, dikenal karena kualitas kerja dan kepuasan pelanggan yang konsisten.
+                    {about.vision}
                 </p>
             </div>
         </div>

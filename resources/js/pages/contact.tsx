@@ -12,9 +12,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useState } from 'react';
+import { useSite } from '@/hooks/use-site';
 
 export default function Contact() {
     const t = useT();
+    const { contact } = useSite();
     const { data: formData, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -92,7 +94,7 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">{t('contact.address')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali
+                                                {contact.address}
                                             </p>
                                         </div>
                                     </div>
@@ -108,7 +110,7 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">{t('contact.phone')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                +62 881-080-888-361
+                                                {contact.phone}
                                             </p>
                                         </div>
                                     </div>
@@ -124,7 +126,7 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">{t('contact.email')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                Roycegroupbali@gmail.com
+                                                {contact.email}
                                             </p>
                                         </div>
                                     </div>
@@ -140,8 +142,8 @@ export default function Contact() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">{t('contact.hours')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                {t('contact.hoursWeek')}<br />
-                                                {t('contact.hoursWeekend')}<br />
+                                                {contact.hours_weekday || t('contact.hoursWeek')}<br />
+                                                {contact.hours_weekend || t('contact.hoursWeekend')}<br />
                                             </p>
                                         </div>
                                     </div>
@@ -252,15 +254,19 @@ export default function Contact() {
                         </p>
                     </div>
                     <div className="rounded-2xl overflow-hidden shadow-lg h-[400px]">
-                        <iframe
-                        title="Royce Group Jimbaran"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3942.827654715452!2d115.14267627402164!3d-8.802256891250302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd24583f5b95ba9%3A0x22369bedb5e3736e!2sRoyce%20Group!5e0!3m2!1sid!2sid!4v1766566808620!5m2!1sid!2sid"
-                        width="100%"
-                        height="100%"
-                        style={{ border: 0 }}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        ></iframe>
+                        {contact.map_embed_url ? (
+                            <iframe
+                                title={`Peta lokasi ${contact.address}`}
+                                src={contact.map_embed_url}
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-sm text-gray-500">{contact.address}</div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -281,7 +287,7 @@ export default function Contact() {
                             className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold"
                         >
                             <a
-                                href="https://wa.me/+6281339579969"
+                                href={`https://wa.me/${contact.whatsapp}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >

@@ -63,8 +63,14 @@ interface Region {
     aliases: string[];
 }
 
-// Pusat wilayah (perkiraan) + nama tempat umum yang berada di wilayah tersebut.
-const REGIONS: Region[] = [
+export interface FootprintConfig {
+    note?: string;
+    hq?: { name: string; place: string; lon: number; lat: number };
+    regions?: Region[];
+}
+
+// Nilai bawaan bila data dari Admin > Konten Situs > Peta belum tersedia.
+const DEFAULT_REGIONS: Region[] = [
     { key: 'jembrana', name: 'Jembrana', lon: 114.62, lat: -8.34, aliases: ['jembrana', 'negara', 'gilimanuk', 'medewi', 'pekutatan', 'melaya', 'mendoyo'] },
     { key: 'buleleng', name: 'Buleleng', lon: 115.09, lat: -8.2, aliases: ['buleleng', 'singaraja', 'lovina', 'seririt', 'gerokgak', 'pemuteran', 'kubutambahan', 'sukasada'] },
     { key: 'tabanan', name: 'Tabanan', lon: 115.07, lat: -8.5, aliases: ['tabanan', 'tanah lot', 'kediri', 'penebel', 'bedugul', 'soka'] },
@@ -76,14 +82,14 @@ const REGIONS: Region[] = [
     { key: 'karangasem', name: 'Karangasem', lon: 115.55, lat: -8.4, aliases: ['karangasem', 'amlapura', 'candidasa', 'amed', 'tulamben', 'sidemen'] },
 ];
 
-// Basis SkyNusa: Jimbaran (alamat resmi di footer situs).
-const HQ = { name: 'SkyNusa Tech', place: 'Jimbaran', lon: 115.165, lat: -8.775 };
+const DEFAULT_HQ = { name: 'SkyNusa Tech', place: 'Jimbaran', lon: 115.165, lat: -8.775 };
+const DEFAULT_NOTE = 'Siluet pulau berupa ilustrasi bergaya, bukan peta survei.';
 
-function matchRegion(location: string | null): string | null {
+function matchRegion(regions: Region[], location: string | null): string | null {
     if (!location) return null;
     const text = location.toLowerCase();
-    for (const r of REGIONS) {
-        if (r.aliases.some((a) => text.includes(a))) return r.key;
+    for (const r of regions) {
+        if (r.aliases.some((a) => a && text.includes(a.toLowerCase()))) return r.key;
     }
     return null;
 }
@@ -96,18 +102,21 @@ const subscribeMotion = (onChange: () => void) => {
 };
 const motionSnapshot = () => window.matchMedia(MOTION_QUERY).matches;
 
-export default function BaliFootprint({ projects }: { projects: FootprintProject[] }) {
+export default function BaliFootprint({ projects, config }: { projects: FootprintProject[]; config?: FootprintConfig }) {
     const island = useMemo(() => smoothClosedPath(COAST), []);
+    const REGIONS = config?.regions && config.regions.length > 0 ? config.regions : DEFAULT_REGIONS;
+    const HQ = config?.hq ?? DEFAULT_HQ;
+    const note = config?.note ?? DEFAULT_NOTE;
 
     const byRegion = useMemo(() => {
         const map = new Map<string, FootprintProject[]>();
         for (const p of projects) {
-            const key = matchRegion(p.location);
+            const key = matchRegion(REGIONS, p.location);
             if (!key) continue;
             map.set(key, [...(map.get(key) ?? []), p]);
         }
         return map;
-    }, [projects]);
+    }, [projects, REGIONS]);
 
     const active = REGIONS.filter((r) => byRegion.has(r.key));
     const mappedCount = active.reduce((n, r) => n + (byRegion.get(r.key)?.length ?? 0), 0);
@@ -275,7 +284,7 @@ export default function BaliFootprint({ projects }: { projects: FootprintProject
                 </svg>
 
                 <p className="px-2 pb-1 pt-2 text-[11px] leading-snug text-blue-200/70 sm:px-1">
-                    Siluet pulau berupa ilustrasi bergaya, bukan peta survei.
+                    {note}
                 </p>
             </div>
 
@@ -347,7 +356,7 @@ export default function BaliFootprint({ projects }: { projects: FootprintProject
                     </>
                 ) : (
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm leading-relaxed text-blue-100">
-                        <p className="font-semibold text-white">Basis kami di Jimbaran, Bali.</p>
+                        <p className="font-semibold text-white">Basis kami di {HQ.place}, Bali.</p>
                         <p className="mt-2">
                             Penanda proyek akan muncul otomatis di peta ini begitu kolom lokasi pada proyek di dashboard
                             admin terisi (misalnya &quot;Ubud, Gianyar&quot;).

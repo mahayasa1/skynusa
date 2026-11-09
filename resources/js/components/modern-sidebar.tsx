@@ -22,6 +22,9 @@ import {
   FolderKanban,
   FileText,
   Video,
+  SlidersHorizontal,
+  Users,
+  Inbox,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -54,12 +57,19 @@ export default function ModernSidebar({ currentPath = '' }: SidebarProps) {
       icon: ShoppingCart,
     },
     {
+      name: 'Pesan Masuk',
+      href: '/admin/pesan',
+      icon: Inbox,
+    },
+    {
       name: 'Management',
       icon: Settings,
       children: [
         { name: 'Users', href: '/admin/users', icon: User },
         { name: 'Companies', href: '/admin/companies', icon: Building2 },
         { name: 'Hero Beranda', href: '/admin/hero', icon: Video },
+        { name: 'Konten Situs', href: '/admin/konten', icon: SlidersHorizontal },
+        { name: 'Tim', href: '/admin/tim', icon: Users },
         { name: 'Layanan', href: '/admin/layanan', icon: Briefcase },
         { name: 'Portfolio', href: '/admin/portfolio', icon: FolderKanban },
         {name: 'Berita',href: '/admin/berita',icon: FileText,},

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Media;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,13 +13,14 @@ class Portfolio extends Model
 
     protected $fillable = [
         'service_id',
+        'companies_id',
+        'categories_id',
         'title',
         'slug',
         'description',
         'short_description',
         'image',
         'gallery',
-        'client_name',
         'location',
         'project_date',
         'duration',
@@ -33,6 +35,9 @@ class Portfolio extends Model
         'meta_keywords',
     ];
 
+    // URL siap pakai untuk halaman publik (kolom `image` & `gallery` tetap path mentah untuk admin).
+    protected $appends = ['image_url', 'gallery_urls'];
+
     protected $casts = [
         'gallery' => 'array',
         'technologies' => 'array',
@@ -41,6 +46,16 @@ class Portfolio extends Model
         'is_featured' => 'boolean',
         'project_date' => 'date',
     ];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return Media::url($this->image);
+    }
+
+    public function getGalleryUrlsAttribute(): array
+    {
+        return collect($this->gallery ?? [])->map(fn ($g) => Media::url($g))->filter()->values()->all();
+    }
 
     public function service(): BelongsTo
     {

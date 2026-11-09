@@ -33,6 +33,7 @@ interface Portfolio {
     short_description: string | null;
 
     image: string;
+    image_url?: string | null;
     gallery: string[] | null;
 
     client_name: string | null;
@@ -113,12 +114,12 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                         {portfolios?.map((item) => (
                             <Card
                                 key={item.id}
-                                className="group overflow-hidden transition-all hover:shadow-2xl bg-white"
+                                className="group relative overflow-hidden transition-all hover:shadow-2xl bg-white"
                             >
                                 {/* Image */}
                                 <div className="relative aspect-16/10 overflow-hidden">
                                     <img
-                                        src={item.image}
+                                        src={item.image_url ?? item.image}
                                         alt={item.title}
                                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
@@ -136,7 +137,9 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                                 {/* Header */}
                                 <CardHeader className='text-black'>
                                     <CardTitle className="text-xl">
-                                        {item.title}
+                                        <Link href={`/portfolio/${item.slug}`} className="after:absolute after:inset-0 hover:text-blue-600">
+                                            {item.title}
+                                        </Link>
                                     </CardTitle>
 
                                     <div className="flex flex-wrap gap-2 text-sm text-gray-500">

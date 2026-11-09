@@ -6,6 +6,8 @@ use App\Models\Portfolio;
 use App\Models\Services;
 use App\Models\Company;
 use App\Models\Categories;
+use App\Models\SiteSetting;
+use App\Support\Media;
 use App\Service\PortfolioService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,8 +33,9 @@ class PortfolioController extends Controller
             // statistik (optional, tapi TSX kamu support)
             'statistics' => [
                 'total_projects' => $paginated->total(),
-                'success_rate'   => '95%',
-                'total_clients'  => 150,
+                // Angka di bawah ini diedit di Admin > Konten Situs > Statistik
+                'success_rate'   => SiteSetting::group('statistik')['satisfaction'],
+                'total_clients'  => SiteSetting::group('statistik')['clients'],
             ],
 
             // featured kalau mau dipakai terpisah
@@ -56,8 +59,8 @@ class PortfolioController extends Controller
                 'description' => $portfolio->description,
                 'short_description' => $portfolio->short_description,
 
-                'image' => $portfolio->image,
-                'gallery' => $portfolio->gallery ?? [],
+                'image' => $portfolio->image_url,
+                'gallery' => $portfolio->gallery_urls,
 
                 'client_name' => $portfolio->company?->name ?? null,
                 'location' => $portfolio->location,
@@ -101,7 +104,7 @@ class PortfolioController extends Controller
                 'title' => $portfolio->title,
                 'slug' => $portfolio->slug,
                 'location' => $portfolio->location,
-                'image' => $portfolio->image,
+                'image' => $portfolio->image_url,
                 'service' => $portfolio->service?->title,
             ])
             ->values();
@@ -112,8 +115,45 @@ class PortfolioController extends Controller
         $portfolio = $this->service->getBySlug($slug);
         abort_if(!$portfolio, 404);
 
-        return Inertia::render('Portfolio/Show', [
-            'portfolio' => $portfolio,
+        $related = $this->service->getAllActive()
+            ->where('service_id', $portfolio->service_id)
+            ->where('id', '!=', $portfolio->id)
+            ->take(3)
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'title' => $p->title,
+                'slug' => $p->slug,
+                'image' => $p->image_url,
+                'location' => $p->location,
+                'short_description' => $p->short_description,
+            ])
+            ->values();
+
+        return Inertia::render('portfolio-show', [
+            'portfolio' => [
+                'id' => $portfolio->id,
+                'title' => $portfolio->title,
+                'slug' => $portfolio->slug,
+                'description' => $portfolio->description,
+                'short_description' => $portfolio->short_description,
+                'image' => $portfolio->image_url,
+                'gallery' => $portfolio->gallery_urls,
+                'client_name' => $portfolio->company?->name,
+                'location' => $portfolio->location,
+                'project_date' => optional($portfolio->project_date)?->toDateString(),
+                'duration' => $portfolio->duration,
+                'technologies' => $portfolio->technologies ?? [],
+                'features' => $portfolio->features ?? [],
+                'project_url' => $portfolio->project_url,
+                'service' => $portfolio->service ? [
+                    'title' => $portfolio->service->title,
+                    'slug' => $portfolio->service->slug,
+                ] : null,
+                'meta_title' => $portfolio->meta_title,
+                'meta_description' => $portfolio->meta_description,
+                'meta_keywords' => $portfolio->meta_keywords,
+            ],
+            'related' => $related,
         ]);
     }
 

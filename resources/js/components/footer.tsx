@@ -1,8 +1,10 @@
 import { Link } from '@inertiajs/react';
 import { useT } from '@/i18n';
+import { useSite } from '@/hooks/use-site';
 
 export default function Footer() {
     const t = useT();
+    const { contact } = useSite();
     return (
         <footer className="bg-gray-900 pt-12 pb-8 sm:pt-16 text-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -16,7 +18,7 @@ export default function Footer() {
                             className="mb-4 h-7 sm:h-8 w-auto max-w-[150px]" 
                         />
                         <p className="text-sm text-gray-300 leading-relaxed max-w-xs">
-                            {t('footer.desc')}
+                            {contact.footer_description || t('footer.desc')}
                         </p>
                     </div>
 
@@ -48,16 +50,16 @@ export default function Footer() {
                         <h3 className="mb-4 text-sm font-semibold text-white">{t('footer.contactUs')}</h3>
                         <ul className="space-y-2.5 text-sm text-gray-300">
                             <li>
-                                <a href="mailto:Roycegroupbali@gmail.com" className="hover:text-brand transition-colors break-all">
-                                    Roycegroupbali@gmail.com
+                                <a href={`mailto:${contact.email}`} className="hover:text-brand transition-colors break-all">
+                                    {contact.email}
                                 </a>
                             </li>
                             <li>
-                                <a href="tel:+62881080888361" className="hover:text-brand transition-colors">
-                                    +62 881-080-888-361
+                                <a href={`tel:${contact.phone.replace(/[^\d+]/g, '')}`} className="hover:text-brand transition-colors">
+                                    {contact.phone}
                                 </a>
                             </li>
-                            <li className="leading-relaxed">Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali</li>
+                            <li className="leading-relaxed">{contact.address}</li>
                         </ul>
                     </div>
                 </div>

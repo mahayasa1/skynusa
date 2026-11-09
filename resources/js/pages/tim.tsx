@@ -4,6 +4,7 @@ import PublicLayout from '@/layouts/public-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp, Laptop, Monitor } from 'lucide-react';
+import type { TeamTree } from '@/components/OrgChart';
 
 const colorMap = {
     blue: {
@@ -24,7 +25,13 @@ const colorMap = {
     },
 };
 
-export default function Team() {
+const COLOR_ORDER: (keyof typeof colorMap)[] = ['blue', 'indigo', 'purple', 'red'];
+
+// Susunan tim diedit di Admin > Tim.
+export default function Team({ team }: { team: TeamTree }) {
+    const ceo = team?.ceo ?? null;
+    const management = team?.management ?? [];
+    const staff = team?.staff ?? [];
     return (
         <PublicLayout>
             <SEOHead
@@ -59,82 +66,50 @@ export default function Team() {
             <section className="bg-white py-16 lg:py-20">
                 <div className="relative">
                     {/* CEO */}
-                    <div className="flex justify-center mb-12">
-                        <div className="relative">
-                            <Card className="w-64 sm:w-72 border-2 border-blue-600 bg-linear-to-br from-blue-50/80 to-white shadow-xl">
-                                <CardContent className="p-6 text-center">
-                                    <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
-                                        <img
-                                            src="asset/royce.png"
-                                            className="w-full h-full object-cover"
-                                            alt="Royce Francis"
-                                        />
-                                    </div>
-                                    <h3 className="text-xl font-bold text-gray-900">
-                                        Royce Francis M.M
-                                    </h3>
-                                    <p className="text-base font-semibold text-blue-600 mb-1">
-                                        CEO & Founder
-                                    </p>
-                                    <p className="text-xs text-gray-600 mb-3">
-                                        Business Strategy
-                                    </p>
-                                </CardContent>
-                            </Card>
-                            <div className="absolute left-1/2 -translate-x-1/2 top-full h-8 w-0.5 bg-blue-300"></div>
-                        </div>
-                    </div>
+                    {ceo && (
+                        <>
+                            <div className="flex justify-center mb-12">
+                                <div className="relative">
+                                    <Card className="w-64 sm:w-72 border-2 border-blue-600 bg-linear-to-br from-blue-50/80 to-white shadow-xl">
+                                        <CardContent className="p-6 text-center">
+                                            <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
+                                                <img
+                                                    src={ceo.photo}
+                                                    className="w-full h-full object-cover"
+                                                    alt={ceo.name}
+                                                />
+                                            </div>
+                                            <h3 className="text-xl font-bold text-gray-900">
+                                                {ceo.name}
+                                            </h3>
+                                            <p className="text-base font-semibold text-blue-600 mb-1">
+                                                {ceo.role}
+                                            </p>
+                                            {ceo.sub_role && (
+                                                <p className="text-xs text-gray-600 mb-3">
+                                                    {ceo.sub_role}
+                                                </p>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                    <div className="absolute left-1/2 -translate-x-1/2 top-full h-8 w-0.5 bg-blue-300"></div>
+                                </div>
+                            </div>
 
-                    <div className="flex justify-center mb-12">
-                        <div className="w-full max-w-5xl h-0.5 bg-blue-300"></div>
-                    </div>
+                            <div className="flex justify-center mb-12">
+                                <div className="w-full max-w-5xl h-0.5 bg-blue-300"></div>
+                            </div>
+                        </>
+                    )}
 
                     {/* SECOND LEVEL */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 max-w-6xl mx-auto mb-8">
-                        {[
-                            {
-                                name: 'Mahayasa Wibawa',
-                                role: 'Chief Technology Officer',
-                                subRole: 'Technical Leadership',
-                                img: 'asset/id.png',
-                                color: 'blue',
-                            },
-                            {
-                                name: 'Arnold Tamelan',
-                                role: 'Head of Operations',
-                                subRole: 'Project Management',
-                                img: 'asset/arnold.jpeg',
-                                color: 'indigo',
-                            },
-                            {
-                                name: 'Bagus Wisnu',
-                                role: 'Head of Design',
-                                subRole: 'UI/UX & Creative',
-                                img: 'asset/bgw.jpg',
-                                color: 'purple',
-                            },
-                            {
-                                name: 'Hassan',
-                                role: 'Head of Engineer',
-                                subRole: 'Electronic Engineering',
-                                img: 'asset/hassan.jpeg',
-                                color: 'red',
-                            },
-                            {
-                                name: 'Frans',
-                                role: 'Head of Internet of Things',
-                                subRole: 'Electrical Installation',
-                                img: 'asset/frans.jpg',
-                                color: 'red',
-                            },
-                        ].map((member, index) => {
+                        {management.map((member, index) => {
                             const colors =
-                                colorMap[
-                                    member.color as keyof typeof colorMap
-                                ];
+                                colorMap[COLOR_ORDER[index % COLOR_ORDER.length]];
 
                             return (
-                                <div key={index} className="relative">
+                                <div key={member.id} className="relative">
                                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-0.5 bg-blue-300"></div>
                                     <Card
                                         className={`border-2 ${colors.border} bg-white shadow-lg`}
@@ -142,7 +117,7 @@ export default function Team() {
                                         <CardContent className="p-6 text-center">
                                             <div className="h-20 w-20 rounded-full overflow-hidden bg-blue-600/20 mx-auto mb-4 shadow">
                                                 <img
-                                                    src={member.img}
+                                                    src={member.photo}
                                                     className="w-full h-full object-cover"
                                                     alt={member.name}
                                                 />
@@ -156,7 +131,7 @@ export default function Team() {
                                                 {member.role}
                                             </p>
                                             <p className="text-xs text-gray-600">
-                                                {member.subRole}
+                                                {member.sub_role}
                                             </p>
                                         </CardContent>
                                     </Card>
@@ -174,35 +149,14 @@ export default function Team() {
 
                     {/* THIRD LEVEL */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-                        {[
-                            {
-                                name: 'Rudi',
-                                role: 'Front-end Developer',
-                                image: '/asset/profile.png',
-                            },
-                            {
-                                name: 'Anjani',
-                                role: 'Administrator',
-                                image: '/asset/profile.png',
-                            },
-                            {
-                                name: 'Agus Surya',
-                                role: 'UI/UX Designer',
-                                image: '/asset/agus.jpg',
-                            },
-                            {
-                                name: 'Rihaf',
-                                role: 'Lighting Installation',
-                                image: '/asset/profile.png',
-                            },
-                        ].map((m, i) => (
-                            <div key={i} className="relative">
+                        {staff.map((m) => (
+                            <div key={m.id} className="relative">
                                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-0.5 bg-blue-300"></div>
                                 <Card className="border border-gray-200 bg-white">
                                     <CardContent className="p-4 text-center">
                                         <div className="h-14 w-14 rounded-full overflow-hidden mx-auto mb-3 shadow">
                                             <img
-                                                src={m.image}
+                                                src={m.photo}
                                                 alt={m.name}
                                                 className="h-full w-full object-cover"
                                             />

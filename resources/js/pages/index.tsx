@@ -2,18 +2,7 @@ import { Link } from '@inertiajs/react';
 import SEOHead from '@/components/seo-head';
 import OrgChart from '@/components/OrgChart';
 import PublicLayout from '@/layouts/public-layout';
-import {
-    ArrowRight,
-    Users,
-    TrendingUp,
-    Award,
-    Zap,
-    Shield,
-    HeadphonesIcon,
-    CheckCircle,
-    MapPin,
-    MessageCircle,
-} from 'lucide-react';
+import { ArrowRight, CheckCircle, MapPin, MessageCircle } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { useState, useRef, useEffect, type ComponentType, type RefObject } from 'react';
 import Reveal from '@/components/reveal';
@@ -22,7 +11,9 @@ import TiltCard from '@/components/fx/tilt-card';
 import CountUp from '@/components/fx/count-up';
 import Magnetic from '@/components/fx/magnetic';
 import CircuitDivider from '@/components/fx/circuit-divider';
-import BaliFootprint, { type FootprintProject } from '@/components/bali-footprint';
+import BaliFootprint, { type FootprintConfig, type FootprintProject } from '@/components/bali-footprint';
+import { type TeamTree } from '@/components/OrgChart';
+import { useSite } from '@/hooks/use-site';
 
 // Hook untuk animasi OrgChart (dipertahankan dari versi sebelumnya)
 const useIntersectionObserver = <T extends HTMLElement>(
@@ -70,39 +61,71 @@ interface IndexPageProps {
     services: Service[]; portfolios: Portfolio[]; companies: Company[];
     footprint?: FootprintProject[];
     hero?: { mode?: 'video' | 'foto' | 'keduanya'; video_url: string | null; poster_url: string | null };
+    content?: Partial<HomeContent>;
+    map?: FootprintConfig & { title?: string; tagline?: string; desc?: string };
+    team?: TeamTree;
 }
+
+// Teks beranda: diedit di Admin > Konten Situs > Beranda.
+interface HomeContent {
+    hero_badge: string; hero_title: string; hero_subtitle: string; hero_tagline: string;
+    hero_cta_primary: string; hero_cta_secondary: string;
+    services_title: string; services_subtitle: string;
+    portfolio_title: string; portfolio_subtitle: string;
+    features_title: string; features_subtitle: string;
+    features: { icon: string; title: string; description: string }[];
+    skybot_title: string; skybot_desc: string; skybot_questions: string[];
+    clients_title: string; clients_desc: string;
+    team_title: string; team_desc: string;
+    cta_title: string; cta_desc: string;
+}
+
+const DEFAULT_CONTENT: HomeContent = {
+    hero_badge: 'Teknisi lokal di Jimbaran, Bali',
+    hero_title: 'Instalasi, AC, IT support, dan website. Satu tim sampai tuntas.',
+    hero_subtitle: 'Dari instalasi listrik dan perawatan AC sampai jaringan kantor dan pembuatan website, untuk rumah, villa, kantor, dan industri.',
+    hero_tagline: '> beyond technology. beyond limits.',
+    hero_cta_primary: 'Konsultasi gratis',
+    hero_cta_secondary: 'Lihat portfolio',
+    services_title: 'Solusi Teknis Lengkap untuk Kebutuhan Anda',
+    services_subtitle: 'Layanan instalasi, maintenance, IT support, dan web development dengan standar profesional tinggi',
+    portfolio_title: 'Project yang Telah Kami Kerjakan',
+    portfolio_subtitle: 'Proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan',
+    features_title: 'Keunggulan Layanan Kami',
+    features_subtitle: 'Keahlian teknis, pengalaman industri, dan pendekatan customer-centric untuk hasil terbaik',
+    features: [],
+    skybot_title: 'Kenalan dengan Skybot',
+    skybot_desc: 'Bingung mau pasang CCTV, bikin website, atau layanan lain? Tanya Skybot, asisten AI SKYNUSA TECH. Untuk harga dan penawaran, tim kami yang akan menjawab langsung.',
+    skybot_questions: ['Pasang CCTV butuh apa saja?', 'Website butuh apa saja?', 'Bagaimana cara memesan?'],
+    clients_title: 'Klien yang Telah Bekerja Sama',
+    clients_desc: 'Bergabunglah dengan ratusan klien yang mempercayakan kebutuhan teknis mereka kepada kami.',
+    team_title: 'SKYNUSA TEAM',
+    team_desc: 'Tim profesional yang solid dan berpengalaman untuk kesuksesan project Anda',
+    cta_title: 'Siap mulai proyek Anda?',
+    cta_desc: 'Ceritakan kebutuhan Anda. Tim kami di Bali siap membantu dari konsultasi sampai tuntas.',
+};
 
 const getIconComponent = (iconName: string) => {
     const Icons = LucideIcons as unknown as Record<string, ComponentType<{ className?: string }>>;
     return Icons[iconName] || LucideIcons.Code;
 };
 
-// ISI DENGAN ANGKA ASLI. Dipakai di hero, kartu statistik, dan teks keunggulan
-// supaya angkanya tidak beda-beda antar bagian.
-const STATS = {
-    projects: '188+',
-    satisfaction: '95%',
-    technicians: '20+',
-    years: '10+',
-};
-
-const features = [
-    { icon: Award, title: 'Standar Profesional', description: 'Mengikuti standar industri terbaik dan prosedur keamanan yang ketat untuk setiap proyek.' },
-    { icon: Users, title: 'Tim Berpengalaman', description: 'Teknisi bersertifikasi dengan pengalaman bertahun-tahun di bidang elektronik, AC, IT, dan web.' },
-    { icon: Zap, title: 'Respon Cepat', description: 'Respon cepat untuk layanan darurat dan penyelesaian sesuai timeline yang disepakati.' },
-    { icon: HeadphonesIcon, title: 'Dukungan Penuh', description: 'Customer support responsif dan maintenance berkala untuk menjaga sistem Anda optimal.' },
-    { icon: Shield, title: 'Garansi Terjamin', description: 'Setiap pekerjaan dilengkapi garansi resmi dan jaminan kepuasan klien.' },
-    { icon: TrendingUp, title: 'Track Record Terbukti', description: `Lebih dari ${STATS.projects} proyek selesai dengan tingkat kepuasan klien ${STATS.satisfaction}.` },
-];
-
-const SKYBOT_QUESTIONS = ['Pasang CCTV butuh apa saja?', 'Website butuh apa saja?', 'Bagaimana cara memesan?'];
-
 /** Membuka widget Skybot (ai-chat-widget.tsx mendengarkan event ini). */
 const openSkybot = (question?: string) => {
     window.dispatchEvent(new CustomEvent('skybot:open', { detail: { question } }));
 };
 
-export default function IndexPage({ services, portfolios, companies, footprint, hero }: IndexPageProps) {
+export default function IndexPage({ services, portfolios, companies, footprint, hero, content, map, team }: IndexPageProps) {
+    const { stats } = useSite();
+    const STATS = { projects: stats.projects, satisfaction: stats.satisfaction, technicians: stats.technicians, years: stats.years };
+    const c: HomeContent = { ...DEFAULT_CONTENT, ...(content ?? {}) };
+    const features = (c.features ?? []).map((f) => ({
+        ...f,
+        description: f.description.replace(/\{proyek\}/g, STATS.projects).replace(/\{kepuasan\}/g, STATS.satisfaction),
+    }));
+    const mapTitle = map?.title ?? 'Our Digital Footprint';
+    const mapTagline = map?.tagline ?? 'Connecting Bali Through Technology';
+    const mapDesc = map?.desc ?? 'Dari basis kami di Jimbaran, tim SkyNusa mengerjakan instalasi, jaringan, dan sistem digital di berbagai wilayah Bali.';
     const heroPoster = hero?.poster_url ?? '/asset/bg-main.png';
     const heroVideo = hero?.video_url ?? null;
     const heroMode = hero?.mode ?? 'video';
@@ -168,17 +191,17 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                         <Reveal>
                             <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-3 py-1 text-sm font-medium text-blue-700 backdrop-blur">
                                 <span className="h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
-                                Teknisi lokal di Jimbaran, Bali
+                                {c.hero_badge}
                             </p>
                         </Reveal>
                         <Reveal delay={80}>
                             <h1 className="mb-5 text-4xl font-bold leading-[1.05] text-gray-900 sm:text-5xl lg:text-6xl">
-                                Instalasi, AC, IT support, dan website. Satu tim sampai tuntas.
+                                {c.hero_title}
                             </h1>
                         </Reveal>
                         <Reveal delay={160}>
                             <p className="mb-8 max-w-xl text-base leading-relaxed text-gray-500 sm:text-lg">
-                                Dari instalasi listrik dan perawatan AC sampai jaringan kantor dan pembuatan website, untuk rumah, villa, kantor, dan industri.
+                                {c.hero_subtitle}
                             </p>
                         </Reveal>
                         <Reveal delay={240}>
@@ -188,7 +211,7 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                                         href="/kontak"
                                         className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-7 py-3.5 text-base font-semibold text-gray-900 shadow-[0_10px_30px_-10px_rgba(255,157,50,0.9)] hover:bg-brand-strong sm:w-auto"
                                     >
-                                        Konsultasi gratis <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                                        {c.hero_cta_primary} <ArrowRight className="h-4 w-4" aria-hidden="true" />
                                     </Link>
                                 </Magnetic>
                                 <Magnetic>
@@ -196,7 +219,7 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                                         href="/portfolio"
                                         className="inline-flex w-full items-center justify-center rounded-full border border-blue-600/40 bg-white/70 px-7 py-3.5 text-base font-semibold text-blue-700 backdrop-blur hover:border-blue-600 hover:bg-white sm:w-auto"
                                     >
-                                        Lihat portfolio
+                                        {c.hero_cta_secondary}
                                     </Link>
                                 </Magnetic>
                             </div>
@@ -252,7 +275,7 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                                 <div className="scanline" aria-hidden="true" />
 
                                 <p className="caret absolute left-3 top-3 z-[4] rounded-md bg-white/90 px-2.5 py-1 font-mono text-[11px] text-blue-700 shadow backdrop-blur sm:text-xs">
-                                    &gt; beyond technology. beyond limits.
+                                    {c.hero_tagline}
                                 </p>
 
                                 {safeServices.length > 0 && (
@@ -284,10 +307,10 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <Reveal className="mb-10 text-center sm:mb-14">
                         <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
-                            Solusi Teknis Lengkap untuk Kebutuhan Anda
+                            {c.services_title}
                         </h2>
                         <p className="mx-auto max-w-2xl text-base text-gray-500 sm:text-lg">
-                            Layanan instalasi, maintenance, IT support, dan web development dengan standar profesional tinggi
+                            {c.services_subtitle}
                         </p>
                     </Reveal>
 
@@ -346,10 +369,10 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <Reveal className="mb-8 text-center sm:mb-10">
                         <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
-                            Project yang Telah Kami Kerjakan
+                            {c.portfolio_title}
                         </h2>
                         <p className="mx-auto max-w-2xl text-base text-gray-500 sm:text-lg">
-                            Proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan
+                            {c.portfolio_subtitle}
                         </p>
                     </Reveal>
 
@@ -438,9 +461,9 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
             <section id="features" className="bg-blue-50 py-16 sm:py-20 lg:py-24">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <Reveal className="mb-10 text-center sm:mb-14">
-                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">Keunggulan Layanan Kami</h2>
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">{c.features_title}</h2>
                         <p className="mx-auto max-w-2xl text-base text-gray-500 sm:text-lg">
-                            Keahlian teknis, pengalaman industri, dan pendekatan customer-centric untuk hasil terbaik
+                            {c.features_subtitle}
                         </p>
                     </Reveal>
 
@@ -449,7 +472,10 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                             <Reveal key={feature.title} delay={Math.min(index, 5) * 70} className="h-full">
                                 <div className="glow-card flex h-full items-start gap-4 rounded-2xl p-6">
                                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-                                        <feature.icon className="h-6 w-6" />
+                                        {(() => {
+                                            const FeatureIcon = getIconComponent(feature.icon);
+                                            return <FeatureIcon className="h-6 w-6" />;
+                                        })()}
                                     </div>
                                     <div>
                                         <h3 className="mb-1 text-base font-semibold text-gray-900">{feature.title}</h3>
@@ -488,14 +514,14 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                 <div className="bg-grid-tech-dark absolute inset-0 opacity-70" aria-hidden="true" />
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <Reveal className="mb-10 max-w-2xl sm:mb-12">
-                        <h2 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Our Digital Footprint</h2>
-                        <p className="font-display text-xl text-neon sm:text-2xl">Connecting Bali Through Technology</p>
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{mapTitle}</h2>
+                        <p className="font-display text-xl text-neon sm:text-2xl">{mapTagline}</p>
                         <p className="mt-4 text-base leading-relaxed text-blue-100">
-                            Dari basis kami di Jimbaran, tim SkyNusa mengerjakan instalasi, jaringan, dan sistem digital di berbagai wilayah Bali.
+                            {mapDesc}
                         </p>
                     </Reveal>
                     <Reveal delay={100}>
-                        <BaliFootprint projects={safeFootprint} />
+                        <BaliFootprint projects={safeFootprint} config={map} />
                     </Reveal>
                 </div>
             </section>
@@ -522,12 +548,12 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
                     </Reveal>
 
                     <Reveal delay={120}>
-                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">Kenalan dengan Skybot</h2>
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">{c.skybot_title}</h2>
                         <p className="mb-6 max-w-xl text-base leading-relaxed text-gray-500 sm:text-lg">
-                            Bingung mau pasang CCTV, bikin website, atau layanan lain? Tanya Skybot, asisten AI SKYNUSA TECH. Untuk harga dan penawaran, tim kami yang akan menjawab langsung.
+                            {c.skybot_desc}
                         </p>
                         <div className="mb-7 flex flex-wrap gap-2">
-                            {SKYBOT_QUESTIONS.map((q) => (
+                            {c.skybot_questions.map((q) => (
                                 <button
                                     key={q}
                                     type="button"
@@ -556,9 +582,9 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
             <section className="bg-blue-50 py-16 sm:py-20 lg:py-24">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <Reveal className="mb-10 text-center sm:mb-12">
-                        <h2 className="mb-2 text-3xl font-bold text-gray-900 sm:text-4xl">Klien yang Telah Bekerja Sama</h2>
+                        <h2 className="mb-2 text-3xl font-bold text-gray-900 sm:text-4xl">{c.clients_title}</h2>
                         <p className="text-base text-gray-500">
-                            Bergabunglah dengan ratusan klien yang mempercayakan kebutuhan teknis mereka kepada kami.
+                            {c.clients_desc}
                         </p>
                     </Reveal>
                     <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 sm:gap-6 lg:grid-cols-6">
@@ -590,12 +616,12 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
             <section id="tim" ref={teamRef} className="bg-white py-16 sm:py-20 lg:py-24">
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <Reveal className="mb-10 text-center sm:mb-12">
-                        <h2 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">SKYNUSA TEAM</h2>
+                        <h2 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{c.team_title}</h2>
                         <p className="mx-auto max-w-xl text-base text-gray-500">
-                            Tim profesional yang solid dan berpengalaman untuk kesuksesan project Anda
+                            {c.team_desc}
                         </p>
                     </Reveal>
-                    <OrgChart teamVisible={teamVisible} />
+                    <OrgChart teamVisible={teamVisible} team={team} />
                 </div>
             </section>
 
@@ -603,14 +629,14 @@ export default function IndexPage({ services, portfolios, companies, footprint, 
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 py-16 text-white sm:py-20">
                 <div className="bg-grid-tech-dark absolute inset-0 opacity-60" aria-hidden="true" />
                 <Reveal className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
-                    <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Siap mulai proyek Anda?</h2>
+                    <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{c.cta_title}</h2>
                     <p className="mx-auto mb-8 max-w-xl text-base text-blue-100 sm:text-lg">
-                        Ceritakan kebutuhan Anda. Tim kami di Bali siap membantu dari konsultasi sampai tuntas.
+                        {c.cta_desc}
                     </p>
                     <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
                         <Magnetic>
                             <Link href="/kontak" className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-gray-900 hover:bg-brand-strong">
-                                Konsultasi gratis <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                                {c.hero_cta_primary} <ArrowRight className="h-4 w-4" aria-hidden="true" />
                             </Link>
                         </Magnetic>
                         <Magnetic>
