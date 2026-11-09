@@ -370,3 +370,80 @@
     .scanline, .map-scan, .map-flow, .map-ring { animation: none !important; }
     .scanline { display: none; }
 }
+
+/* ================= ADMIN DARK UI ================= */
+html.admin-dark{
+  --background:#0b0c1e; --foreground:#e8eaff;
+  --card:rgba(24,26,52,.72); --card-foreground:#e8eaff;
+  --popover:#14162e; --popover-foreground:#e8eaff;
+  --primary:#7c5cff; --primary-foreground:#fff;
+  --secondary:rgba(255,255,255,.06); --secondary-foreground:#e8eaff;
+  --muted:rgba(255,255,255,.06); --muted-foreground:#8e93b8;
+  --accent:rgba(255,255,255,.08); --accent-foreground:#fff;
+  --border:rgba(255,255,255,.09); --input:rgba(255,255,255,.12); --ring:#7c5cff;
+  --sidebar:#0f1129; --sidebar-foreground:#c9ccee;
+  --sidebar-accent:rgba(124,92,255,.18); --sidebar-accent-foreground:#fff;
+  --sidebar-border:rgba(255,255,255,.08);
+  color-scheme:dark;
+}
+html.admin-dark body{
+  background:
+    radial-gradient(900px 500px at 85% -10%,rgba(124,92,255,.22),transparent 60%),
+    radial-gradient(700px 480px at 0% 30%,rgba(32,201,245,.12),transparent 60%),
+    #0b0c1e;
+  background-attachment:fixed;
+}
+html.admin-dark [data-slot="sidebar-inset"]{background:transparent}
+
+/* warna hardcode di halaman lama -> versi gelap */
+html.admin-dark .bg-white{background-color:#14172f}
+html.admin-dark .bg-gray-50{background-color:rgba(255,255,255,.04)}
+html.admin-dark .bg-gray-100{background-color:rgba(255,255,255,.07)}
+html.admin-dark :is(.hover\:bg-gray-50,.hover\:bg-gray-100):hover{background-color:rgba(255,255,255,.08)}
+html.admin-dark :is(.text-black,.text-gray-900,.text-gray-800,.text-gray-700){color:#eef0ff}
+html.admin-dark :is(.text-gray-600,.text-gray-500){color:#9ba0c8}
+html.admin-dark .text-gray-400{color:#6f749c}
+html.admin-dark :is(.border-gray-100,.border-gray-200,.border-gray-300){border-color:rgba(255,255,255,.1)}
+
+/* badge/ikon berwarna */
+html.admin-dark :is(.bg-blue-50,.bg-blue-100){background-color:rgba(38,139,255,.16)}
+html.admin-dark :is(.bg-green-50,.bg-green-100){background-color:rgba(16,185,129,.16)}
+html.admin-dark :is(.bg-yellow-50,.bg-yellow-100){background-color:rgba(245,158,11,.16)}
+html.admin-dark :is(.bg-red-50,.bg-red-100){background-color:rgba(239,68,68,.16)}
+html.admin-dark :is(.bg-purple-50,.bg-purple-100,.bg-indigo-50,.bg-indigo-100){background-color:rgba(124,92,255,.18)}
+html.admin-dark :is(.bg-pink-50,.bg-pink-100){background-color:rgba(236,72,153,.16)}
+html.admin-dark :is(.bg-orange-50,.bg-orange-100){background-color:rgba(255,157,50,.16)}
+html.admin-dark :is(.text-blue-600,.text-blue-700){color:#7ab8ff}
+html.admin-dark :is(.text-green-600,.text-green-700,.text-green-800){color:#6ee7b7}
+html.admin-dark :is(.text-yellow-600,.text-yellow-700,.text-yellow-800){color:#fcd34d}
+html.admin-dark :is(.text-red-600,.text-red-700,.text-red-800){color:#fca5a5}
+html.admin-dark :is(.text-purple-600,.text-purple-700,.text-indigo-600,.text-indigo-700){color:#b6a4ff}
+html.admin-dark :is(.text-pink-600,.text-pink-700){color:#f9a8d4}
+
+/* kartu ala glass */
+html.admin-dark [data-slot="card"]{
+  border:1px solid rgba(255,255,255,.08);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0));
+  box-shadow:0 10px 40px -12px rgba(0,0,0,.6);
+}
+
+/* input */
+html.admin-dark :is(input,textarea,select):not([type=checkbox]):not([type=radio]):not([type=file]){
+  background-color:rgba(255,255,255,.04); color:#eef0ff; border-color:rgba(255,255,255,.12);
+}
+html.admin-dark ::placeholder{color:#6f749c}
+
+/* sidebar */
+html.admin-dark [data-sidebar="sidebar"]{
+  background:linear-gradient(180deg,#12142f,#0b0c1e);
+  border-right:1px solid rgba(255,255,255,.07);
+}
+html.admin-dark [data-slot="sidebar"] :is(.bg-blue-900,.bg-blue-900\/95){background:transparent}
+html.admin-dark [data-slot="sidebar"] [data-active="true"]{
+  background:linear-gradient(90deg,rgba(124,92,255,.35),rgba(32,201,245,.12));
+  box-shadow:inset 0 0 0 1px rgba(124,92,255,.45); color:#fff;
+}
+
+/* recharts */
+html.admin-dark .recharts-legend-item-text{color:#c9ccee!important}
+html.admin-dark .recharts-cartesian-axis-tick-value{fill:#8e93b8}

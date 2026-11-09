@@ -59,9 +59,9 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
                     const b = particles[j];
                     const d = Math.hypot(a.x - b.x, a.y - b.y);
                     if (d < LINK) {
-                        const alpha = 0.7 + (1 - d / LINK) * 0.3; // selalu terang, tidak bergantung kursor
-                        ctx.strokeStyle = a.cyan || b.cyan ? `rgba(0,170,235,${alpha})` : `rgba(10,95,215,${alpha})`;
-                        ctx.lineWidth = 2;
+                        const alpha = 0.35 + (1 - d / LINK) * 0.25; // selalu terang, tidak bergantung kursor
+                        ctx.strokeStyle = a.cyan || b.cyan ? `rgba(32,201,245,${alpha})` : `rgba(38,139,255,${alpha})`;
+                        ctx.lineWidth = 1.4;
                         ctx.beginPath();
                         ctx.moveTo(a.x, a.y);
                         ctx.lineTo(b.x, b.y);
@@ -70,8 +70,8 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
                 }
                 const dm = Math.hypot(a.x - mouse.x, a.y - mouse.y);
                 if (dm < 170) {
-                    ctx.strokeStyle = `rgba(32,201,245,${Math.min(1, 0.5 + (1 - dm / 170))})`;
-                    ctx.lineWidth = 2.2;
+                    ctx.strokeStyle = `rgba(32,201,245,${Math.min(1, 0.4 + (1 - dm / 170))})`;
+                    ctx.lineWidth = 1.4;
                     ctx.beginPath();
                     ctx.moveTo(a.x, a.y);
                     ctx.lineTo(mouse.x, mouse.y);
@@ -81,15 +81,15 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
 
             // Titik menyala (glow) supaya terasa "hidup"
             for (const p of particles) {
-                const color = p.cyan ? 'rgba(0,185,250,1)' : 'rgba(10,95,215,1)';
+                const color = p.cyan ? 'rgba(32,201,245,1)' : 'rgba(38,139,255,1)';
                 ctx.shadowColor = color;
-                ctx.shadowBlur = 16;
+                ctx.shadowBlur = 10;
                 ctx.fillStyle = color;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r + 1.2, 0, Math.PI * 2);
                 ctx.fill();
             }
-            ctx.shadowBlur = 0;
+            ctx.shadowBlur = 10;
         };
 
         const step = () => {
