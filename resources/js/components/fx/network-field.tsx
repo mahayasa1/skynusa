@@ -41,8 +41,8 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
             particles = Array.from({ length: count }, () => ({
                 x: Math.random() * w,
                 y: Math.random() * h,
-                vx: (Math.random() - 0.5) * 0.35,
-                vy: (Math.random() - 0.5) * 0.35,
+                vx: (Math.random() - 0.5) * 0.6,
+                vy: (Math.random() - 0.5) * 0.6,
                 r: 1.2 + Math.random() * 1.6,
                 cyan: Math.random() > 0.6,
             }));
