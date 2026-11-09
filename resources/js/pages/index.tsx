@@ -1,45 +1,41 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import SEOHead from '@/components/seo-head';
 import OrgChart from '@/components/OrgChart';
-import { 
-    ChevronDown,
-    Code, 
-    ArrowRight,
-    Users,
-    TrendingUp,
-    Award,
-    Zap,
-    Shield,
-    HeadphonesIcon,
-    CheckCircle,
-    Menu, 
-    X,
-    LogIn,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import PublicLayout from '@/layouts/public-layout';
+import { ArrowRight, CheckCircle, MapPin, MessageCircle } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { useState, useEffect, useRef, RefObject } from "react";
+import { useState, useRef, useEffect, type ComponentType, type RefObject } from 'react';
+import Reveal from '@/components/reveal';
+import NetworkField from '@/components/fx/network-field';
+import TiltCard from '@/components/fx/tilt-card';
+import CountUp from '@/components/fx/count-up';
+import Magnetic from '@/components/fx/magnetic';
+import CircuitDivider from '@/components/fx/circuit-divider';
+import BaliFootprint, { type FootprintConfig, type FootprintProject } from '@/components/bali-footprint';
+import { type TeamTree } from '@/components/OrgChart';
+import { useSite } from '@/hooks/use-site';
 
-// Animation Hook
+// Hook untuk animasi OrgChart (dipertahankan dari versi sebelumnya)
 const useIntersectionObserver = <T extends HTMLElement>(
-  options: IntersectionObserverInit = {}
+    options: IntersectionObserverInit = {},
 ): readonly [RefObject<T | null>, boolean] => {
-  const elementRef = useRef<T | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
+    const elementRef = useRef<T | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    const element = elementRef.current;
-    if (!element) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
-      { threshold: 0.1, ...options }
-    );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+    useEffect(() => {
+        const element = elementRef.current;
+        if (!element) return;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) setIsVisible(true);
+            },
+            { threshold: 0.1, ...options },
+        );
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, []);
 
-  return [elementRef, isVisible] as const;
+    return [elementRef, isVisible] as const;
 };
 
 interface Service {
@@ -56,108 +52,109 @@ interface Portfolio {
     is_featured: boolean; order: number | null; meta_title: string | null;
     meta_description: string | null; meta_keywords: string | null;
     created_at?: string; updated_at?: string;
-    service?: { id: number; title: string; slug: string; };
+    service?: { id: number; title: string; slug: string };
 }
 interface Company {
     id: number; name: string; slug: string; logo: string | null; website: string | null;
 }
 interface IndexPageProps {
     services: Service[]; portfolios: Portfolio[]; companies: Company[];
+    footprint?: FootprintProject[];
+    hero?: { mode?: 'video' | 'foto' | 'keduanya'; video_url: string | null; poster_url: string | null };
+    content?: Partial<HomeContent>;
+    map?: FootprintConfig & { title?: string; tagline?: string; desc?: string };
+    team?: TeamTree;
 }
 
+// Teks beranda: diedit di Admin > Konten Situs > Beranda.
+interface HomeContent {
+    hero_badge: string; hero_title: string; hero_subtitle: string; hero_tagline: string;
+    hero_cta_primary: string; hero_cta_secondary: string;
+    services_title: string; services_subtitle: string;
+    portfolio_title: string; portfolio_subtitle: string;
+    features_title: string; features_subtitle: string;
+    features: { icon: string; title: string; description: string }[];
+    skybot_title: string; skybot_desc: string; skybot_questions: string[];
+    clients_title: string; clients_desc: string;
+    team_title: string; team_desc: string;
+    cta_title: string; cta_desc: string;
+}
+
+const DEFAULT_CONTENT: HomeContent = {
+    hero_badge: 'Teknisi lokal di Jimbaran, Bali',
+    hero_title: 'Riset dan pengembangan teknologi, solusi IT, dan website. Satu tim sampai tuntas.',
+    hero_subtitle: 'Dari riset dan pengembangan sistem, solusi IT dan jaringan kantor, sampai pembuatan website dan instalasi perangkat, untuk rumah, villa, kantor, dan industri, termasuk perawatan AC.',
+    hero_tagline: '> beyond technology. beyond limits.',
+    hero_cta_primary: 'Konsultasi gratis',
+    hero_cta_secondary: 'Lihat portfolio',
+    services_title: 'Riset, Teknologi, dan Solusi Digital untuk Kebutuhan Anda',
+    services_subtitle: 'Riset dan pengembangan (R&D), IT support, web development, dan instalasi perangkat, serta service AC, dengan standar profesional tinggi',
+    portfolio_title: 'Project yang Telah Kami Kerjakan',
+    portfolio_subtitle: 'Proyek riset dan pengembangan, IT support, web development, dan instalasi, termasuk service AC, yang telah kami selesaikan',
+    features_title: 'Keunggulan Layanan Kami',
+    features_subtitle: 'Keahlian teknis, semangat riset dan inovasi, serta pendekatan customer-centric untuk hasil terbaik',
+    features: [],
+    skybot_title: 'Kenalan dengan Skybot',
+    skybot_desc: 'Bingung mau bikin website, mengembangkan sistem digital, atau pasang CCTV? Tanya Skybot, asisten AI SKYNUSA TECH. Untuk harga dan penawaran, tim kami yang akan menjawab langsung.',
+    skybot_questions: ['Pasang CCTV butuh apa saja?', 'Website butuh apa saja?', 'Bagaimana cara memesan?'],
+    clients_title: 'Klien yang Telah Bekerja Sama',
+    clients_desc: 'Bergabunglah dengan ratusan klien yang mempercayakan kebutuhan teknis mereka kepada kami.',
+    team_title: 'SKYNUSA TEAM',
+    team_desc: 'Tim profesional yang solid dan berpengalaman untuk kesuksesan project Anda',
+    cta_title: 'Siap mulai proyek Anda?',
+    cta_desc: 'Ceritakan kebutuhan Anda. Tim kami di Bali siap membantu dari riset dan konsultasi sampai tuntas.',
+};
+
 const getIconComponent = (iconName: string) => {
-    const Icons = LucideIcons as any;
+    const Icons = LucideIcons as unknown as Record<string, ComponentType<{ className?: string }>>;
     return Icons[iconName] || LucideIcons.Code;
 };
 
-const features = [
-    { icon: Award, title: 'Standar Profesional', description: 'Mengikuti standar industri terbaik dan prosedur keamanan yang ketat untuk setiap proyek.' },
-    { icon: Users, title: 'Tim Berpengalaman', description: 'Teknisi bersertifikasi dengan pengalaman bertahun-tahun di bidang elektronik, AC, IT, dan web.' },
-    { icon: Zap, title: 'Respon Cepat', description: 'Respon cepat untuk layanan darurat dan penyelesaian sesuai timeline yang disepakati.' },
-    { icon: HeadphonesIcon, title: 'Dukungan Penuh', description: 'Customer support responsif dan maintenance berkala untuk menjaga sistem Anda optimal.' },
-    { icon: Shield, title: 'Garansi Terjamin', description: 'Setiap pekerjaan dilengkapi garansi resmi dan jaminan kepuasan klien.' },
-    { icon: TrendingUp, title: 'Track Record Terbukti', description: 'Lebih dari 300 proyek berhasil dengan tingkat kepuasan klien 95%.' }
-];
+/** Membuka widget Skybot (ai-chat-widget.tsx mendengarkan event ini). */
+const openSkybot = (question?: string) => {
+    window.dispatchEvent(new CustomEvent('skybot:open', { detail: { question } }));
+};
 
-export default function IndexPage({ services, portfolios, companies }: IndexPageProps) {
+export default function IndexPage({ services, portfolios, companies, footprint, hero, content, map, team }: IndexPageProps) {
+    const { stats } = useSite();
+    const STATS = { projects: stats.projects, satisfaction: stats.satisfaction, technicians: stats.technicians, years: stats.years };
+    const c: HomeContent = { ...DEFAULT_CONTENT, ...(content ?? {}) };
+    const features = (c.features ?? []).map((f) => ({
+        ...f,
+        description: f.description.replace(/\{proyek\}/g, STATS.projects).replace(/\{kepuasan\}/g, STATS.satisfaction),
+    }));
+    const mapTitle = map?.title ?? 'Our Digital Footprint';
+    const mapTagline = map?.tagline ?? 'Connecting Bali Through Technology';
+    const mapDesc = map?.desc ?? 'Dari basis kami di Jimbaran, tim SkyNusa mengerjakan pengembangan sistem digital, jaringan, dan instalasi di berbagai wilayah Bali.';
+    const heroPoster = hero?.poster_url ?? '/asset/bg-main.png';
+    const heroVideo = hero?.video_url ?? null;
+    const heroMode = hero?.mode ?? 'video';
+    const showVideo = heroMode !== 'foto';
+    const showPhoto = heroMode !== 'video';
+    const safeServices = Array.isArray(services) ? services : [];
     const safePortfolios = Array.isArray(portfolios) ? portfolios : [];
     const safeCompanies = Array.isArray(companies) ? companies : [];
-    const [openAbout, setOpenAbout] = useState(false);
-    const [openPesanan, setOpenPesanan] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
-    const [mobilePesananOpen, setMobilePesananOpen] = useState(false);
-    const menuRef = useRef<HTMLDivElement | null>(null);
-
-    const [heroRef, heroVisible] = useIntersectionObserver<HTMLElement>();
-    const [servicesRef, servicesVisible] = useIntersectionObserver<HTMLElement>();
-    const [portfolioRef, portfolioVisible] = useIntersectionObserver<HTMLElement>();
-    const [featuresRef, featuresVisible] = useIntersectionObserver<HTMLElement>();
-    const [testimonialsRef, testimonialsVisible] = useIntersectionObserver<HTMLElement>();
+    const safeFootprint = Array.isArray(footprint) ? footprint : [];
     const [teamRef, teamVisible] = useIntersectionObserver<HTMLElement>();
+    const [filter, setFilter] = useState<string>('all');
 
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setOpenAbout(false); setOpenPesanan(false);
-            }
-        };
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === "Escape") { setOpenAbout(false); setOpenPesanan(false); }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleEsc);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleEsc);
-        };
-    }, []);
-
-    // Draw org chart horizontal connector lines
-
-    const closeMobileMenu = () => {
-        setMobileMenuOpen(false); setMobileAboutOpen(false); setMobilePesananOpen(false);
-    };
+    const serviceFilters = Array.from(
+        new Set(safePortfolios.map((p) => p.service?.title).filter((t): t is string => Boolean(t))),
+    );
+    const filtered = safePortfolios.filter((p) => filter === 'all' || p.service?.title === filter);
+    const visiblePortfolios = filter === 'all' ? filtered.slice(0, 6) : filtered;
 
     return (
-        <>
+        <PublicLayout>
             <SEOHead
-                title="SKYNUSA TECH - Solusi Instalasi Listrik, AC, IT Support & Web Development Profesional"
-                description="SKYNUSA TECH menyediakan layanan instalasi listrik, service AC, IT support, dan web development profesional di Bali."
-                keywords="instalasi listrik bali, service ac bali, it support bali, web development bali"
+                title="SKYNUSA TECH - Riset & Pengembangan, IT Support, Web Development, Instalasi & Service AC Profesional"
+                description="SKYNUSA TECH menyediakan layanan riset dan pengembangan teknologi, IT support, web development, instalasi listrik, dan service AC profesional di Bali."
+                keywords="riset dan pengembangan bali, it support bali, web development bali, instalasi listrik bali, service ac bali"
                 canonical="https://skynusa-tech.com"
                 ogImage="/asset/logo.png"
             />
 
             <style>{`
-                @keyframes fadeInUp {
-                    from { opacity: 0; transform: translateY(24px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                @keyframes fadeInDown {
-                    from { opacity: 0; transform: translateY(-24px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                @keyframes fadeInLeft {
-                    from { opacity: 0; transform: translateX(-24px); }
-                    to { opacity: 1; transform: translateX(0); }
-                }
-                @keyframes scaleIn {
-                    from { opacity: 0; transform: scale(0.93); }
-                    to { opacity: 1; transform: scale(1); }
-                }
-                .anim-up   { animation: fadeInUp   0.65s ease-out forwards; }
-                .anim-down { animation: fadeInDown 0.65s ease-out forwards; }
-                .anim-left { animation: fadeInLeft 0.65s ease-out forwards; }
-                .anim-scale{ animation: scaleIn    0.65s ease-out forwards; }
-                .d100 { animation-delay: 0.1s; }
-                .d200 { animation-delay: 0.2s; }
-                .d300 { animation-delay: 0.3s; }
-                .d400 { animation-delay: 0.4s; }
-                .d500 { animation-delay: 0.5s; }
-                .d600 { animation-delay: 0.6s; }
-                .hidden-init { opacity: 0; }
-
                 /* ── Org chart structural lines ── */
                 .org-v-line {
                     width: 2px;
@@ -184,212 +181,183 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
                 }
             `}</style>
 
-            {/* ── Navigation ── */}
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white backdrop-blur-md">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-14 sm:h-16 items-center justify-between">
-
-                        <Link href="/" className="flex items-center gap-2 shrink-0">
-                            <img src="/asset/logo.png" alt="SKYNUSA TECH Logo"
-                                className="h-7 sm:h-9 w-auto max-w-[140px] sm:max-w-[200px]" />
-                        </Link>
-
-                        {/* Desktop Nav */}
-                        <div ref={menuRef} className="hidden lg:flex items-center gap-6">
-                            <a href="#home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Home</a>
-                            <a href="#services" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Layanan</a>
-                            <a href="#portfolio" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Portfolio</a>
-
-                            <div className="relative">
-                                <button onClick={() => { setOpenAbout(!openAbout); setOpenPesanan(false); }}
-                                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${openAbout ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}>
-                                    About
-                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openAbout ? "rotate-180" : ""}`} />
-                                </button>
-                                {openAbout && (
-                                    <div className="absolute left-0 mt-2 w-44 rounded-xl border border-gray-100 bg-white shadow-lg z-50">
-                                        <div className="py-1">
-                                            <a href="/tim" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Tim Kami</a>
-                                            <a href="/kontak" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Kontak</a>
-                                            <a href="/tentang-kami" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Tentang Kami</a>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="relative">
-                                <button onClick={() => { setOpenPesanan(!openPesanan); setOpenAbout(false); }}
-                                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${openPesanan ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}>
-                                    Pesanan
-                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openPesanan ? "rotate-180" : ""}`} />
-                                </button>
-                                {openPesanan && (
-                                    <div className="absolute left-0 mt-2 w-48 rounded-xl border border-gray-100 bg-white shadow-lg z-50">
-                                        <div className="py-1">
-                                            <a href="/pesanan/order" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Order Pesanan</a>
-                                            <a href="/pesanan/tracking" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Tracking Pesanan</a>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <a href="/berita" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">Berita</a>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <a href="/login"
-                                className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg shadow hover:shadow-md transition-all duration-200">
-                                <LogIn className="w-3.5 h-3.5" />
-                                Login
-                            </a>
-                            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="lg:hidden p-1.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Toggle menu">
-                                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile Menu */}
-                {mobileMenuOpen && (
-                    <div className="lg:hidden border-t border-gray-100 bg-white max-h-[80vh] overflow-y-auto">
-                        <div className="px-3 py-3 space-y-0.5">
-                            <a href="#home" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Home</a>
-                            <a href="#services" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Layanan</a>
-                            <a href="#portfolio" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Portfolio</a>
-                            <div>
-                                <button onClick={() => setMobileAboutOpen(!mobileAboutOpen)}
-                                    className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">
-                                    About
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileAboutOpen ? "rotate-180" : ""}`} />
-                                </button>
-                                {mobileAboutOpen && (
-                                    <div className="ml-3 mt-0.5 space-y-0.5 border-l-2 border-blue-100 pl-3">
-                                        <a href="/tim" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Tim Kami</a>
-                                        <a href="/kontak" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Kontak</a>
-                                        <a href="/tentang-kami" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Tentang Kami</a>
-                                    </div>
-                                )}
-                            </div>
-                            <div>
-                                <button onClick={() => setMobilePesananOpen(!mobilePesananOpen)}
-                                    className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">
-                                    Pesanan
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobilePesananOpen ? "rotate-180" : ""}`} />
-                                </button>
-                                {mobilePesananOpen && (
-                                    <div className="ml-3 mt-0.5 space-y-0.5 border-l-2 border-blue-100 pl-3">
-                                        <a href="/pesanan/order" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Order Pesanan</a>
-                                        <a href="/pesanan/tracking" onClick={closeMobileMenu} className="block py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">Tracking Pesanan</a>
-                                    </div>
-                                )}
-                            </div>
-                            <a href="/berita" onClick={closeMobileMenu} className="block px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors">Berita</a>
-                            <div className="pt-2 mt-1 border-t border-gray-100">
-                                <a href="/login" onClick={closeMobileMenu}
-                                    className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow transition-all duration-200">
-                                    <LogIn className="w-4 h-4" /> Login
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </nav>
-
             {/* ── Hero ── */}
-            <section id="home" ref={heroRef} className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 pt-14 sm:pt-16">
-                <div className="absolute inset-0 bg-[url('/asset/bg-main.png')] bg-cover bg-center opacity-15"></div>
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-24">
-                    <div className="text-start max-w-3xl">
-                        <div className={`mb-3 sm:mb-5 inline-flex items-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 py-1.5 ${heroVisible ? 'anim-down hidden-init' : 'hidden-init'}`}>
-                            <span className="text-xs sm:text-sm font-bold text-white tracking-wide">SOLUSI TEKNIS TERPERCAYA</span>
-                        </div>
-                        <h1 className={`mb-3 sm:mb-4 text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight ${heroVisible ? 'anim-left hidden-init d100' : 'hidden-init'}`}>
-                            Layanan Instalasi, Maintenance & IT Support Profesional
-                        </h1>
-                        <p className={`mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg text-blue-100 leading-relaxed ${heroVisible ? 'anim-left hidden-init d200' : 'hidden-init'}`}>
-                            Tim teknisi berpengalaman kami siap membantu kebutuhan instalasi elektronik, perawatan AC, maintenance, dukungan IT, dan pembuatan website untuk rumah, kantor, dan industri Anda.
-                        </p>
-                        <div className={`flex flex-col sm:flex-row gap-3 ${heroVisible ? 'anim-up hidden-init d300' : 'hidden-init'}`}>
-                            <Link href="/kontak">
-                                <Button size="sm" className="gap-2 bg-white text-blue-600 hover:bg-blue-50 font-semibold px-5 py-2.5 text-sm w-full sm:w-auto sm:text-base sm:px-6 sm:py-3">
-                                    Konsultasi Gratis <ArrowRight className="h-4 w-4" />
-                                </Button>
-                            </Link>
-                            <Link href="/portfolio">
-                                <Button size="sm" variant="outline" className="bg-amber-400 border-amber-400 text-white hover:bg-amber-500 font-semibold px-5 py-2.5 text-sm w-full sm:w-auto sm:text-base sm:px-6 sm:py-3">
-                                    Lihat Portfolio
-                                </Button>
-                            </Link>
-                        </div>
-                        <div className={`mt-8 sm:mt-12 grid grid-cols-2 gap-4 sm:gap-8 border-t border-white/20 pt-6 sm:pt-8 ${heroVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
-                            <div>
-                                <div className="text-2xl sm:text-4xl font-bold text-white">200+</div>
-                                <div className="mt-0.5 text-xs sm:text-sm text-blue-200">Projects Completed</div>
+            <section id="home" className="relative isolate overflow-hidden bg-gradient-to-b from-white via-blue-50 to-blue-100 pt-14 sm:pt-16">
+                <div className="bg-grid-tech absolute inset-0 -z-10" aria-hidden="true" />
+                <NetworkField className="absolute inset-0 -z-10 h-full w-full" />
+
+                <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:px-8 lg:py-28">
+                    <div className="max-w-2xl">
+                        <Reveal>
+                            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-3 py-1 text-sm font-medium text-blue-700 backdrop-blur">
+                                <span className="h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
+                                {c.hero_badge}
+                            </p>
+                        </Reveal>
+                        <Reveal delay={80}>
+                            <h1 className="mb-5 text-4xl font-bold leading-[1.05] text-gray-900 sm:text-5xl lg:text-6xl">
+                                {c.hero_title}
+                            </h1>
+                        </Reveal>
+                        <Reveal delay={160}>
+                            <p className="mb-8 max-w-xl text-base leading-relaxed text-gray-500 sm:text-lg">
+                                {c.hero_subtitle}
+                            </p>
+                        </Reveal>
+                        <Reveal delay={240}>
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                <Magnetic>
+                                    <Link
+                                        href="/kontak"
+                                        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-7 py-3.5 text-base font-semibold text-gray-900 shadow-[0_10px_30px_-10px_rgba(255,157,50,0.9)] hover:bg-brand-strong sm:w-auto"
+                                    >
+                                        {c.hero_cta_primary} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                                    </Link>
+                                </Magnetic>
+                                <Magnetic>
+                                    <Link
+                                        href="/portfolio"
+                                        className="inline-flex w-full items-center justify-center rounded-full border border-blue-600/40 bg-white/70 px-7 py-3.5 text-base font-semibold text-blue-700 backdrop-blur hover:border-blue-600 hover:bg-white sm:w-auto"
+                                    >
+                                        {c.hero_cta_secondary}
+                                    </Link>
+                                </Magnetic>
                             </div>
-                            <div>
-                                <div className="text-2xl sm:text-4xl font-bold text-white">98%</div>
-                                <div className="mt-0.5 text-xs sm:text-sm text-blue-200">Client Satisfaction</div>
-                            </div>
-                        </div>
+                        </Reveal>
+                        <Reveal delay={320}>
+                            <dl className="mt-12 flex gap-10 border-t border-blue-200 pt-6">
+                                <div>
+                                    <dd className="font-display text-3xl font-bold text-blue-600">{STATS.projects}</dd>
+                                    <dt className="mt-1 text-sm text-gray-500">Proyek selesai</dt>
+                                </div>
+                                <div>
+                                    <dd className="font-display text-3xl font-bold text-blue-600">{STATS.satisfaction}</dd>
+                                    <dt className="mt-1 text-sm text-gray-500">Klien puas</dt>
+                                </div>
+                            </dl>
+                        </Reveal>
                     </div>
+
+                    {/* Visual: bingkai HUD + media dari Admin > Hero Beranda + maskot */}
+                    <Reveal delay={200} className="relative mx-auto w-full max-w-xl lg:max-w-none">
+                        <div className="hud-frame relative">
+                            <div className="relative aspect-[4/3.3] overflow-hidden rounded-3xl border border-blue-200 bg-blue-100 shadow-[0_30px_80px_-30px_rgba(22,119,232,0.55)]">
+                                {/* Mode diatur dari Admin > Hero Beranda: video | foto | keduanya. */}
+                                <img
+                                    src={heroPoster}
+                                    alt=""
+                                    aria-hidden="true"
+                                    className={`absolute inset-0 h-full w-full object-cover ${showPhoto ? '' : 'hidden motion-reduce:block'}`}
+                                />
+                                {showVideo && (
+                                    <video
+                                        key={heroVideo ?? 'static'}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        playsInline
+                                        preload="metadata"
+                                        poster={heroPoster}
+                                        aria-hidden="true"
+                                        className={`absolute inset-0 h-full w-full object-cover motion-reduce:hidden ${heroMode === 'keduanya' ? 'opacity-70' : ''}`}
+                                    >
+                                        {heroVideo ? (
+                                            <source src={heroVideo} />
+                                        ) : (
+                                            <>
+                                                <source src="/asset/hero.webm" type="video/webm" />
+                                                <source src="/asset/hero.mp4" type="video/mp4" />
+                                            </>
+                                        )}
+                                    </video>
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/40 via-transparent to-neon/25 mix-blend-multiply" aria-hidden="true" />
+                                <div className="scanline" aria-hidden="true" />
+
+                                <p className="caret absolute left-3 top-3 z-[4] rounded-md bg-white/90 px-2.5 py-1 font-mono text-[11px] text-blue-700 shadow backdrop-blur sm:text-xs">
+                                    {c.hero_tagline}
+                                </p>
+
+                                {safeServices.length > 0 && (
+                                    <ul className="absolute bottom-3 right-3 z-[4] flex flex-col items-end gap-1.5">
+                                        {safeServices.slice(0, 3).map((s) => (
+                                            <li key={s.id} className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-gray-900 shadow backdrop-blur">
+                                                {s.title}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+
+                            <img
+                                src="/asset/skybot.png"
+                                alt="Skybot, maskot SKYNUSA TECH"
+                                width={240}
+                                height={230}
+                                className="absolute -bottom-8 -left-3 z-10 w-28 animate-[float-y_4s_ease-in-out_infinite] drop-shadow-[0_14px_20px_rgba(11,36,71,0.35)] motion-reduce:animate-none sm:-left-10 sm:w-40 lg:w-44"
+                            />
+                        </div>
+                    </Reveal>
                 </div>
-                <div className="h-6 sm:h-10 bg-gradient-to-b from-transparent to-white"></div>
+                <CircuitDivider className="absolute inset-x-0 bottom-0" />
             </section>
 
-            {/* ── Services ── */}
-            <section id="services" ref={servicesRef} className="bg-white py-10 sm:py-14 lg:py-20">
+            {/* ── Layanan / Expertise ── */}
+            <section id="services" className="bg-blue-50 py-16 sm:py-20 lg:py-24">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className={`mb-8 sm:mb-12 text-center ${servicesVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <div className="mb-2 sm:mb-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">OUR SERVICES</div>
-                        <h2 className="mb-2 sm:mb-3 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">Solusi Teknis Lengkap untuk Kebutuhan Anda</h2>
-                        <p className="mx-auto max-w-2xl text-sm sm:text-base text-gray-600">Layanan instalasi, maintenance, IT support, dan web development dengan standar profesional tinggi</p>
-                    </div>
-                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-                        {services && services.length > 0 ? (
-                            services.map((service, index) => {
-                                const IconComponent = getIconComponent(service.icon);
-                                const delays = ['', 'd100', 'd200', 'd300', 'd400', 'd500', 'd600'];
+                    <Reveal className="mb-10 text-center sm:mb-14">
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+                            {c.services_title}
+                        </h2>
+                        <p className="mx-auto max-w-2xl text-base text-gray-500 sm:text-lg">
+                            {c.services_subtitle}
+                        </p>
+                    </Reveal>
+
+                    {safeServices.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {safeServices.map((service, index) => {
+                                const Icon = getIconComponent(service.icon);
                                 return (
-                                    <Card key={service.id}
-                                        className={`group relative overflow-hidden border-gray-200 bg-white transition-all hover:shadow-xl hover:-translate-y-1 ${servicesVisible ? `anim-scale hidden-init ${delays[Math.min(index, 6)]}` : 'hidden-init'}`}>
-                                        <div className="absolute top-0 right-0 h-20 w-20 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full opacity-50"></div>
-                                        <CardHeader className="p-4 sm:p-5">
-                                            <div className="mb-3 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-blue-600 text-white">
-                                                <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
+                                    <Reveal key={service.id} delay={Math.min(index, 5) * 70} className="h-full">
+                                        <TiltCard className="glow-card flex h-full flex-col rounded-2xl p-6">
+                                            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-[0_8px_20px_-8px_rgba(22,119,232,0.8)]">
+                                                <Icon className="h-6 w-6" />
                                             </div>
-                                            <CardTitle className="text-base sm:text-lg text-gray-900">{service.title}</CardTitle>
-                                            <CardDescription className="text-xs sm:text-sm text-gray-600 leading-relaxed">{service.description}</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="p-4 sm:p-5 pt-0">
+                                            <h3 className="mb-2 text-lg font-semibold text-gray-900">{service.title}</h3>
+                                            <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-500">{service.description}</p>
                                             {service.features && service.features.length > 0 && (
-                                                <ul className="space-y-1.5 sm:space-y-2">
+                                                <ul className="mb-5 space-y-2">
                                                     {service.features.slice(0, 3).map((feature, idx) => (
-                                                        <li key={idx} className="flex items-center gap-2 text-xs sm:text-sm text-gray-700">
-                                                            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-100 shrink-0">
-                                                                <CheckCircle className="h-2.5 w-2.5 text-blue-600" />
-                                                            </div>
+                                                        <li key={idx} className="flex items-center gap-2 text-sm text-gray-800">
+                                                            <CheckCircle className="h-4 w-4 shrink-0 text-neon" aria-hidden="true" />
                                                             {feature}
                                                         </li>
                                                     ))}
                                                 </ul>
                                             )}
-                                        </CardContent>
-                                    </Card>
+                                            <Link
+                                                href={`/layanan/${service.slug}`}
+                                                className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 after:absolute after:inset-0 after:rounded-2xl hover:text-blue-700"
+                                            >
+                                                Lihat detail <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                                            </Link>
+                                        </TiltCard>
+                                    </Reveal>
                                 );
-                            })
-                        ) : (
-                            <div className="col-span-full text-center py-10">
-                                <p className="text-gray-500 text-sm">Belum ada layanan tersedia.</p>
-                            </div>
-                        )}
-                    </div>
-                    {services && services.length > 0 && (
-                        <div className={`mt-8 text-center ${servicesVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
-                            <Link href="/layanan">
-                                <Button size="sm" variant="outline" className="px-6 py-2.5 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold text-sm sm:text-base sm:px-8 sm:py-3">
-                                    Lihat Semua Layanan
-                                </Button>
+                            })}
+                        </div>
+                    ) : (
+                        <p className="py-10 text-center text-sm text-gray-500">Belum ada layanan tersedia.</p>
+                    )}
+
+                    {safeServices.length > 0 && (
+                        <div className="mt-10 text-center">
+                            <Link
+                                href="/layanan"
+                                className="inline-flex items-center rounded-full bg-gray-900 px-8 py-3 text-sm font-semibold text-white hover:bg-blue-700 sm:text-base"
+                            >
+                                Lihat Semua Layanan
                             </Link>
                         </div>
                     )}
@@ -397,224 +365,288 @@ export default function IndexPage({ services, portfolios, companies }: IndexPage
             </section>
 
             {/* ── Portfolio ── */}
-            <section id="portfolio" ref={portfolioRef} className="bg-gray-50 py-10 sm:py-14 lg:py-20">
+            <section id="portfolio" className="bg-white py-16 sm:py-20 lg:py-24">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className={`mb-8 sm:mb-12 text-center ${portfolioVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <div className="mb-2 sm:mb-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">PORTFOLIO</div>
-                        <h2 className="mb-2 sm:mb-3 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">Project yang Telah Kami Kerjakan</h2>
-                        <p className="mx-auto max-w-2xl text-sm sm:text-base text-gray-600">Proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan</p>
-                    </div>
-                    <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2">
-                        {safePortfolios.length > 0 ? (
-                            safePortfolios.map((item, index) => {
-                                const delays = ['', 'd100', 'd200', 'd300', 'd400', 'd500', 'd600'];
-                                return (
-                                    <Card key={item.id}
-                                        className={`group overflow-hidden transition-all hover:shadow-2xl bg-white ${portfolioVisible ? `anim-scale hidden-init ${delays[Math.min(index, 6)]}` : 'hidden-init'}`}>
-                                        <div className="relative aspect-video overflow-hidden">
-                                            <img src={item?.image ?? '/asset/default.jpg'} alt={item?.title ?? 'Portfolio'}
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                            {item?.service?.title && (
-                                                <div className="absolute bottom-3 left-3">
-                                                    <span className="rounded-full bg-blue-600 px-2.5 py-0.5 text-xs text-white font-medium">{item.service.title}</span>
-                                                </div>
+                    <Reveal className="mb-8 text-center sm:mb-10">
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+                            {c.portfolio_title}
+                        </h2>
+                        <p className="mx-auto max-w-2xl text-base text-gray-500 sm:text-lg">
+                            {c.portfolio_subtitle}
+                        </p>
+                    </Reveal>
+
+                    {serviceFilters.length > 1 && (
+                        <div className="mb-8 flex flex-wrap justify-center gap-2" role="group" aria-label="Filter proyek berdasarkan layanan">
+                            {['all', ...serviceFilters].map((f) => (
+                                <button
+                                    key={f}
+                                    type="button"
+                                    onClick={() => setFilter(f)}
+                                    aria-pressed={filter === f}
+                                    className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
+                                        filter === f
+                                            ? 'border-blue-600 bg-blue-600 text-white shadow-[0_6px_18px_-8px_rgba(22,119,232,0.9)]'
+                                            : 'border-blue-200 bg-white text-gray-800 hover:border-blue-500 hover:text-blue-700'
+                                    }`}
+                                >
+                                    {f === 'all' ? 'Semua' : f}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {visiblePortfolios.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {visiblePortfolios.map((item, index) => (
+                                <Reveal key={item.id} delay={Math.min(index, 5) * 70} className="h-full">
+                                    <article className="glow-card group relative h-full overflow-hidden rounded-2xl">
+                                        <div className="relative aspect-video overflow-hidden bg-blue-100">
+                                            <img
+                                                src={item.image ?? '/asset/default.jpg'}
+                                                alt={item.title ?? 'Portfolio'}
+                                                loading="lazy"
+                                                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-blue-950/70 via-transparent to-transparent opacity-80 transition-opacity group-hover:opacity-100" />
+                                            {item.service?.title && (
+                                                <span className="absolute bottom-3 left-3 rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-medium text-white">
+                                                    {item.service.title}
+                                                </span>
                                             )}
+                                            <span className="absolute right-3 top-3 inline-flex translate-y-1 items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-blue-700 opacity-0 shadow transition-all group-hover:translate-y-0 group-hover:opacity-100">
+                                                Lihat proyek <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                                            </span>
                                         </div>
-                                        <CardHeader className="p-4 pb-2">
-                                            <CardTitle className="text-base sm:text-lg text-black">{item?.title ?? 'Untitled Project'}</CardTitle>
-                                            <div className="flex flex-wrap gap-1.5 text-xs text-gray-500">
-                                                {item?.client_name && <span>{item.client_name}</span>}
-                                                {item?.client_name && item?.project_date && <span>•</span>}
-                                                {item?.project_date && <span>{new Date(item.project_date).getFullYear()}</span>}
+                                        <div className="p-5">
+                                            <h3 className="text-base font-semibold text-gray-900 sm:text-lg">
+                                                <Link href={`/portfolio/${item.slug}`} className="after:absolute after:inset-0">
+                                                    {item.title ?? 'Untitled Project'}
+                                                </Link>
+                                            </h3>
+                                            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+                                                {item.client_name && <span>{item.client_name}</span>}
+                                                {item.project_date && <span>{new Date(item.project_date).getFullYear()}</span>}
+                                                {item.location && (
+                                                    <span className="inline-flex items-center gap-1">
+                                                        <MapPin className="h-3 w-3 text-blue-500" aria-hidden="true" />
+                                                        {item.location}
+                                                    </span>
+                                                )}
                                             </div>
-                                            <CardDescription className="text-xs sm:text-sm">
-                                                {item?.short_description ?? item?.description ?? 'No description available.'}
-                                            </CardDescription>
-                                        </CardHeader>
-                                        {Array.isArray(item?.features) && item.features.length > 0 && (
-                                            <CardContent className="p-4 pt-0 text-black">
-                                                <h4 className="mb-1.5 text-sm font-semibold">Features</h4>
-                                                <ul className="grid grid-cols-2 gap-1.5">
-                                                    {item.features.map((feature, idx) => (
-                                                        <li key={idx} className="flex items-start gap-1.5 text-xs">
-                                                            <CheckCircle className="mt-0.5 h-3.5 w-3.5 text-blue-600 shrink-0" />
-                                                            <span>{feature}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </CardContent>
-                                        )}
-                                    </Card>
-                                );
-                            })
-                        ) : (
-                            <p className="text-center text-sm text-gray-500 col-span-full py-10">Belum ada portfolio.</p>
-                        )}
-                    </div>
-                    <div className={`mt-8 text-center ${portfolioVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
-                        <Link href="/portfolio">
-                            <Button size="sm" variant="outline" className="px-6 py-2.5 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold text-sm sm:text-base sm:px-8">
-                                Lihat Semua Proyek <ArrowRight className="h-4 w-4 ml-1.5" />
-                            </Button>
+                                            <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-gray-500">
+                                                {item.short_description ?? item.description ?? ''}
+                                            </p>
+                                        </div>
+                                    </article>
+                                </Reveal>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="col-span-full py-10 text-center text-sm text-gray-500">Belum ada portfolio.</p>
+                    )}
+
+                    <div className="mt-10 text-center">
+                        <Link
+                            href="/portfolio"
+                            className="inline-flex items-center rounded-full bg-gray-900 px-8 py-3 text-sm font-semibold text-white hover:bg-blue-700 sm:text-base"
+                        >
+                            Lihat Semua Proyek <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
                         </Link>
                     </div>
                 </div>
             </section>
 
-            {/* ── Features ── */}
-            <section id="features" ref={featuresRef} className="bg-white py-10 sm:py-14 lg:py-20">
+            {/* ── Keunggulan ── */}
+            <section id="features" className="bg-blue-50 py-16 sm:py-20 lg:py-24">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className={`mb-8 sm:mb-12 text-center ${featuresVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <div className="mb-2 sm:mb-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">WHY CHOOSE US</div>
-                        <h2 className="mb-2 sm:mb-3 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">Keunggulan Layanan Kami</h2>
-                        <p className="mx-auto max-w-2xl text-sm sm:text-base text-gray-600">Keahlian teknis, pengalaman industri, dan pendekatan customer-centric untuk hasil terbaik</p>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                        {features.map((feature, index) => {
-                            const delays = ['', 'd100', 'd200', 'd300', 'd400', 'd500'];
-                            return (
-                                <div key={index} className={`flex flex-col items-start gap-3 ${featuresVisible ? `anim-up hidden-init ${delays[Math.min(index, 5)]}` : 'hidden-init'}`}>
-                                    <div className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-blue-50 shrink-0">
-                                        <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                    <Reveal className="mb-10 text-center sm:mb-14">
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">{c.features_title}</h2>
+                        <p className="mx-auto max-w-2xl text-base text-gray-500 sm:text-lg">
+                            {c.features_subtitle}
+                        </p>
+                    </Reveal>
+
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {features.map((feature, index) => (
+                            <Reveal key={feature.title} delay={Math.min(index, 5) * 70} className="h-full">
+                                <div className="glow-card flex h-full items-start gap-4 rounded-2xl p-6">
+                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                                        {(() => {
+                                            const FeatureIcon = getIconComponent(feature.icon);
+                                            return <FeatureIcon className="h-6 w-6" />;
+                                        })()}
                                     </div>
                                     <div>
-                                        <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">{feature.title}</h3>
-                                        <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                                        <h3 className="mb-1 text-base font-semibold text-gray-900">{feature.title}</h3>
+                                        <p className="text-sm leading-relaxed text-gray-500">{feature.description}</p>
                                     </div>
                                 </div>
-                            );
-                        })}
+                            </Reveal>
+                        ))}
                     </div>
-                    <div className={`mt-10 sm:mt-14 ${featuresVisible ? 'anim-scale hidden-init d400' : 'hidden-init'}`}>
-                        <div className="bg-white rounded-2xl shadow-lg py-6 px-4 sm:py-8 sm:px-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center border border-gray-100">
-                            {[
-                                { value: '95%', label: 'Kepuasan Klien' },
-                                { value: '188+', label: 'Proyek Selesai' },
-                                { value: '20+', label: 'Teknisi Ahli' },
-                                { value: '10+', label: 'Tahun Berpengalaman' },
-                            ].map((stat, i) => (
-                                <div key={i}>
-                                    <div className="text-lg sm:text-2xl font-bold text-blue-600">{stat.value}</div>
-                                    <div className="text-xs sm:text-sm text-gray-600 mt-0.5">{stat.label}</div>
-                                </div>
-                            ))}
+
+                    <Reveal delay={150} className="mt-10 sm:mt-14">
+                        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 px-4 py-8 text-white shadow-[0_30px_60px_-30px_rgba(22,119,232,0.8)] sm:px-10 sm:py-10">
+                            <div className="bg-grid-tech-dark absolute inset-0 opacity-60" aria-hidden="true" />
+                            <dl className="relative grid grid-cols-2 gap-8 text-center sm:grid-cols-4">
+                                {[
+                                    { value: STATS.satisfaction, label: 'Kepuasan Klien' },
+                                    { value: STATS.projects, label: 'Proyek Selesai' },
+                                    { value: STATS.technicians, label: 'Teknisi Ahli' },
+                                    { value: STATS.years, label: 'Tahun Berpengalaman' },
+                                ].map((stat) => (
+                                    <div key={stat.label}>
+                                        <dd className="font-display text-4xl font-bold sm:text-5xl">
+                                            <CountUp value={stat.value} />
+                                        </dd>
+                                        <dt className="mt-1 text-sm text-blue-100">{stat.label}</dt>
+                                    </div>
+                                ))}
+                            </dl>
                         </div>
-                    </div>
+                    </Reveal>
                 </div>
             </section>
 
-            {/* ── Testimonials ── */}
-            <section ref={testimonialsRef} className="bg-white py-10 sm:py-14 lg:py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className={`text-center mb-2 ${testimonialsVisible ? 'anim-down hidden-init' : 'hidden-init'}`}>
-                        <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs sm:text-sm font-medium">Dipercaya Oleh</span>
-                    </div>
-                    <h2 className={`text-center text-xl sm:text-3xl font-bold text-gray-900 mb-2 mt-3 ${testimonialsVisible ? 'anim-up hidden-init d100' : 'hidden-init'}`}>
-                        Klien yang Telah Bekerja Sama
-                    </h2>
-                    <p className={`text-center text-sm sm:text-base text-gray-600 mb-8 sm:mb-12 ${testimonialsVisible ? 'anim-up hidden-init d200' : 'hidden-init'}`}>
-                        Bergabunglah dengan ratusan klien yang mempercayakan kebutuhan teknis mereka kepada kami.
-                    </p>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6 mb-10 sm:mb-16">
+            {/* ── Our Digital Footprint — Bali ── */}
+            <section id="footprint" className="relative overflow-hidden bg-gradient-to-b from-blue-950 to-[#12315f] py-16 text-white sm:py-20 lg:py-24">
+                <div className="bg-grid-tech-dark absolute inset-0 opacity-70" aria-hidden="true" />
+                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <Reveal className="mb-10 max-w-2xl sm:mb-12">
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{mapTitle}</h2>
+                        <p className="font-display text-xl text-neon sm:text-2xl">{mapTagline}</p>
+                        <p className="mt-4 text-base leading-relaxed text-blue-100">
+                            {mapDesc}
+                        </p>
+                    </Reveal>
+                    <Reveal delay={100}>
+                        <BaliFootprint projects={safeFootprint} config={map} />
+                    </Reveal>
+                </div>
+            </section>
+
+            {/* ── Meet SKYBOT AI ── */}
+            <section id="skybot" className="bg-white py-16 sm:py-20 lg:py-24">
+                <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+                    <Reveal className="relative mx-auto flex aspect-square w-full max-w-sm items-center justify-center">
+                        <div className="absolute inset-4 rounded-full border border-dashed border-blue-300 motion-safe:animate-[orbit-spin_40s_linear_infinite]" aria-hidden="true">
+                            <span className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-neon shadow-[0_0_14px_3px_rgba(32,201,245,0.7)]" />
+                        </div>
+                        <div className="absolute inset-12 rounded-full border border-blue-200 motion-safe:animate-[orbit-spin_28s_linear_infinite_reverse]" aria-hidden="true">
+                            <span className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-brand" />
+                        </div>
+                        <div className="absolute inset-20 rounded-full bg-gradient-to-br from-blue-100 to-white" aria-hidden="true" />
+                        <img
+                            src="/asset/skybot.png"
+                            alt="Skybot, asisten AI SKYNUSA TECH"
+                            width={320}
+                            height={307}
+                            loading="lazy"
+                            className="relative w-3/5 animate-[float-y_4.5s_ease-in-out_infinite] drop-shadow-[0_18px_24px_rgba(11,36,71,0.3)] motion-reduce:animate-none"
+                        />
+                    </Reveal>
+
+                    <Reveal delay={120}>
+                        <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">{c.skybot_title}</h2>
+                        <p className="mb-6 max-w-xl text-base leading-relaxed text-gray-500 sm:text-lg">
+                            {c.skybot_desc}
+                        </p>
+                        <div className="mb-7 flex flex-wrap gap-2">
+                            {c.skybot_questions.map((q) => (
+                                <button
+                                    key={q}
+                                    type="button"
+                                    onClick={() => openSkybot(q)}
+                                    className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:border-blue-500 hover:bg-white"
+                                >
+                                    {q}
+                                </button>
+                            ))}
+                        </div>
+                        <Magnetic>
+                            <button
+                                type="button"
+                                onClick={() => openSkybot()}
+                                className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-7 py-3.5 text-base font-semibold text-white shadow-[0_12px_30px_-12px_rgba(22,119,232,0.9)] hover:bg-blue-700"
+                            >
+                                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                                Mulai ngobrol dengan Skybot
+                            </button>
+                        </Magnetic>
+                    </Reveal>
+                </div>
+            </section>
+
+            {/* ── Klien ── */}
+            <section className="bg-blue-50 py-16 sm:py-20 lg:py-24">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <Reveal className="mb-10 text-center sm:mb-12">
+                        <h2 className="mb-2 text-3xl font-bold text-gray-900 sm:text-4xl">{c.clients_title}</h2>
+                        <p className="text-base text-gray-500">
+                            {c.clients_desc}
+                        </p>
+                    </Reveal>
+                    <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 sm:gap-6 lg:grid-cols-6">
                         {safeCompanies.length > 0 ? (
-                            safeCompanies.map((company, index) => {
-                                const delays = ['', 'd100', 'd200', 'd300', 'd400', 'd500', 'd600'];
-                                return (
-                                    <div key={company.id} className={`text-center group ${testimonialsVisible ? `anim-scale hidden-init ${delays[Math.min(index, 6)]}` : 'hidden-init'}`}>
-                                        <div className="mx-auto h-14 w-14 sm:h-16 sm:w-16 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden shadow hover:shadow-md transition-shadow">
-                                            {company.logo
-                                                ? <img src={company.logo} alt={company.name} className="h-full w-full object-contain p-1.5" />
-                                                : <span className="text-gray-400 text-lg font-bold">{company.name.charAt(0)}</span>
-                                            }
+                            safeCompanies.map((company, index) => (
+                                <Reveal key={company.id} delay={Math.min(index, 6) * 50}>
+                                    <div className="group text-center">
+                                        <div className="glow-card mx-auto flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl sm:h-20 sm:w-20">
+                                            {company.logo ? (
+                                                <img src={company.logo} alt={company.name} loading="lazy" className="h-full w-full object-contain p-2" />
+                                            ) : (
+                                                <span className="text-lg font-bold text-gray-500">{company.name.charAt(0)}</span>
+                                            )}
                                         </div>
-                                        <p className="mt-2 text-gray-700 text-xs font-medium group-hover:text-blue-600 transition-colors line-clamp-2">{company.name}</p>
+                                        <p className="mt-2 line-clamp-2 text-xs font-medium text-gray-800 transition-colors group-hover:text-blue-600">
+                                            {company.name}
+                                        </p>
                                     </div>
-                                );
-                            })
+                                </Reveal>
+                            ))
                         ) : (
                             <p className="col-span-full text-center text-sm text-gray-500">Belum ada data klien.</p>
                         )}
                     </div>
-                    <div className={`bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-3xl mx-auto border border-gray-100 ${testimonialsVisible ? 'anim-up hidden-init d400' : 'hidden-init'}`}>
-                        <div className="flex items-start gap-3 mb-4">
-                            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm shrink-0">BS</div>
-                            <div>
-                                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Budi Santoso</h3>
-                                <p className="text-gray-600 text-xs sm:text-sm">Direktur Operasional, PT Maju Bersama</p>
-                            </div>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-sm sm:text-base mb-3">
-                            "Bekerja dengan Skynusa Tech sangat memuaskan. Tim mereka menyelesaikan instalasi sistem kelistrikan gedung kami dengan profesional dan tepat waktu. Hasil kerja sangat rapi dan sesuai standar."
-                        </p>
-                        <div className="flex text-yellow-400 text-lg">
-                            {Array.from({ length: 5 }).map((_, i) => <span key={i}>★</span>)}
-                        </div>
-                    </div>
-                    <div className={`mt-8 text-center ${testimonialsVisible ? 'anim-up hidden-init d500' : 'hidden-init'}`}>
-                        <Link href="/kontak">
-                            <Button size="sm" variant="outline" className="px-8 py-2.5 border-gray-300 bg-gray-900 text-white hover:-translate-y-1 font-semibold text-sm sm:text-base">
-                                Hubungi Kami Sekarang
-                            </Button>
-                        </Link>
-                    </div>
                 </div>
             </section>
 
-            {/* ── Team Section – CSS-only org chart ── */}
-            <section id="tim" ref={teamRef} className="bg-gray-50 py-10 sm:py-14 lg:py-20">
+            {/* ── Tim ── */}
+            <section id="tim" ref={teamRef} className="bg-white py-16 sm:py-20 lg:py-24">
                 <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-                    <div className={`mb-8 sm:mb-12 text-center ${teamVisible ? 'anim-up hidden-init' : 'hidden-init'}`}>
-                        <span className="inline-block mb-2 rounded-full bg-blue-100 px-3 py-1 text-xs sm:text-sm font-semibold text-blue-600">OUR TEAM</span>
-                        <h2 className="mb-2 text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">SKYNUSA TEAM</h2>
-                        <p className="mx-auto max-w-xl text-sm sm:text-base text-gray-600">Tim profesional yang solid dan berpengalaman untuk kesuksesan project Anda</p>
-                    </div>
-                    <OrgChart teamVisible={teamVisible} />
+                    <Reveal className="mb-10 text-center sm:mb-12">
+                        <h2 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{c.team_title}</h2>
+                        <p className="mx-auto max-w-xl text-base text-gray-500">
+                            {c.team_desc}
+                        </p>
+                    </Reveal>
+                    <OrgChart teamVisible={teamVisible} team={team} />
                 </div>
             </section>
 
-            {/* ── Footer ── */}
-            <footer className="border-t border-gray-200 bg-gray-900 py-8 sm:py-12 text-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid gap-6 sm:gap-8 grid-cols-2 lg:grid-cols-4">
-                        <div className="col-span-2 sm:col-span-1">
-                            <img src="asset/footer-logo.png" alt="SKYNUSA TECH Logo" className="mb-4 h-7 sm:h-8 w-auto max-w-[160px]" />
-                            <p className="text-xs text-gray-400 leading-relaxed">Solusi profesional untuk instalasi, maintenance, IT support, dan web development.</p>
-                        </div>
-                        <div>
-                            <h3 className="mb-3 text-sm font-semibold">Menu Cepat</h3>
-                            <ul className="space-y-1.5 text-xs text-gray-400">
-                                <li><Link href="/tentang-kami" className="hover:text-blue-400 transition-colors">Tentang Kami</Link></li>
-                                <li><Link href="/portfolio" className="hover:text-blue-400 transition-colors">Portfolio</Link></li>
-                                <li><Link href="/layanan" className="hover:text-blue-400 transition-colors">Layanan</Link></li>
-                                <li><Link href="/tim" className="hover:text-blue-400 transition-colors">Tim Kami</Link></li>
-                                <li><Link href="/kontak" className="hover:text-blue-400 transition-colors">Kontak</Link></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="mb-3 text-sm font-semibold">Layanan Kami</h3>
-                            <ul className="space-y-1.5 text-xs text-gray-400">
-                                <li>Instalasi Elektronik</li>
-                                <li>Service AC</li>
-                                <li>Maintenance</li>
-                                <li>IT Support</li>
-                                <li>Web Development</li>
-                            </ul>
-                        </div>
-                        <div className="col-span-2 sm:col-span-1">
-                            <h3 className="mb-3 text-sm font-semibold">Hubungi Kami</h3>
-                            <ul className="space-y-1.5 text-xs text-gray-400">
-                                <li><a href="mailto:Roycegroupbali@gmail.com" className="hover:text-blue-400 transition-colors break-all">Roycegroupbali@gmail.com</a></li>
-                                <li><a href="tel:+62881080888361" className="hover:text-blue-400 transition-colors">+62 881-080-888-361</a></li>
-                                <li className="leading-relaxed">Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali</li>
-                            </ul>
-                        </div>
+            {/* ── CTA ── */}
+            <section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 py-16 text-white sm:py-20">
+                <div className="bg-grid-tech-dark absolute inset-0 opacity-60" aria-hidden="true" />
+                <Reveal className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
+                    <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{c.cta_title}</h2>
+                    <p className="mx-auto mb-8 max-w-xl text-base text-blue-100 sm:text-lg">
+                        {c.cta_desc}
+                    </p>
+                    <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+                        <Magnetic>
+                            <Link href="/kontak" className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-gray-900 hover:bg-brand-strong">
+                                {c.hero_cta_primary} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                            </Link>
+                        </Magnetic>
+                        <Magnetic>
+                            <Link href="/pesanan/order" className="inline-flex items-center rounded-full border border-white/50 px-8 py-3.5 text-base font-semibold text-white hover:bg-white/10">
+                                Pesan layanan
+                            </Link>
+                        </Magnetic>
                     </div>
-                    <div className="mt-8 border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
-                        <p>Developed by © {new Date().getFullYear()} SKYNUSA TECH.</p>
-                    </div>
-                </div>
-            </footer>
-        </>
+                </Reveal>
+            </section>
+        </PublicLayout>
     );
 }

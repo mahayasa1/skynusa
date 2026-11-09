@@ -1,8 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\DashboardApiController;
+use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\HeroController;
+use App\Http\Controllers\SiteContentController;
+use App\Http\Controllers\TeamController;
+use App\Models\TeamMember;
+use App\Support\Media;
+use App\Models\SiteSetting;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ServicesController;
@@ -21,18 +28,27 @@ Route::get('/', function () {
     
     $services = $servicesController->getServicesForHome();
     $portfolios = $portfolioController->getPortfoliosForHome();
+    $footprint = $portfolioController->getFootprintForHome();
     $companies = $companiesController->getCompaniesForHome();
     
     return Inertia::render('index', [
         'services' => $services,
         'portfolios' => $portfolios,
+        'footprint' => $footprint,
         'companies' => $companies,
+        'hero' => SiteSetting::hero(),
+        'content' => SiteSetting::group('beranda'),
+        'map' => SiteSetting::group('peta'),
+        'team' => TeamMember::tree(),
     ]);
 })->name('home');
 
 // Tentang Kami
 Route::get('/tentang-kami', function () {
-    return Inertia::render('about');
+    $about = SiteSetting::group('tentang');
+    $about['who_image_url'] = Media::url($about['who_image'] ?? null);
+
+    return Inertia::render('about', ['about' => $about]);
 })->name('about');
 
 // Layanan (Public Routes)
@@ -50,20 +66,25 @@ Route::get('/kontak', function () {
     return Inertia::render('contact');
 })->name('contact');
 
-Route::controller(PesananController::class)->group(function () {
-    Route::post('/kontak', 'store')->name('contact.store');
-});
+Route::post('/kontak', [PesanController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
+
+// Skybot (asisten AI)
+Route::post('/ai/chat', [AiChatController::class, 'chat'])
+    ->middleware('throttle:15,1')
+    ->name('ai.chat');
 
 // Tim
 Route::get('/tim', function () {
-    return Inertia::render('tim');
+    return Inertia::render('tim', ['team' => TeamMember::tree()]);
 })->name('tim');
 
 //pesanan
 Route::controller(PesananController::class)->group(function () {
     // Order form
     Route::get('/pesanan/order', 'create')->name('order.create');
-    Route::post('/pesanan/order', 'store')->name('order.store');
+    Route::post('/pesanan/order', 'store')->middleware('throttle:5,1')->name('order.store');
     
     // Tracking
     Route::get('/pesanan/tracking', 'trackingForm')->name('order.tracking.form');
@@ -125,6 +146,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
  * ============================================
  */
 Route::middleware(['auth', 'role:admin,head'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/hero', [HeroController::class, 'edit'])->name('hero.edit');
+    Route::post('/hero', [HeroController::class, 'update'])->name('hero.update');
+
+    // Konten situs: beranda, statistik, peta, kontak, tentang kami
+    Route::get('/konten', [SiteContentController::class, 'edit'])->name('content.edit');
+    Route::post('/konten/{group}', [SiteContentController::class, 'update'])->name('content.update');
+
+    // Tim (bagan organisasi)
+    Route::controller(TeamController::class)->prefix('tim')->group(function () {
+        Route::get('/', 'index')->name('team.index');
+        Route::post('/', 'store')->name('team.store');
+        Route::post('/{id}', 'update')->name('team.update');
+        Route::delete('/{id}', 'destroy')->name('team.destroy');
+    });
 
     Route::controller(CompanyController::class)->prefix('companies')->group(function () {
         Route::get('/', 'adminIndex')->name('companies.index');
@@ -250,11 +286,7 @@ Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.
  * ============================================
  */
 Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->name('admin.')->group(function () {
-    Route::controller(PesanController::class)->prefix('pesan')->group(function () {
-        Route::get('/', 'adminIndex')->name('pesan.index');
-        Route::get('/trashed', 'trashed')->name('pesan.trashed');
-        Route::get('/{id}', 'show')->name('pesan.show');
-    });
+    Route::get('/pesan', [PesanController::class, 'adminIndex'])->name('pesan.index');
 
     Route::controller(BeritaController::class)->prefix('berita')->group(function () {
         Route::get('/', 'adminIndex')->name('berita.index');
@@ -276,19 +308,9 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->name('admin.')
     });
 });
 
-// Pesan CRUD - Admin only
+// Pesan - hapus (Admin only)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::controller(PesanController::class)->prefix('pesan')->group(function () {
-        Route::post('/bulk-destroy', 'bulkDestroy')->name('pesan.bulk-destroy');
-        Route::post('/bulk-force-destroy', 'bulkForceDestroy')->name('pesan.bulk-force-destroy');
-        Route::get('/export', 'export')->name('pesan.export');
-        Route::get('/{id}/edit', 'edit')->name('pesan.edit');
-        Route::put('/{id}', 'update')->name('pesan.update');
-        Route::patch('/{id}', 'update');
-        Route::delete('/{id}', 'destroy')->name('pesan.destroy');
-        Route::delete('/{id}/force', 'forceDestroy')->name('pesan.force-destroy');
-        Route::post('/{id}/restore', 'restore')->name('pesan.restore');
-    });
+    Route::delete('/pesan/{id}', [PesanController::class, 'destroy'])->name('pesan.destroy');
 });
 
 // Route autentikasi (login, register, reset password, verifikasi email, 2FA)

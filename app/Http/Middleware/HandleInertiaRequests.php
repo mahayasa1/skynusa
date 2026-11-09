@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSetting;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -37,6 +38,8 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
+            // Kontak & statistik (diedit di Admin > Konten Situs); dipakai footer, kontak, dll.
+            'site' => fn () => SiteSetting::publicShared(),
             'flash' => [
                 'success' => fn () => session('success'),
                 'error' => fn () => session('error'),

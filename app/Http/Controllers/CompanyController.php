@@ -30,7 +30,7 @@ class CompanyController extends Controller
                 'id' => $company->id,
                 'name' => $company->name,
                 'slug' => $company->slug,
-                'logo' => $company->logo,
+                'logo' => \App\Support\Media::url($company->logo),
                 'website' => $company->website,
             ];
         });

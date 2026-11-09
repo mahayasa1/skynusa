@@ -1,8 +1,11 @@
 import { Link } from '@inertiajs/react';
 import { Menu, X, ChevronDown, LogIn } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { useT } from '@/i18n';
+import LanguageSwitcher from '@/components/language-switcher';
 
 export default function Navigation() {
+  const t = useT();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
   const [openPesanan, setOpenPesanan] = useState(false);
@@ -30,7 +33,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/70 bg-white/85 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 sm:h-16 items-center justify-between">
 
@@ -46,13 +49,13 @@ export default function Navigation() {
           {/* Desktop Navigation - Centered */}
           <div ref={menuRef} className="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-6">
             <Link href="/" className={`text-sm font-medium transition-colors ${currentPath === '/' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}>
-              Home
+              {t('nav.home')}
             </Link>
             <Link href="/layanan" className={`text-sm font-medium transition-colors ${currentPath === '/layanan' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}>
-              Layanan
+              {t('nav.services')}
             </Link>
             <Link href="/portfolio" className={`text-sm font-medium transition-colors ${currentPath === '/portfolio' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}>
-              Portfolio
+              {t('nav.portfolio')}
             </Link>
 
             {/* About Dropdown */}
@@ -61,15 +64,15 @@ export default function Navigation() {
                 onClick={() => { setOpenAbout(!openAbout); setOpenPesanan(false); }}
                 className={`flex items-center gap-1 text-sm font-medium transition-colors ${openAbout ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
               >
-                About
+                {t('nav.about')}
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openAbout ? "rotate-180" : ""}`} />
               </button>
               {openAbout && (
-                <div className="absolute left-0 mt-2 w-44 rounded-xl border bg-white shadow-xl z-50 animate-[fadeIn_.2s_ease-out_forwards]">
+                <div className="absolute left-0 mt-2 w-44 rounded-xl border border-gray-200 bg-white shadow-lg z-50 animate-[fadeIn_.2s_ease-out_forwards]">
                   <div className="p-1">
-                    <Link href="/tim" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Tim Kami</Link>
-                    <Link href="/kontak" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Kontak</Link>
-                    <Link href="/tentang-kami" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Tentang Kami</Link>
+                    <Link href="/tim" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">{t('nav.team')}</Link>
+                    <Link href="/kontak" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">{t('nav.contact')}</Link>
+                    <Link href="/tentang-kami" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">{t('nav.aboutUs')}</Link>
                   </div>
                 </div>
               )}
@@ -81,32 +84,39 @@ export default function Navigation() {
                 onClick={() => { setOpenPesanan(!openPesanan); setOpenAbout(false); }}
                 className={`flex items-center gap-1 text-sm font-medium transition-colors ${openPesanan ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
               >
-                Pesanan
+                {t('nav.orders')}
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openPesanan ? "rotate-180" : ""}`} />
               </button>
               {openPesanan && (
-                <div className="absolute left-0 mt-2 w-48 rounded-xl border bg-white shadow-xl z-50 animate-[fadeIn_.2s_ease-out_forwards]">
+                <div className="absolute left-0 mt-2 w-48 rounded-xl border border-gray-200 bg-white shadow-lg z-50 animate-[fadeIn_.2s_ease-out_forwards]">
                   <div className="p-1">
-                    <Link href="/pesanan/order" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Order Pesanan</Link>
-                    <Link href="/pesanan/tracking" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">Tracking Pesanan</Link>
+                    <Link href="/pesanan/order" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">{t('nav.orderNew')}</Link>
+                    <Link href="/pesanan/tracking" className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">{t('nav.tracking')}</Link>
                   </div>
                 </div>
               )}
             </div>
 
             <Link href="/berita" className={`text-sm font-medium transition-colors ${currentPath === '/berita' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}>
-              Berita
+              {t('nav.news')}
             </Link>
           </div>
 
           {/* Right Side */}
           <div className="flex items-center gap-2">
+            <LanguageSwitcher className="hidden lg:inline-flex" />
             <Link
               href="/login"
-              className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg shadow hover:shadow-md transition-all duration-200"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
             >
               <LogIn className="w-3.5 h-3.5" />
-              Login
+              {t('nav.login')}
+            </Link>
+            <Link
+              href="/pesanan/order"
+              className="hidden lg:inline-flex items-center rounded-full bg-brand px-5 py-2 text-sm font-semibold text-gray-900 hover:bg-brand-strong transition-colors"
+            >
+              {t('nav.cta')}
             </Link>
 
             <button
@@ -124,9 +134,9 @@ export default function Navigation() {
       {isMobileMenuOpen && (
         <div className="lg:hidden border-t border-gray-100 bg-white max-h-[80vh] overflow-y-auto">
           <div className="px-3 py-3 space-y-0.5">
-            <Link href="/" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>Home</Link>
-            <Link href="/layanan" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/layanan' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>Layanan</Link>
-            <Link href="/portfolio" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/portfolio' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>Portfolio</Link>
+            <Link href="/" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>{t('nav.home')}</Link>
+            <Link href="/layanan" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/layanan' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>{t('nav.services')}</Link>
+            <Link href="/portfolio" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/portfolio' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>{t('nav.portfolio')}</Link>
 
             {/* About */}
             <div>
@@ -134,14 +144,14 @@ export default function Navigation() {
                 onClick={() => setMobileAboutOpen(!mobileAboutOpen)}
                 className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
               >
-                About
+                {t('nav.about')}
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileAboutOpen ? "rotate-180" : ""}`} />
               </button>
               {mobileAboutOpen && (
                 <div className="ml-3 mt-0.5 border-l-2 border-blue-100 pl-3 space-y-0.5">
-                  <Link href="/tim" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/tim' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>Tim Kami</Link>
-                  <Link href="/kontak" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/kontak' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>Kontak</Link>
-                  <Link href="/tentang-kami" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/tentang-kami' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>Tentang Kami</Link>
+                  <Link href="/tim" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/tim' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>{t('nav.team')}</Link>
+                  <Link href="/kontak" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/kontak' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>{t('nav.contact')}</Link>
+                  <Link href="/tentang-kami" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/tentang-kami' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>{t('nav.aboutUs')}</Link>
                 </div>
               )}
             </div>
@@ -152,23 +162,30 @@ export default function Navigation() {
                 onClick={() => setMobilePesananOpen(!mobilePesananOpen)}
                 className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
               >
-                Pesanan
+                {t('nav.orders')}
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobilePesananOpen ? "rotate-180" : ""}`} />
               </button>
               {mobilePesananOpen && (
                 <div className="ml-3 mt-0.5 border-l-2 border-blue-100 pl-3 space-y-0.5">
-                  <Link href="/pesanan/order" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/pesanan/order' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>Order Pesanan</Link>
-                  <Link href="/pesanan/tracking" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/pesanan/tracking' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>Tracking Pesanan</Link>
+                  <Link href="/pesanan/order" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/pesanan/order' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>{t('nav.orderNew')}</Link>
+                  <Link href="/pesanan/tracking" onClick={closeMobileMenu} className={`block py-2 text-sm rounded transition-colors ${currentPath === '/pesanan/tracking' ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>{t('nav.tracking')}</Link>
                 </div>
               )}
             </div>
 
-            <Link href="/berita" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/berita' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>Berita</Link>
+            <Link href="/berita" onClick={closeMobileMenu} className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${currentPath === '/berita' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}>{t('nav.news')}</Link>
 
-            <div className="pt-2 mt-1 border-t border-gray-100">
-              <Link href="/login" onClick={closeMobileMenu} className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow transition-all duration-200">
+            <div className="pt-3 mt-1 border-t border-gray-100 flex justify-center pb-2">
+              <LanguageSwitcher />
+            </div>
+
+            <div className="pt-1 grid grid-cols-2 gap-2">
+              <Link href="/login" onClick={closeMobileMenu} className="flex items-center justify-center gap-2 rounded-full border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700">
                 <LogIn className="w-4 h-4" />
-                Login
+                {t('nav.login')}
+              </Link>
+              <Link href="/pesanan/order" onClick={closeMobileMenu} className="flex items-center justify-center rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-gray-900">
+                {t('nav.cta')}
               </Link>
             </div>
           </div>

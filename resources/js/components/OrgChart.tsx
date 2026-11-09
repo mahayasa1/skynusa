@@ -1,26 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 
-interface MgmtMember {
-    name: string; role: string; subRole: string; img: string;
-}
-interface StaffMember {
-    name: string; role: string; image: string;
+export interface TeamPerson {
+    id: number;
+    name: string;
+    role: string;
+    sub_role: string | null;
+    photo: string;
 }
 
-const mgmtMembers: MgmtMember[] = [
-    { name: 'Mahayasa Wibawa', role: 'CTO', subRole: 'Technical Leadership', img: 'asset/id.png' },
-    { name: 'Arnold Tamelan', role: 'Head of Operations', subRole: 'Project Management', img: 'asset/arnold.jpeg' },
-    { name: 'Bagus Wisnu', role: 'Head of Design', subRole: 'UI/UX & Creative', img: 'asset/bgw.jpg' },
-    { name: 'Hassan', role: 'Head of Engineer', subRole: 'Electronic Engineering', img: 'asset/hassan.jpeg' },
-    { name: 'Frans', role: 'Head of IoT', subRole: 'Electrical Installation', img: 'asset/frans.jpg' },
-];
-
-const staffMembers: StaffMember[] = [
-    { name: 'Rudi', role: 'Front-end Developer', image: '/asset/profile.png' },
-    { name: 'Anjani', role: 'Administrator', image: '/asset/profile.png' },
-    { name: 'Agus Surya', role: 'UI/UX Designer', image: '/asset/agus.jpg' },
-    { name: 'Rihaf', role: 'Lighting Installation', image: '/asset/profile.png' },
-];
+export interface TeamTree {
+    ceo: TeamPerson | null;
+    management: TeamPerson[];
+    staff: TeamPerson[];
+}
 
 // ── SVG Connector ──────────────────────────────────────────────
 function OrgConnector({
@@ -145,14 +137,26 @@ const NodeCard = ({
 );
 
 // ── Main OrgChart Component ────────────────────────────────────
-export default function OrgChart({ teamVisible }: { teamVisible: boolean }) {
+// Data tim diedit di Admin > Tim.
+export default function OrgChart({ teamVisible, team }: { teamVisible: boolean; team?: TeamTree }) {
+    const ceo = team?.ceo ?? null;
+    const mgmt = team?.management ?? [];
+    const staff = team?.staff ?? [];
+
     const containerRef = useRef<HTMLDivElement>(null);
     const ceoRef = useRef<HTMLDivElement>(null);
-    const mgmtContainerRef = useRef<HTMLDivElement>(null);
-    const mgmtRefs = mgmtMembers.map(() => useRef<HTMLDivElement>(null));
-    const staffContainerRef = useRef<HTMLDivElement>(null);
-    const staffRefs = staffMembers.map(() => useRef<HTMLDivElement>(null));
-    // For mgmt→staff connector, pick middle mgmt card as "parent"
+    const mgmtEls = useRef<(HTMLDivElement | null)[]>([]);
+    const staffEls = useRef<(HTMLDivElement | null)[]>([]);
+
+    // Objek mirip ref supaya OrgConnector tetap bisa membaca elemen terbaru.
+    const asRefs = (els: React.RefObject<(HTMLDivElement | null)[]>, n: number) =>
+        Array.from({ length: n }, (_, i) => ({
+            get current() {
+                return els.current?.[i] ?? null;
+            },
+        })) as React.RefObject<HTMLDivElement | null>[];
+    const mgmtRefs = asRefs(mgmtEls, mgmt.length);
+    const staffRefs = asRefs(staffEls, staff.length);
     const midMgmtRef = mgmtRefs[Math.floor(mgmtRefs.length / 2)];
 
     // Delay=0 for lines to render after mount
@@ -163,78 +167,75 @@ export default function OrgChart({ teamVisible }: { teamVisible: boolean }) {
     }, []);
 
     const delays = ['', 'd100', 'd200', 'd300', 'd400', 'd500'];
+    const signature = `${ceo?.id ?? 0}-${mgmt.map((m) => m.id).join(',')}-${staff.map((m) => m.id).join(',')}`;
+
+    if (!ceo && mgmt.length === 0 && staff.length === 0) {
+        return <p className="text-center text-sm text-gray-500">Data tim belum tersedia.</p>;
+    }
 
     return (
         <div ref={containerRef} className="flex flex-col items-center" style={{ position: 'relative' }}>
 
             {/* CEO */}
-            <div
-                ref={ceoRef}
-                className={`relative z-10 ${teamVisible ? 'anim-down hidden-init d100' : 'hidden-init'}`}
-            >
-                <NodeCard
-                    img="asset/royce.png"
-                    name="Royce Francis M.M"
-                    role="CEO & Founder"
-                    sub="Business Strategy"
-                    isCeo
-                />
-            </div>
-
-            {/* ── Gap for line space ── */}
-            <div style={{ height: 40 }} />
+            {ceo && (
+                <>
+                    <div
+                        ref={ceoRef}
+                        className={`relative z-10 ${teamVisible ? 'anim-down hidden-init d100' : 'hidden-init'}`}
+                    >
+                        <NodeCard img={ceo.photo} name={ceo.name} role={ceo.role} sub={ceo.sub_role ?? undefined} isCeo />
+                    </div>
+                    <div style={{ height: 40 }} />
+                </>
+            )}
 
             {/* Management tier */}
-            <div
-                ref={mgmtContainerRef}
-                className="flex flex-wrap justify-center gap-2 sm:gap-3 relative z-10 w-full"
-            >
-                {mgmtMembers.map((m, i) => (
-                    <div
-                        key={i}
-                        ref={mgmtRefs[i]}
-                        className={teamVisible ? `anim-up hidden-init ${delays[Math.min(i, 5)]}` : 'hidden-init'}
-                    >
-                        <NodeCard img={m.img} name={m.name} role={m.role} sub={m.subRole} />
+            {mgmt.length > 0 && (
+                <>
+                    <div className="flex flex-wrap justify-center gap-2 sm:gap-3 relative z-10 w-full">
+                        {mgmt.map((m, i) => (
+                            <div
+                                key={m.id}
+                                ref={(el) => {
+                                    mgmtEls.current[i] = el;
+                                }}
+                                className={teamVisible ? `anim-up hidden-init ${delays[Math.min(i, 5)]}` : 'hidden-init'}
+                            >
+                                <NodeCard img={m.photo} name={m.name} role={m.role} sub={m.sub_role ?? undefined} />
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
-
-            {/* ── Gap ── */}
-            <div style={{ height: 40 }} />
+                    <div style={{ height: 40 }} />
+                </>
+            )}
 
             {/* Staff tier */}
-            <div
-                ref={staffContainerRef}
-                className="flex flex-wrap justify-center gap-2 sm:gap-3 relative z-10 w-full"
-            >
-                {staffMembers.map((m, i) => (
-                    <div
-                        key={i}
-                        ref={staffRefs[i]}
-                        className={teamVisible ? `anim-scale hidden-init ${delays[Math.min(i + 4, 5)]}` : 'hidden-init'}
-                    >
-                        <NodeCard img={m.image} name={m.name} sub={m.role} />
-                    </div>
-                ))}
-            </div>
+            {staff.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2 sm:gap-3 relative z-10 w-full">
+                    {staff.map((m, i) => (
+                        <div
+                            key={m.id}
+                            ref={(el) => {
+                                staffEls.current[i] = el;
+                            }}
+                            className={teamVisible ? `anim-scale hidden-init ${delays[Math.min(i + 4, 5)]}` : 'hidden-init'}
+                        >
+                            <NodeCard img={m.photo} name={m.name} sub={m.role} />
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {/* SVG Connectors — drawn after mount */}
             {mounted && (
-                <>
-                    {/* CEO → Management */}
-                    <OrgConnector
-                        parentRef={ceoRef}
-                        childRefs={mgmtRefs}
-                        containerRef={containerRef}
-                    />
-                    {/* Middle Mgmt → Staff */}
-                    <OrgConnector
-                        parentRef={midMgmtRef}
-                        childRefs={staffRefs}
-                        containerRef={containerRef}
-                    />
-                </>
+                <div key={signature}>
+                    {ceo && mgmt.length > 0 && (
+                        <OrgConnector parentRef={ceoRef} childRefs={mgmtRefs} containerRef={containerRef} />
+                    )}
+                    {midMgmtRef && staff.length > 0 && (
+                        <OrgConnector parentRef={midMgmtRef} childRefs={staffRefs} containerRef={containerRef} />
+                    )}
+                </div>
             )}
         </div>
     );

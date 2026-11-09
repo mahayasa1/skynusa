@@ -1,4 +1,8 @@
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
+import Turnstile from '@/components/turnstile';
+import { useT } from '@/i18n';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 import PublicLayout from '@/layouts/public-layout';
 import SEOHead from '@/components/seo-head';
 import { Button } from '@/components/ui/button';
@@ -8,34 +12,49 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useState } from 'react';
+import { useSite } from '@/hooks/use-site';
 
 export default function Contact() {
-    const [formData, setFormData] = useState({
+    const t = useT();
+    const { contact } = useSite();
+    const { data: formData, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         phone: '',
         subject: '',
-        message: ''
+        message: '',
+        captcha: '',
     });
+    const [captchaReset, setCaptchaReset] = useState(0);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission here
-        console.log('Form submitted:', formData);
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
+        post('/kontak', {
+            preserveScroll: true,
+            onSuccess: () => {
+                reset();
+                Swal.fire({
+                    icon: 'success',
+                    title: t('contact.successTitle'),
+                    text: t('contact.successText'),
+                    confirmButtonText: t('contact.close'),
+                });
+            },
+            onFinish: () => {
+                setData('captcha', '');
+                setCaptchaReset((n) => n + 1);
+            },
         });
     };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+        setData(e.target.name as keyof typeof formData, e.target.value);
 
     return (
         <PublicLayout>
             <SEOHead
-                title="Kontak Kami - Hubungi SKYNUSA TECH untuk Konsultasi Gratis"
-                description="Hubungi SKYNUSA TECH untuk konsultasi gratis layanan instalasi, maintenance, IT support. Respon cepat 24/7 untuk emergency. Lokasi: Bali, Indonesia. Tel: +62 812-3456-7890"
+                title={t('contact.seoTitle')}
+                description={t('contact.seoDesc')}
                 keywords="kontak skynusa tech, hubungi teknisi bali, konsultasi instalasi, emergency service 24/7, alamat skynusa tech bali"
                 canonical="https://skynusa-tech.com/kontak"
                 ogImage="/asset/logo.png"
@@ -48,13 +67,13 @@ export default function Contact() {
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
                         <div className="mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2">
-                            <span className="text-xl font-extrabold text-white">HUBUNGI KAMI</span>
+                            <span className="text-xl font-extrabold text-white">{t('contact.badge')}</span>
                         </div>
                         <h1 className="mb-6 text-4xl lg:text-5xl font-bold text-white">
-                            Mari Berdiskusi Tentang Project Anda
+                            {t('contact.heroTitle')}
                         </h1>
                         <p className="mx-auto max-w-3xl text-lg text-blue-100">
-                            Tim ahli kami siap membantu mewujudkan kebutuhan teknis bisnis Anda dengan solusi profesional
+                            {t('contact.heroDesc')}
                         </p>
                     </div>
                 </div>
@@ -73,9 +92,9 @@ export default function Contact() {
                                             <MapPin className="h-6 w-6 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-gray-900 mb-1">Alamat Kantor</h3>
+                                            <h3 className="font-semibold text-gray-900 mb-1">{t('contact.address')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                Royce Group, Purimas Regency 2 Kav 8, Jimbaran, Bali
+                                                {contact.address}
                                             </p>
                                         </div>
                                     </div>
@@ -89,9 +108,9 @@ export default function Contact() {
                                             <Phone className="h-6 w-6 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-gray-900 mb-1">Telepon</h3>
+                                            <h3 className="font-semibold text-gray-900 mb-1">{t('contact.phone')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                +62 881-080-888-361
+                                                {contact.phone}
                                             </p>
                                         </div>
                                     </div>
@@ -105,9 +124,9 @@ export default function Contact() {
                                             <Mail className="h-6 w-6 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
+                                            <h3 className="font-semibold text-gray-900 mb-1">{t('contact.email')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                Roycegroupbali@gmail.com
+                                                {contact.email}
                                             </p>
                                         </div>
                                     </div>
@@ -121,10 +140,10 @@ export default function Contact() {
                                             <Clock className="h-6 w-6 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-gray-900 mb-1">Jam Operasional</h3>
+                                            <h3 className="font-semibold text-gray-900 mb-1">{t('contact.hours')}</h3>
                                             <p className="text-sm text-gray-600">
-                                                Senin - Jumat: 10:00 - 17:00<br />
-                                                Sabtu - Minggu: Tutup<br />
+                                                {contact.hours_weekday || t('contact.hoursWeek')}<br />
+                                                {contact.hours_weekend || t('contact.hoursWeekend')}<br />
                                             </p>
                                         </div>
                                     </div>
@@ -137,16 +156,16 @@ export default function Contact() {
                             <Card className='bg-white'>
                                 <CardContent className="p-8">
                                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                                        Kirim Pesan
+                                        {t('contact.formTitle')}
                                     </h2>
                                     <p className="text-gray-600 mb-6">
-                                        Isi form dibawah ini dan tim kami akan menghubungi Anda dalam waktu 24 jam
+                                        {t('contact.formDesc')}
                                     </p>
 
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <Label htmlFor="name" className='text-black'>Nama Lengkap <span className='text-red-600'>*</span></Label>
+                                                <Label htmlFor="name" className='text-black'>{t('contact.name')} <span className='text-red-600'>*</span></Label>
                                                 <Input
                                                     id="name"
                                                     name="name"
@@ -157,7 +176,7 @@ export default function Contact() {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="email">Email *</Label>
+                                                <Label htmlFor="email">{t('contact.email')} *</Label>
                                                 <Input
                                                     id="email"
                                                     name="email"
@@ -172,7 +191,7 @@ export default function Contact() {
 
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <Label htmlFor="phone">Nomor Telepon *</Label>
+                                                <Label htmlFor="phone">{t('contact.phoneLabel')} *</Label>
                                                 <Input
                                                     id="phone"
                                                     name="phone"
@@ -183,11 +202,11 @@ export default function Contact() {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="subject">Subjek</Label>
+                                                <Label htmlFor="subject">{t('contact.subject')}</Label>
                                                 <Input
                                                     id="subject"
                                                     name="subject"
-                                                    placeholder="Konsultasi Project"
+                                                    placeholder={t('contact.subjectPh')}
                                                     value={formData.subject}
                                                     onChange={handleChange}
                                                 />
@@ -195,11 +214,11 @@ export default function Contact() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="message">Pesan *</Label>
+                                            <Label htmlFor="message">{t('contact.message')} *</Label>
                                             <Textarea
                                                 id="message"
                                                 name="message"
-                                                placeholder="Ceritakan kebutuhan project Anda..."
+                                                placeholder={t('contact.messagePh')}
                                                 className="min-h-[150px]"
                                                 value={formData.message}
                                                 onChange={handleChange}
@@ -207,8 +226,13 @@ export default function Contact() {
                                             />
                                         </div>
 
-                                        <Button type="submit" size="lg" className="w-full md:w-auto">
-                                            Kirim Pesan
+                                        <div className="space-y-2">
+                                            <Turnstile onVerify={(t) => setData('captcha', t)} resetKey={captchaReset} />
+                                            {errors.captcha && <p className="text-sm text-red-600">{errors.captcha}</p>}
+                                        </div>
+
+                                        <Button type="submit" size="lg" className="w-full md:w-auto" disabled={processing || !formData.captcha}>
+                                            {processing ? t('contact.sending') : t('contact.send')}
                                         </Button>
                                     </form>
                                 </CardContent>
@@ -223,22 +247,26 @@ export default function Contact() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-8">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                            Lokasi Kami
+                            {t('contact.mapTitle')}
                         </h2>
                         <p className="text-gray-600">
-                            Kunjungi kantor kami atau jadwalkan pertemuan
+                            {t('contact.mapDesc')}
                         </p>
                     </div>
                     <div className="rounded-2xl overflow-hidden shadow-lg h-[400px]">
-                        <iframe
-                        title="Royce Group Jimbaran"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3942.827654715452!2d115.14267627402164!3d-8.802256891250302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd24583f5b95ba9%3A0x22369bedb5e3736e!2sRoyce%20Group!5e0!3m2!1sid!2sid!4v1766566808620!5m2!1sid!2sid"
-                        width="100%"
-                        height="100%"
-                        style={{ border: 0 }}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        ></iframe>
+                        {contact.map_embed_url ? (
+                            <iframe
+                                title={`Peta lokasi ${contact.address}`}
+                                src={contact.map_embed_url}
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-sm text-gray-500">{contact.address}</div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -247,10 +275,10 @@ export default function Contact() {
             <section className="bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 py-16">
                 <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
                     <h2 className="mb-6 text-3xl lg:text-4xl font-bold text-white">
-                        Butuh Bantuan Segera?
+                        {t('contact.urgentTitle')}
                     </h2>
                     <p className="mx-auto mb-8 max-w-2xl text-lg text-blue-100">
-                        Tim support kami siap membantu Anda 24/7 untuk kebutuhan emergency
+                        {t('contact.urgentDesc')}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button
@@ -259,11 +287,11 @@ export default function Contact() {
                             className="bg-yellow-400 text-gray-900 hover:bg-yellow-300 font-semibold"
                         >
                             <a
-                                href="https://wa.me/+6281339579969"
+                                href={`https://wa.me/${contact.whatsapp}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                Chat Via WhatsApp
+                                {t('contact.whatsapp')}
                             </a>
                         </Button>
                     </div>

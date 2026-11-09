@@ -33,6 +33,7 @@ interface Portfolio {
     short_description: string | null;
 
     image: string;
+    image_url?: string | null;
     gallery: string[] | null;
 
     client_name: string | null;
@@ -79,9 +80,9 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
     return (
         <PublicLayout>
             <SEOHead
-                title="Portfolio Project - Instalasi, IT & Web Development"
-                description="Portfolio project instalasi CCTV, AC central, IT infrastructure, dan web development. Lebih dari 180+ project berhasil dengan klien profesional."
-                keywords="portfolio cctv, portfolio instalasi ac, portfolio it support, web development project"
+                title="Portfolio Project - Riset, IT, Web Development & Instalasi"
+                description="Portfolio project riset dan pengembangan, IT infrastructure, web development, instalasi CCTV, dan AC central. Lebih dari 180+ project berhasil dengan klien profesional."
+                keywords="portfolio riset dan pengembangan, portfolio it support, web development project, portfolio cctv, portfolio instalasi ac"
                 canonical="https://skynusa-tech.com/portfolio"
                 ogImage="/asset/logo.png"
             />
@@ -101,7 +102,7 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                     </h1>
 
                     <p className="mx-auto max-w-3xl text-lg text-blue-100">
-                        Lihat berbagai proyek instalasi, maintenance, IT support, dan web development yang telah kami selesaikan dengan hasil memuaskan 
+                        Lihat berbagai proyek riset dan pengembangan, IT support, web development, instalasi, dan maintenance yang telah kami selesaikan dengan hasil memuaskan 
                     </p>
                 </div>
             </section>
@@ -113,12 +114,12 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                         {portfolios?.map((item) => (
                             <Card
                                 key={item.id}
-                                className="group overflow-hidden transition-all hover:shadow-2xl bg-white"
+                                className="group relative overflow-hidden transition-all hover:shadow-2xl bg-white"
                             >
                                 {/* Image */}
                                 <div className="relative aspect-16/10 overflow-hidden">
                                     <img
-                                        src={item.image}
+                                        src={item.image_url ?? item.image}
                                         alt={item.title}
                                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
@@ -136,7 +137,9 @@ export default function PortfolioPage({ portfolios, statistics,}: PortfolioProps
                                 {/* Header */}
                                 <CardHeader className='text-black'>
                                     <CardTitle className="text-xl">
-                                        {item.title}
+                                        <Link href={`/portfolio/${item.slug}`} className="after:absolute after:inset-0 hover:text-blue-600">
+                                            {item.title}
+                                        </Link>
                                     </CardTitle>
 
                                     <div className="flex flex-wrap gap-2 text-sm text-gray-500">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\Turnstile;
 use App\Models\Pesanan;
 use App\Models\Services;
 use App\Service\PesananService;
@@ -49,6 +50,7 @@ class PesananController extends Controller
         'telp'        => 'required|string|max:20',
         'description' => 'required|string|max:5000',
         'due_date'    => 'required|date|after:today',
+        'captcha'     => ['required', new Turnstile],
     ], [
         'service_id.required' => 'Pilih layanan yang diinginkan',
         'name.required'       => 'Nama wajib diisi',
@@ -58,7 +60,9 @@ class PesananController extends Controller
         'description.required'=> 'Deskripsi pesanan wajib diisi',
         'due_date.required'   => 'Tanggal target selesai wajib diisi',
         'due_date.after'      => 'Tanggal target harus setelah hari ini',
+        'captcha.required'    => 'Selesaikan verifikasi keamanan terlebih dahulu',
     ]);
+    unset($validated['captcha']);
 
     // ✅ Keep DB transaction tight — only DB operations inside
     try {

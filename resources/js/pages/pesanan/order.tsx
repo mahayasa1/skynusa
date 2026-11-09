@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ShoppingCart, Calendar, AlertCircle, CheckCircle, Copy, ExternalLink } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import React from 'react';
+import Turnstile from '@/components/turnstile';
+import { useT } from '@/i18n';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -28,6 +30,7 @@ interface OrderCreateProps {
 }
 
 export default function OrderCreate({ services = [], flash }: OrderCreateProps) {
+    const t = useT();
     const { data, setData, post, processing, errors, reset } = useForm<Record<string, string>>({
         service_id: '',
         name: '',
@@ -35,7 +38,10 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
         telp: '',
         description: '',
         due_date: '',
+        captcha: '',
     });
+    const [captchaReset, setCaptchaReset] = React.useState(0);
+    const resetCaptcha = () => { setData('captcha', ''); setCaptchaReset((n) => n + 1); };
 
     // Show success alert when order is created
     React.useEffect(() => {
@@ -43,7 +49,7 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
             Swal.fire({
                 icon: 'success',
                 width: 420,
-                title: 'Pesanan Berhasil Dibuat!',
+                title: t('order.successTitle'),
                 html: `
                     <div class="text-left text-sm space-y-4">
                         <p class="text-gray-700 mb-4">${flash.success}</p>
@@ -77,33 +83,33 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
         
         // Konfirmasi dengan SweetAlert
         const result = await Swal.fire({
-            title: '⚠️ Konfirmasi Pesanan',
+            title: t('order.confirmTitle'),
             width: 420, // 👈 bikin popup lebih kecil
             html: `
                 <div class="text-left text-sm space-y-2">
                     <p class="text-gray-600 mb-2">
-                        Pastikan data pesanan sudah benar:
+                        ${t('order.confirmIntro')}
                     </p>
 
                     <div class="bg-gray-50 rounded-md p-3 space-y-1">
                         <div class="flex">
-                            <span class="font-medium text-gray-700 w-28">Layanan:</span>
+                            <span class="font-medium text-gray-700 w-28">${t('order.confirmService')}</span>
                             <span class="text-gray-600">${selectedService?.title || '-'}</span>
                         </div>
                         <div class="flex">
-                            <span class="font-medium text-gray-700 w-28">Nama:</span>
+                            <span class="font-medium text-gray-700 w-28">${t('order.confirmName')}</span>
                             <span class="text-gray-600">${data.name || '-'}</span>
                         </div>
                         <div class="flex">
-                            <span class="font-medium text-gray-700 w-28">Email:</span>
+                            <span class="font-medium text-gray-700 w-28">${t('order.confirmEmail')}</span>
                             <span class="text-gray-600">${data.email || '-'}</span>
                         </div>
                         <div class="flex">
-                            <span class="font-medium text-gray-700 w-28">Telepon:</span>
+                            <span class="font-medium text-gray-700 w-28">${t('order.confirmPhone')}</span>
                             <span class="text-gray-600">${data.telp || '-'}</span>
                         </div>
                         <div class="flex">
-                            <span class="font-medium text-gray-700 w-28">Target:</span>
+                            <span class="font-medium text-gray-700 w-28">${t('order.confirmTarget')}</span>
                             <span class="text-gray-600">${data.due_date || '-'}</span>
                         </div>
                     </div>
@@ -111,8 +117,8 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
             `,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Ya',
-            cancelButtonText: 'Cek Ulang',
+            confirmButtonText: t('order.yes'),
+            cancelButtonText: t('order.review'),
 
             buttonsStyling: false,
             customClass: {
@@ -131,7 +137,7 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
         // Show loading
         Swal.fire({
             width: 420,
-            title: 'Mohon tunggu sebentar...',
+            title: t('order.wait'),
             allowOutsideClick: false,
             allowEscapeKey: false,
             didOpen: () => {
@@ -144,25 +150,27 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
             onSuccess: () => {
                 Swal.close();
                 reset();
+                resetCaptcha();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
             onError: (errors) => {
                 Swal.close();
+                resetCaptcha();
                 
                 // Show error alert
                 Swal.fire({
                     icon: 'error',
-                    title: 'Gagal Membuat Pesanan',
+                    title: t('order.errorTitle'),
                     width: 420,
                     html: `
                         <div class="text-left text-sm space-y-3">
-                            <p class="text-gray-700 mb-3">Terjadi kesalahan saat memproses pesanan Anda:</p>
+                            <p class="text-gray-700 mb-3">${t('order.errorIntro')}</p>
                             <div class="bg-red-50 border border-red-200 rounded-lg p-3">
                                 <p class="text-red-700 text-sm">
                                     ${Object.values(errors).join('<br>')}
                                 </p>
                             </div>
-                            <p class="text-gray-600 text-sm mt-3">Silakan periksa kembali data Anda dan coba lagi.</p>
+                            <p class="text-gray-600 text-sm mt-3">${t('order.errorHint')}</p>
                         </div>
                     `,
                     confirmButtonText: 'OK',
@@ -187,8 +195,8 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
     return (
         <PublicLayout>
             <SEOHead
-                title="Buat Pesanan - SKYNUSA TECH"
-                description="Pesan layanan instalasi, maintenance, IT support, dan web development dari SKYNUSA TECH"
+                title={t('order.seoTitle')}
+                description={t('order.seoDesc')}
                 canonical="https://skynusa-tech.com/order"
             />
 
@@ -205,13 +213,13 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                     <div className="text-center">
                         <div className="mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2">
                             <ShoppingCart className="h-5 w-5 text-white" />
-                            <span className="text-xl font-extrabold text-white">BUAT PESANAN</span>
+                            <span className="text-xl font-extrabold text-white">{t('order.badge')}</span>
                         </div>
                         <h1 className="mb-6 text-4xl lg:text-5xl font-bold text-white">
-                            Pesan Layanan Kami
+                            {t('order.heroTitle')}
                         </h1>
                         <p className="mx-auto max-w-3xl text-lg text-blue-100">
-                            Isi form di bawah ini untuk membuat pesanan. Tim kami akan segera memproses pesanan Anda
+                            {t('order.heroDesc')}
                         </p>
                     </div>
                 </div>
@@ -247,9 +255,9 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
 
                     <Card className="shadow-lg bg-white text-black">
                         <CardHeader>
-                            <CardTitle className="text-2xl">Form Pesanan</CardTitle>
+                            <CardTitle className="text-2xl">{t('order.formTitle')}</CardTitle>
                             <CardDescription>
-                                Lengkapi data berikut untuk membuat pesanan layanan
+                                {t('order.formDesc')}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -258,11 +266,11 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                 {/* Service Selection */}
                                 <div className="space-y-2">
                                     <Label htmlFor="service_id">
-                                        Pilih Layanan <span className="text-red-500">*</span>
+                                        {t('order.service')} <span className="text-red-500">*</span>
                                     </Label>
                                     <Select value={data.service_id} onValueChange={(value) => setData('service_id', value)}>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="-- Pilih Layanan --" />
+                                            <SelectValue placeholder={t('order.servicePh')} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {services.map((service) => (
@@ -280,12 +288,12 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                 {/* Name */}
                                 <div className="space-y-2">
                                     <Label htmlFor="name">
-                                        Nama Lengkap <span className="text-red-500">*</span>
+                                        {t('order.name')} <span className="text-red-500">*</span>
                                     </Label>
                                     <Input
                                         id="name"
                                         type="text"
-                                        placeholder="Masukkan nama lengkap"
+                                        placeholder={t('order.namePh')}
                                         value={data.name}
                                         onChange={(e) => setData('name', e.target.value)}
                                         className={errors.name ? 'border-red-500' : ''}
@@ -300,7 +308,7 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                 <div className="grid gap-6 md:grid-cols-2">
                                     <div className="space-y-2">
                                         <Label htmlFor="email">
-                                            Email <span className="text-red-500">*</span>
+                                            {t('order.email')} <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
                                             id="email"
@@ -318,7 +326,7 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
 
                                     <div className="space-y-2">
                                         <Label htmlFor="telp">
-                                            No. Telepon <span className="text-red-500">*</span>
+                                            {t('order.phone')} <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
                                             id="telp"
@@ -338,7 +346,7 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                 {/* Due Date */}
                                 <div className="space-y-2">
                                     <Label htmlFor="due_date">
-                                        Tanggal Target Selesai <span className="text-red-500">*</span>
+                                        {t('order.dueDate')} <span className="text-red-500">*</span>
                                     </Label>
                                     <div className="relative">
                                         <Input
@@ -361,12 +369,12 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                 {/* Description */}
                                 <div className="space-y-2">
                                     <Label htmlFor="description">
-                                        Deskripsi Pesanan <span className="text-red-500">*</span>
+                                        {t('order.desc')} <span className="text-red-500">*</span>
                                     </Label>
                                     <Textarea
                                         id="description"
                                         rows={6}
-                                        placeholder="Jelaskan detail pesanan Anda (lokasi, spesifikasi, kebutuhan khusus, dll)"
+                                        placeholder={t('order.descPh')}
                                         value={data.description}
                                         onChange={(e) => setData('description', e.target.value)}
                                         className={errors.description ? 'border-red-500' : ''}
@@ -376,18 +384,24 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                         <p className="text-sm text-red-500">{errors.description}</p>
                                     )}
                                     <p className="text-sm text-gray-500">
-                                        Maksimal 5000 karakter
+                                        {t('order.descMax')}
                                     </p>
                                 </div>
 
                                 {/* Info Box */}
                                 <div className="rounded-lg bg-blue-50 border border-blue-200 p-4">
-                                    <h4 className="font-semibold text-blue-900 mb-2">Informasi:</h4>
+                                    <h4 className="font-semibold text-blue-900 mb-2">{t('order.infoTitle')}</h4>
                                     <ul className="text-sm text-blue-800 space-y-1">
-                                        <li>• Pesanan akan diverifikasi oleh tim kami dalam 1x24 jam</li>
-                                        <li>• Anda akan menerima kode tracking untuk memantau status pesanan</li>
-                                        <li>• Tim kami akan menghubungi Anda untuk konfirmasi detail</li>
+                                        <li>• {t('order.info1')}</li>
+                                        <li>• {t('order.info2')}</li>
+                                        <li>• {t('order.info3')}</li>
                                     </ul>
+                                </div>
+
+                                {/* Captcha */}
+                                <div className="space-y-2">
+                                    <Turnstile onVerify={(t) => setData('captcha', t)} resetKey={captchaReset} />
+                                    {errors.captcha && <p className="text-sm text-red-600">{errors.captcha}</p>}
                                 </div>
 
                                 {/* Submit Button */}
@@ -396,17 +410,17 @@ export default function OrderCreate({ services = [], flash }: OrderCreateProps) 
                                         type="submit"
                                         size="lg"
                                         className="flex-1"
-                                        disabled={processing}
+                                        disabled={processing || !data.captcha}
                                     >
                                         {processing ? (
                                             <>
                                                 <span className="animate-spin mr-2">⏳</span>
-                                                Memproses...
+                                                {t('order.processing')}
                                             </>
                                         ) : (
                                             <>
                                                 <ShoppingCart className="mr-2 h-4 w-4" />
-                                                Buat Pesanan
+                                                {t('order.submit')}
                                             </>
                                         )}
                                     </Button>

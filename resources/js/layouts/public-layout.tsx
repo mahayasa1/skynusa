@@ -2,6 +2,7 @@ import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 import { ReactNode } from 'react';
 import { GoogleAnalytics } from '@/components/analytics';
+import AiChatWidget from '@/components/ai-chat-widget';
 
 
 interface PublicLayoutProps {
@@ -13,10 +14,11 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <div className="min-h-screen flex flex-col">
             <GoogleAnalytics trackingId="G-XXXXXXXXXX" />
             <Navigation />
-            <main className="flex-grow">
+            <main className="flex-grow page-enter">
                 {children}
             </main>
             <Footer />
+            <AiChatWidget />
         </div>
     );
 }

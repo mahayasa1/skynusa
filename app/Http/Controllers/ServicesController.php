@@ -18,7 +18,8 @@ class ServicesController extends Controller
 
     public function index(): Response
 {
-    $services = $this->serviceService->getAllActive();
+    $services = $this->serviceService->getAllActive()
+        ->map(fn ($s) => array_merge($s->toArray(), ['image' => \App\Support\Media::url($s->image)]));
     $statistics = $this->serviceService->getStatistics();
 
     return Inertia::render('services', [
@@ -44,7 +45,7 @@ class ServicesController extends Controller
                 'description' => $service['description'],
                 'short_description' => $service['short_description'],
                 'icon' => $service['icon'],
-                'image' => $service['image'],
+                'image' => \App\Support\Media::url($service['image']),
                 'features' => $service['features'] ?? [],
                 'price' => $service['price'],
                 'price_text' => $service['price_text'],
@@ -68,9 +69,23 @@ class ServicesController extends Controller
             ->where('id', '!=', $service->id)
             ->take(3);
         
-        return Inertia::render('admin/services/show', [
-            'service' => $service,
-            'relatedServices' => $relatedServices,
+        // Halaman publik (sebelumnya salah memuat halaman admin).
+        return Inertia::render('service-show', [
+            'service' => [
+                'id' => $service->id,
+                'title' => $service->title,
+                'slug' => $service->slug,
+                'description' => $service->description,
+                'icon' => $service->icon,
+                'image' => \App\Support\Media::url($service->image),
+                'features' => $service->features ?? [],
+            ],
+            'relatedServices' => $relatedServices->map(fn ($s) => [
+                'id' => $s->id,
+                'title' => $s->title,
+                'slug' => $s->slug,
+                'icon' => $s->icon,
+            ])->values(),
         ]);
     }
 
