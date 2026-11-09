@@ -280,8 +280,8 @@
     /* Grid futuristik halus */
     .bg-grid-tech {
         background-image:
-            linear-gradient(to right, rgb(22 119 232 / 0.07) 1px, transparent 1px),
-            linear-gradient(to bottom, rgb(22 119 232 / 0.07) 1px, transparent 1px);
+            linear-gradient(to right, rgb(22 119 232 / 0.14) 1px, transparent 1px),
+            linear-gradient(to bottom, rgb(22 119 232 / 0.14) 1px, transparent 1px);
         background-size: 44px 44px;
         -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
         mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);

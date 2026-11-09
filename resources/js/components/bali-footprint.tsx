@@ -83,7 +83,7 @@ const DEFAULT_REGIONS: Region[] = [
 ];
 
 const DEFAULT_HQ = { name: 'SkyNusa Tech', place: 'Jimbaran', lon: 115.165, lat: -8.775 };
-const DEFAULT_NOTE = 'Siluet pulau berupa ilustrasi bergaya, bukan peta survei.';
+const DEFAULT_NOTE = 'Peta ini menampilkan lokasi portofolio proyek SkyNusa Tech di Bali.';
 
 function matchRegion(regions: Region[], location: string | null): string | null {
     if (!location) return null;

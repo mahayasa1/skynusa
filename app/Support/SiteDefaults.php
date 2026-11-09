@@ -81,7 +81,7 @@ class SiteDefaults
             'title'   => 'Our Digital Footprint',
             'tagline' => 'Connecting Bali Through Technology',
             'desc'    => 'Dari basis kami di Jimbaran, tim SkyNusa mengerjakan instalasi, jaringan, dan sistem digital di berbagai wilayah Bali.',
-            'note'    => 'Siluet pulau berupa ilustrasi bergaya, bukan peta survei.',
+            'note'    => 'Peta ini menampilkan lokasi portofolio proyek SkyNusa Tech di Bali.',
             'hq' => ['name' => 'SkyNusa Tech', 'place' => 'Jimbaran', 'lon' => 115.165, 'lat' => -8.775],
             'regions' => [
                 ['key' => 'jembrana', 'name' => 'Jembrana', 'lon' => 114.62, 'lat' => -8.34, 'aliases' => ['jembrana', 'negara', 'gilimanuk', 'medewi', 'pekutatan', 'melaya', 'mendoyo']],

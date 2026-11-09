@@ -37,7 +37,7 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
             canvas.height = Math.floor(h * dpr);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-            const count = Math.round(Math.min(70, Math.max(18, (w * h) / 17000)));
+            const count = Math.round(Math.min(90, Math.max(24, (w * h) / 12000)));
             particles = Array.from({ length: count }, () => ({
                 x: Math.random() * w,
                 y: Math.random() * h,
@@ -48,7 +48,7 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
             }));
         };
 
-        const LINK = 130;
+        const LINK = 170;
 
         const draw = () => {
             ctx.clearRect(0, 0, w, h);
@@ -59,8 +59,9 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
                     const b = particles[j];
                     const d = Math.hypot(a.x - b.x, a.y - b.y);
                     if (d < LINK) {
-                        ctx.strokeStyle = `rgba(38,139,255,${(1 - d / LINK) * 0.22})`;
-                        ctx.lineWidth = 1;
+                        const alpha = 0.7 + (1 - d / LINK) * 0.3; // selalu terang, tidak bergantung kursor
+                        ctx.strokeStyle = a.cyan || b.cyan ? `rgba(0,170,235,${alpha})` : `rgba(10,95,215,${alpha})`;
+                        ctx.lineWidth = 2;
                         ctx.beginPath();
                         ctx.moveTo(a.x, a.y);
                         ctx.lineTo(b.x, b.y);
@@ -69,8 +70,8 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
                 }
                 const dm = Math.hypot(a.x - mouse.x, a.y - mouse.y);
                 if (dm < 170) {
-                    ctx.strokeStyle = `rgba(32,201,245,${(1 - dm / 170) * 0.55})`;
-                    ctx.lineWidth = 1.2;
+                    ctx.strokeStyle = `rgba(32,201,245,${Math.min(1, 0.5 + (1 - dm / 170))})`;
+                    ctx.lineWidth = 2.2;
                     ctx.beginPath();
                     ctx.moveTo(a.x, a.y);
                     ctx.lineTo(mouse.x, mouse.y);
@@ -78,12 +79,17 @@ export default function NetworkField({ className = '' }: NetworkFieldProps) {
                 }
             }
 
+            // Titik menyala (glow) supaya terasa "hidup"
             for (const p of particles) {
-                ctx.fillStyle = p.cyan ? 'rgba(32,201,245,0.85)' : 'rgba(22,119,232,0.7)';
+                const color = p.cyan ? 'rgba(0,185,250,1)' : 'rgba(10,95,215,1)';
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 16;
+                ctx.fillStyle = color;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, p.r + 1.2, 0, Math.PI * 2);
                 ctx.fill();
             }
+            ctx.shadowBlur = 0;
         };
 
         const step = () => {
