@@ -9,10 +9,10 @@
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         
-        <meta name="theme-color" content="#0F2A33">
+        <meta name="theme-color" content="#1677E8">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])

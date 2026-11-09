@@ -9,31 +9,35 @@
 
 @theme {
     --font-sans:
-        'Figtree', ui-sans-serif, system-ui, sans-serif,
+        'Inter', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
     --font-display:
-        'Bricolage Grotesque', 'Figtree', ui-sans-serif, system-ui, sans-serif;
+        'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-    /* ── Brand SKYNUSA ──
-       Semua kelas blue-* di seluruh situs otomatis jadi teal brand (dari gear di logo).
-       Semua gray-800/900 jadi petrol gelap. Tidak perlu edit satu-satu per halaman. */
-    --color-blue-50:  #eef8f9;
-    --color-blue-100: #d6eef1;
-    --color-blue-200: #aedde3;
-    --color-blue-300: #7cc5cf;
-    --color-blue-400: #45a6b5;
-    --color-blue-500: #278a9b;
-    --color-blue-600: #1b7384;
-    --color-blue-700: #165c6b;
-    --color-blue-800: #134b57;
-    --color-blue-900: #103c46;
-    --color-blue-950: #0a2830;
-    --color-gray-800: #17353f;
-    --color-gray-900: #0f2a33;
-    --color-brand:        #e89820; /* oranye logo */
-    --color-brand-strong: #cf8212;
-    --color-brand-soft:   #fdf1dc;
+    /* ── Brand SKYNUSA: Premium Light Blue Futuristic ──
+       Semua kelas blue-* di seluruh situs otomatis memakai biru brand.
+       gray-800/900 jadi navy. Tidak perlu edit satu-satu per halaman.
+       Primary #1677E8 · Electric #268BFF · Light #EAF4FF · Very light #F4F9FF
+       Cyan #20C9F5 · Navy #142D4E · Secondary text #64748B · Orange #FF9D32 */
+    --color-blue-50:  #f4f9ff;
+    --color-blue-100: #eaf4ff;
+    --color-blue-200: #cfe4ff;
+    --color-blue-300: #9cc8ff;
+    --color-blue-400: #5fa8ff;
+    --color-blue-500: #268bff;
+    --color-blue-600: #1677e8;
+    --color-blue-700: #1160c0;
+    --color-blue-800: #0f4c99;
+    --color-blue-900: #123a73;
+    --color-blue-950: #0b2447;
+    --color-gray-500: #64748b;
+    --color-gray-800: #1b3558;
+    --color-gray-900: #142d4e;
+    --color-neon:     #20c9f5; /* cyan: garis & efek teknologi */
+    --color-brand:        #ff9d32; /* oranye maskot */
+    --color-brand-strong: #e8861a;
+    --color-brand-soft:   #fff1de;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -102,7 +106,7 @@
     --destructive-foreground: oklch(0.577 0.245 27.325);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
-    --ring: #45a6b5;
+    --ring: #5fa8ff;
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
@@ -225,8 +229,144 @@
     }
 }
 
+
 /* Maskot Skybot: melayang pelan di tombol chat */
 @keyframes skybot-bob {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
+}
+
+
+/* =====================================================
+   SKYNUSA — Cyber Interface (efek teknologi, ringan)
+   ===================================================== */
+@keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+@keyframes flow-dash { to { stroke-dashoffset: -40; } }
+@keyframes ring-pulse {
+    0% { transform: scale(0.6); opacity: 0.7; }
+    100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes map-scan {
+    0% { transform: translateX(-140px); }
+    100% { transform: translateX(1040px); }
+}
+@keyframes blink-caret { 50% { opacity: 0; } }
+@keyframes scan-down {
+    0% { transform: translateY(-10%); opacity: 0; }
+    15%, 85% { opacity: 1; }
+    100% { transform: translateY(110%); opacity: 0; }
+}
+@keyframes bot-wave {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-9deg); }
+    40% { transform: rotate(8deg); }
+    60% { transform: rotate(-6deg); }
+    80% { transform: rotate(4deg); }
+}
+@keyframes bot-think {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-3px) rotate(3deg); }
+}
+@keyframes chat-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.94); }
+    to { opacity: 1; transform: none; }
+}
+
+@layer components {
+    /* Grid futuristik halus */
+    .bg-grid-tech {
+        background-image:
+            linear-gradient(to right, rgb(22 119 232 / 0.07) 1px, transparent 1px),
+            linear-gradient(to bottom, rgb(22 119 232 / 0.07) 1px, transparent 1px);
+        background-size: 44px 44px;
+        -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
+        mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
+    }
+    .bg-grid-tech-dark {
+        background-image:
+            linear-gradient(to right, rgb(32 201 245 / 0.08) 1px, transparent 1px),
+            linear-gradient(to bottom, rgb(32 201 245 / 0.08) 1px, transparent 1px);
+        background-size: 44px 44px;
+    }
+
+    /* Kartu dengan border biru menyala */
+    .glow-card {
+        position: relative;
+        border: 1px solid var(--color-blue-200);
+        background: #fff;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .glow-card:hover,
+    .glow-card:focus-within {
+        border-color: var(--color-blue-500);
+        box-shadow: 0 0 0 1px rgb(38 139 255 / 0.35), 0 18px 40px -18px rgb(22 119 232 / 0.45);
+    }
+
+    /* Tilt 3D halus + sorotan mengikuti kursor */
+    .tilt {
+        transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+        transition: transform 0.18s ease-out, border-color 0.25s ease, box-shadow 0.25s ease;
+        will-change: transform;
+    }
+    .tilt::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgb(32 201 245 / 0.16), transparent 60%);
+        transition: opacity 0.25s ease;
+    }
+    .tilt:hover::after { opacity: 1; }
+
+    /* Sudut HUD */
+    .hud-frame { position: relative; }
+    .hud-frame::before,
+    .hud-frame::after {
+        content: '';
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        pointer-events: none;
+        border: 2px solid var(--color-neon);
+        opacity: 0.9;
+        z-index: 3;
+    }
+    .hud-frame::before { top: -6px; left: -6px; border-right: 0; border-bottom: 0; border-top-left-radius: 10px; }
+    .hud-frame::after { right: -6px; bottom: -6px; border-left: 0; border-top: 0; border-bottom-right-radius: 10px; }
+
+    .scanline {
+        position: absolute;
+        left: 0; right: 0; top: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--color-neon), transparent);
+        box-shadow: 0 0 14px 2px rgb(32 201 245 / 0.55);
+        animation: scan-down 5.5s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .caret::after {
+        content: '▍';
+        margin-left: 2px;
+        color: var(--color-neon);
+        animation: blink-caret 1s steps(1) infinite;
+    }
+
+    .map-scan { animation: map-scan 6s linear infinite; }
+    .map-flow { animation: flow-dash 1.6s linear infinite; }
+    .map-ring { transform-box: fill-box; transform-origin: center; animation: ring-pulse 2.4s ease-out infinite; }
+
+    .skybot-chat-in { animation: chat-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; transform-origin: bottom right; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tilt { transform: none !important; }
+    .scanline, .map-scan, .map-flow, .map-ring { animation: none !important; }
+    .scanline { display: none; }
 }

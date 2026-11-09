@@ -88,6 +88,25 @@ class PortfolioController extends Controller
         });
     }
 
+    /**
+     * Data lokasi proyek untuk peta "Our Digital Footprint" di beranda.
+     * Hanya proyek aktif yang kolom `location`-nya terisi.
+     */
+    public function getFootprintForHome()
+    {
+        return $this->service->getAllActive()
+            ->filter(fn ($portfolio) => filled($portfolio->location))
+            ->map(fn ($portfolio) => [
+                'id' => $portfolio->id,
+                'title' => $portfolio->title,
+                'slug' => $portfolio->slug,
+                'location' => $portfolio->location,
+                'image' => $portfolio->image,
+                'service' => $portfolio->service?->title,
+            ])
+            ->values();
+    }
+
     public function show(string $slug)
     {
         $portfolio = $this->service->getBySlug($slug);

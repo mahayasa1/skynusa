@@ -23,11 +23,13 @@ Route::get('/', function () {
     
     $services = $servicesController->getServicesForHome();
     $portfolios = $portfolioController->getPortfoliosForHome();
+    $footprint = $portfolioController->getFootprintForHome();
     $companies = $companiesController->getCompaniesForHome();
     
     return Inertia::render('index', [
         'services' => $services,
         'portfolios' => $portfolios,
+        'footprint' => $footprint,
         'companies' => $companies,
         'hero' => SiteSetting::hero(),
     ]);
